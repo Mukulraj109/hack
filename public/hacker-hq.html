@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hacker HQ</title>
+    <style>
+      :root {
+        --bg: #eef2f7;
+        --blue: #2f66e0;
+        --text: #091a44;
+        --muted: #5a6f91;
+        --card: #ffffff;
+        --line: #d8e0ed;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .layout { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
+      .sidebar {
+        background: linear-gradient(180deg, #0b1736 0%, #09122b 100%);
+        color: #fff;
+        padding: 30px 20px 18px;
+        border-top-left-radius: 22px;
+        border-bottom-left-radius: 22px;
+        display: flex;
+        flex-direction: column;
+      }
+      .brand-wrap { display: flex; align-items: center; gap: 14px; margin: 2px 12px 28px; }
+      .brand-icon {
+        width: 52px; height: 52px; border-radius: 13px; background: #2f66e0;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .brand { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; }
+      .brand .blue { color: #2f66e0; }
+      .menu { list-style: none; margin: 0; padding: 0; flex: 1; }
+      .menu li {
+        padding: 15px 16px; border-radius: 16px; margin: 0 2px 12px;
+        color: #93a3bf; font-weight: 650; font-size: 22px;
+        display: flex; align-items: center; gap: 12px;
+      }
+      .menu li.active { background: #2f66e0; color: #fff; }
+      .icon {
+        width: 22px; height: 22px; border: 2px solid #8ea2c3; border-radius: 6px;
+        position: relative; flex: 0 0 22px;
+      }
+      .icon.grid::before, .icon.grid::after { content: ""; position: absolute; background: #8ea2c3; }
+      .icon.grid::before { width: 2px; top: 3px; bottom: 3px; left: 8px; }
+      .icon.grid::after { height: 2px; left: 3px; right: 3px; top: 8px; }
+      .icon.users { border: none; }
+      .icon.users::before, .icon.users::after { content: ""; position: absolute; border: 2px solid #8ea2c3; border-radius: 999px; }
+      .icon.users::before { width: 8px; height: 8px; left: 2px; top: 1px; }
+      .icon.users::after { width: 12px; height: 6px; left: 1px; top: 12px; border-top: 0; }
+      .icon.trophy { border: none; }
+      .icon.trophy::before { content: ""; position: absolute; width: 12px; height: 9px; left: 5px; top: 3px; border: 2px solid #8ea2c3; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
+      .icon.trophy::after { content: ""; position: absolute; width: 10px; height: 2px; left: 6px; top: 16px; background: #8ea2c3; }
+      .menu li.active .icon, .menu li.active .icon::before, .menu li.active .icon::after { border-color: #fff; }
+      .lfg { margin-left: auto; font-size: 12px; font-weight: 700; color: #7fb0ff; background: rgba(20, 58, 132, 0.75); border-radius: 8px; padding: 3px 7px; }
+      .progress-card { margin: 8px 2px 0; background: rgba(33,49,84,.55); border-radius: 18px; padding: 16px 18px; border: 1px solid rgba(78,98,139,.25); }
+      .progress-card .label { color: #8fa0bd; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+      .progress-card .row { display: flex; align-items: baseline; margin: 8px 0 10px; }
+      .progress-card .value { color: #63a0ff; font-size: 38px; font-weight: 800; }
+      .progress-card .pts { margin-left: auto; color: #7d8da9; font-size: 12px; }
+      .progress-bar { height: 10px; border-radius: 999px; background: rgba(128,145,176,.35); overflow: hidden; }
+      .progress-bar span { display: block; width: 14%; height: 100%; background: linear-gradient(90deg,#4b90ff,#76adff); }
+
+      .main { padding: 28px 32px; }
+      .heading { font-size: 52px; font-weight: 800; margin: 6px 0 4px; }
+      .sub { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+      .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+
+      .road-title { display: flex; align-items: center; gap: 10px; margin: 4px 0 16px; font-size: 38px; font-weight: 700; }
+      .road-pin { width: 20px; height: 20px; border: 2px solid var(--blue); border-radius: 999px; position: relative; }
+      .road-pin::after { content: ""; position: absolute; width: 6px; height: 6px; border-left: 2px solid var(--blue); border-bottom: 2px solid var(--blue); transform: rotate(-45deg); left: 5px; top: 8px; }
+
+      .task { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; }
+      .task.active { background: #dbe3ef; border-color: #c7d6ee; }
+      .task-left { display: flex; gap: 10px; }
+      .status { width: 26px; height: 26px; border-radius: 999px; border: 3px solid #d5deea; flex: 0 0 26px; margin-top: 3px; position: relative; }
+      .status.done { border-color: var(--blue); background: var(--blue); }
+      .status.done::after { content: ""; position: absolute; width: 9px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg); left: 7px; top: 8px; }
+      .task strong { font-size: 15px; }
+      .task span { color: var(--muted); font-size: 12px; display: block; margin-top: 4px; }
+      .task-ref { margin-top: 6px; color: var(--blue); font-size: 11px; font-weight: 700; }
+      .task-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+      .points { font-size: 22px; font-weight: 800; color: #0f2b66; }
+      .claim { font-size: 10px; font-weight: 700; color: #fff; background: var(--blue); border-radius: 6px; padding: 4px 10px; line-height: 1; }
+
+      .prize { background: #2f66e0; color: #fff; }
+      .prize h3 { font-size: 22px; margin: 2px 0 14px; }
+      .prize .row { display: flex; justify-content: space-between; font-size: 18px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.2); }
+      .prize .note { margin-top: 14px; padding: 12px; border-radius: 13px; background: rgba(255,255,255,.12); font-size: 13px; }
+
+      .social-grid { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .social-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+      .social-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #081a44; margin-bottom: 12px; }
+      .icon-linkedin, .icon-instagram { width: 24px; height: 24px; position: relative; flex: 0 0 24px; }
+      .icon-linkedin::before { content: "in"; position: absolute; inset: 0; color: #2f66e0; font-weight: 800; font-size: 17px; line-height: 24px; }
+      .icon-instagram { border: 2px solid #e13085; border-radius: 7px; }
+      .icon-instagram::before { content: ""; position: absolute; width: 8px; height: 8px; border: 2px solid #e13085; border-radius: 999px; top: 5px; left: 5px; }
+      .icon-instagram::after { content: ""; position: absolute; width: 3px; height: 3px; border-radius: 999px; background: #e13085; top: 4px; right: 4px; }
+      .social-desc { color: #4f678b; font-size: 16px; line-height: 1.45; margin-bottom: 16px; }
+      .social-btn { width: 100%; border: 0; border-radius: 12px; background: #081736; color: #fff; font-size: 14px; font-weight: 700; padding: 12px 14px; cursor: pointer; }
+
+      @media (max-width: 1024px) {
+        .layout { grid-template-columns: 1fr; }
+        .sidebar { display: none; }
+        .grid { grid-template-columns: 1fr; }
+        .social-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand-wrap">
+          <div class="brand-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 17c3 0 6-3 7-6 1-3 4-6 7-6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="7" cy="8" r="2" stroke="#fff" stroke-width="2"/>
+              <path d="M7 17l3-3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="brand">FirstStep<span class="blue">Hack</span></div>
+        </div>
+        <ul class="menu">
+          <li class="active"><span class="icon grid"></span>Dashboard</li>
+          <li><span class="icon users"></span>Team Matching <span class="lfg">LFG</span></li>
+          <li><span class="icon trophy"></span>Leaderboard</li>
+        </ul>
+        <div class="progress-card">
+          <div class="label">YOUR PROGRESS</div>
+          <div class="row"><div class="value">25</div><div class="pts">/ 250 PTS</div></div>
+          <div class="progress-bar"><span></span></div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <h1 class="heading">Hacker HQ</h1>
+        <div class="sub"><strong style="color:#2f66e0;letter-spacing:.12em;">COUNTDOWN:</strong> June 10 - June 15 • 100 Hours of Innovation</div>
+        <div class="grid">
+          <section class="card road">
+            <div class="road-title"><span class="road-pin"></span>Road to 250 Points</div>
+
+            <div class="task active">
+              <div class="task-left"><span class="status done"></span><div><strong>Sign Up Bonus</strong><span>Welcome gift for joining the competition.</span></div></div>
+              <div class="task-right"><div class="points">+25</div></div>
+            </div>
+
+            <div class="task">
+              <div class="task-left"><span class="status"></span><div><strong>LinkedIn &amp; Insta Share</strong><span>Tell the world you're competing.</span></div></div>
+              <div class="task-right"><div class="points">+50</div><div class="claim">CLAIM</div></div>
+            </div>
+
+            <div class="task">
+              <div class="task-left"><span class="status"></span><div><strong>The Connector</strong><span>Refer another hacker to join your squad.</span><div class="task-ref">0 REFERRED</div></div></div>
+              <div class="task-right"><div class="points">+25</div><div class="claim">CLAIM</div></div>
+            </div>
+
+            <div class="task">
+              <div class="task-left"><span class="status"></span><div><strong>The Final Submission</strong><span>Deliver your 100-hour masterpiece.</span></div></div>
+              <div class="task-right"><div class="points">+150</div></div>
+            </div>
+          </section>
+
+          <section class="card prize">
+            <h3>Event Prizes</h3>
+            <div class="row"><span>1st Place</span><strong>$2,500</strong></div>
+            <div class="row"><span>2nd Place</span><strong>$1,500</strong></div>
+            <div class="row"><span>3rd Place</span><strong>$1,000</strong></div>
+            <div class="note">All top 10 finishers get direct recruiter profiles.</div>
+          </section>
+        </div>
+
+        <div class="social-grid">
+          <section class="social-card">
+            <div class="social-title"><span class="icon-linkedin"></span>LinkedIn</div>
+            <div class="social-desc">Earn 50 points by sharing your participation on LinkedIn.</div>
+            <button class="social-btn">Post to Feed</button>
+          </section>
+          <section class="social-card">
+            <div class="social-title"><span class="icon-instagram"></span>Instagram</div>
+            <div class="social-desc">Upload a story using our template to claim your bonus.</div>
+            <button class="social-btn">Submit Story Proof</button>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
