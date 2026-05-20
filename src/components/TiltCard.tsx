@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export function TiltCard({ children, className }: { children: React.ReactNode, className?: string }) {
+export function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0);
@@ -22,10 +22,10 @@ export function TiltCard({ children, className }: { children: React.ReactNode, c
     const height = rect.height;
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    
+
     const xPct = mouseX / width - 0.5;
     const yPct = mouseY / height - 0.5;
-    
+
     x.set(xPct);
     y.set(yPct);
   };

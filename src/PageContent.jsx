@@ -1,10 +1,16 @@
 import { TiltCard } from "./components/TiltCard";
 import { CountdownTimer } from "./components/CountdownTimer";
+import { HeroBackgroundVideo, HERO_VIDEO_POSTER } from "./components/HeroBackgroundVideo";
+import { MarqueeBanner } from "./components/MarqueeBanner";
+import { HowItWorksSticky } from "./components/HowItWorksSticky";
+import { TracksStack } from "./components/TracksStack";
+import { JudgesStack } from "./components/JudgesStack";
+import { FloatingLabels } from "./components/FloatingLabels";
+import { HeroCenterCards } from "./components/HeroCenterCards";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2 } from "lucide-react";
+import { Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2 } from "lucide-react";
 
 const HACKATHON_START = new Date("2026-06-10T20:00:00-04:00");
 
@@ -17,20 +23,12 @@ export default function PageContent({ onNavigate = () => {} }) {
         className="sticky-nav"
       >
         <nav className="w-container">
-          <ul
-            role="list"
-            className="nav-grid w-list-unstyled"
-            style={{ gridTemplateColumns: "minmax(320px, 1.6fr) repeat(4, auto)", columnGap: "24px", alignItems: "center" }}
-          >
-            <li
-              id="w-node-_8bef9f4b-d3ae-2689-7a83-804b6f6d6dfa-8e5a2867"
-              style={{ minWidth: "320px" }}
-            >
+          <ul role="list" className="nav-grid w-list-unstyled">
+            <li id="w-node-_8bef9f4b-d3ae-2689-7a83-804b6f6d6dfa-8e5a2867">
               <a
                 href="/"
                 aria-current="page"
                 className="nav-logo-link w-inline-block w--current"
-                style={{ display: "inline-flex", alignItems: "center", minHeight: "92px" }}
               >
                 <img
                   src="/firststep-logo.png"
@@ -38,7 +36,6 @@ export default function PageContent({ onNavigate = () => {} }) {
                   className="nav-logo"
                   width={278}
                   height={156}
-                  style={{ width: "320px", maxWidth: "none", height: "auto", display: "block" }}
                   decoding="async"
                 />
               </a>
@@ -73,186 +70,644 @@ export default function PageContent({ onNavigate = () => {} }) {
           </ul>
         </nav>
       </header>
-      <header id="hero" className="welcome">
-        <div className="flex-container w-container">
+      <header id="hero" className="welcome hero-fullbleed">
+        <HeroBackgroundVideo variant="hero" />
+        <div className="hero-foreground">
           <motion.div
-            data-w-id="ebe32fdf-61fc-e82a-e6a2-ad8b25947dae"
-            className="hero-image-mask hero-video-mask"
-            initial={{ opacity: 0, y: 12 }}
+            className="hero-stage"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <video
-              className="hero-video"
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster="/Gemini_Generated_Image_oxc8kaoxc8kaoxc8.png"
-              aria-label="Hackers coding and collaborating"
-            >
-              <source
-                src="https://videos.pexels.com/video-files/7653214/7653214-hd_1920_1080_25fps.mp4"
-                type="video/mp4"
-              />
-            </video>
-            <div className="hero-video-badge">$5,000 cash prize pool</div>
-          </motion.div>
-          <motion.div
-            data-w-id="ebe32fdf-61fc-e82a-e6a2-ad8b25947d9a"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ maxWidth: "100%" }}
-            className="div-block"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full border border-[#2a8e9e3d] bg-[#2a8e9e14] text-[#023345] text-sm font-extrabold tracking-wider uppercase"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2a8e9e] opacity-70"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2a8e9e]"></span>
-              </span>
-              Applications Open • Cohort 2026
-            </motion.div>
+          <FloatingLabels />
 
-            <h1 className="heading" style={{ marginBottom: "18px" }}>
-              <strong
-                style={{
-                  display: "inline-block",
-                  maxWidth: "100%",
-                  width: "max-content",
-                  lineHeight: 1.04,
-                  letterSpacing: "-0.025em",
-                  marginBottom: "10px",
-                  fontSize: "clamp(34px, 5.2vw, 72px)",
-                  whiteSpace: "normal",
-                  color: "#023345",
-                }}
-              >
-                <span style={{ display: "flex", flexDirection: "column", gap: "0.08em", alignItems: "flex-start" }}>
-                  <span style={{ whiteSpace: "nowrap" }}>Build for 100 hours.</span>
-                  <span
-                    style={{
-                      whiteSpace: "nowrap",
-                      backgroundImage: "linear-gradient(90deg, #2a8e9e 0%, #0891b2 60%, #67e8f9 100%)",
-                      WebkitBackgroundClip: "text",
-                      backgroundClip: "text",
-                      color: "transparent",
-                    }}
-                  >
-                    Get seen by 25 recruiters.
-                  </span>
-                </span>
-              </strong>
-            </h1>
-            <p
-              className="text-slate-600 leading-relaxed font-medium"
-              style={{ fontSize: "clamp(18px, 1.5vw, 22px)", lineHeight: 1.55, maxWidth: "640px", marginBottom: "28px" }}
-            >
-              $5,000 in cash. Top 10 teams sent to recruiters. Remote, tool-agnostic, and built to get you hired.
-            </p>
-
-            <div className="hero-proof-grid">
-              <motion.div whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
-                <div className="proof-icon" style={{ background: "rgba(34, 197, 94, 0.12)", color: "#16a34a" }}>
-                  <Trophy className="w-5 h-5" />
-                </div>
-                <strong>$5,000</strong>
-                <span>Total cash prizes</span>
-              </motion.div>
-              <motion.div whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
-                <div className="proof-icon" style={{ background: "rgba(42, 142, 158, 0.14)", color: "#2a8e9e" }}>
-                  <Users className="w-5 h-5" />
-                </div>
-                <strong>Top 10</strong>
-                <span>Recruiter finalists</span>
-              </motion.div>
-              <motion.div whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
-                <div className="proof-icon" style={{ background: "rgba(8, 145, 178, 0.14)", color: "#0891b2" }}>
-                  <Timer className="w-5 h-5" />
-                </div>
-                <strong>100 hrs</strong>
-                <span>Remote build sprint</span>
-              </motion.div>
-              <motion.div whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
-                <div className="proof-icon" style={{ background: "rgba(99, 102, 241, 0.12)", color: "#6366f1" }}>
-                  <Wrench className="w-5 h-5" />
-                </div>
-                <strong>Any stack</strong>
-                <span>Use whatever tools you want</span>
-              </motion.div>
+          {/* Center Cards Container */}
+          <div className="hero-center-area">
+            {/* Timer at top */}
+            <div className="hero-timer-inline">
+              <CountdownTimer targetDate={HACKATHON_START} variant="glass" />
             </div>
 
-            <CountdownTimer targetDate={HACKATHON_START} />
-
-            <div
-              className="flex flex-row flex-nowrap items-center gap-8"
-              style={{ paddingTop: "32px", display: "flex", alignItems: "center", columnGap: "18px", rowGap: "14px", flexWrap: "wrap" }}
-            >
-              <a
-                href="/register"
-                className="yellow-button w-button group"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onNavigate("/register");
-                }}
-                style={{
-                  minHeight: "64px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "9999px",
-                  gap: "10px",
-                }}
+            {/* Expanded Hackathon Card - wider and shorter */}
+            <div className="hero-hackathon-expanded">
+              <motion.div
+                className="glass-card-expanded"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.15, ease: "easeOut" }}
               >
-                Log In to Claim Your Spot
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </a>
-              <a
-                href="#schedule-section"
-                className="rounded-2xl px-10 py-5 hero-secondary-cta inline-flex items-center gap-2"
-                style={{
-                  minHeight: "64px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  backgroundColor: "#ffffff",
-                  color: "#023345",
-                  fontWeight: 700,
-                  border: "1px solid #cbd5e1",
-                  borderRadius: "9999px",
-                  gap: "8px",
-                }}
-              >
-                <Bell className="w-4 h-4" />
-                Follow Updates
-              </a>
-              <a href="#footer" className="hero-link-cta inline-flex items-center gap-1.5">
-                <Briefcase className="w-4 h-4" />
-                Recruiter Access
-              </a>
-              <a href="#gallery" className="hero-link-cta inline-flex items-center gap-1.5">
-                <Share2 className="w-4 h-4" />
-                Share Hackathon
-              </a>
+                <motion.div className="hackathon-expanded-rail" aria-hidden="true" />
+                <motion.div className="hackathon-expanded-content">
+                  <h2 className="hackathon-expanded-title">FirstStep&apos;s Annual US Tech Hackathon</h2>
+                  <p className="hackathon-expanded-subtitle">
+                    Help job seekers get on recruiters&apos; radar — ship a real project in 100 remote hours.
+                  </p>
+                  <div className="hackathon-expanded-bullets">
+                    <span className="exp-pill">100-hour remote sprint</span>
+                    <span className="exp-pill">Recruiter visibility</span>
+                    <span className="exp-pill">$5,000+ prize pool</span>
+                  </div>
+                </motion.div>
+              </motion.div>
             </div>
+          </div>
+
+          {/* CTA buttons pinned to the bottom of the hero (per sketch placement) */}
+          <div className="hero-bottom-cta">
+            <button type="button" className="hero-cta-follow">
+              <Share2 className="hero-cta-follow__icon" />
+              <span>Follow</span>
+            </button>
+            <a
+              href="/register"
+              className="hero-cta-claim"
+              onClick={(event) => {
+                event.preventDefault();
+                onNavigate("/register");
+              }}
+            >
+              <span>Claim Your Spot for Free</span>
+              <ArrowRight className="hero-cta-claim__icon" />
+            </a>
+          </div>
+
           </motion.div>
         </div>
       </header>
-<style>{`      
-        .welcome .flex-container {
-          width: 100% !important;
-          max-width: none !important;
-          padding-left: clamp(22px, 3vw, 52px) !important;
-          padding-right: clamp(22px, 3vw, 52px) !important;
-          gap: clamp(34px, 4vw, 78px);
+      <MarqueeBanner />
+<style>{`
+        .welcome.hero-fullbleed {
+          position: relative;
+          isolation: isolate;
+          overflow: hidden;
+          min-height: min(100vh, 1120px);
+          padding: clamp(48px, 7vh, 88px) 0 clamp(48px, 6vh, 72px);
+        }
+
+        .welcome .hero-foreground {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          padding: clamp(6px, 1vh, 16px) clamp(16px, 2.5vw, 56px) clamp(20px, 3.5vh, 48px);
+          box-sizing: border-box;
+          pointer-events: none;
+        }
+
+        .hero-stage {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          min-height: 100%;
+          pointer-events: none;
+        }
+
+        /* Center area for timer and hackathon card */
+        .hero-center-area {
+          position: absolute;
+          left: 50%;
+          top: clamp(2px, 0.6vh, 10px);
+          transform: translateX(-50%);
+          display: flex;
+          flex-direction: column;
           align-items: center;
-          justify-content: flex-start;
+          width: 94%;
+          max-width: 1080px;
+          pointer-events: auto;
+        }
+
+        /* Timer card: narrower — only the text inside got bigger, width is independent */
+        .hero-timer-inline {
+          width: 100%;
+          max-width: 720px;
+          margin: 0 auto;
+        }
+
+        /* FirstStep hackathon card: wider — independent from the timer's width */
+        .hero-hackathon-expanded {
+          width: 100%;
+          max-width: 1080px;
+          margin: clamp(8px, 1.2vh, 16px) auto 0;
+        }
+
+        /* Hero CTA buttons — pinned to the bottom, spread apart left/right */
+        .hero-bottom-cta {
+          position: absolute;
+          left: 50%;
+          bottom: clamp(28px, 5vh, 72px);
+          transform: translateX(-50%);
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          gap: clamp(48px, 10vw, 160px);
+          width: min(820px, 90%);
+          z-index: 20;
+          pointer-events: auto;
+        }
+
+        .hero-cta-claim,
+        .hero-cta-follow {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          font-weight: 700;
+          letter-spacing: 0.01em;
+          font-size: clamp(14px, 1.25vw, 16px);
+          padding: clamp(11px, 1.4vh, 14px) clamp(20px, 2.4vw, 28px);
+          border-radius: 999px;
+          cursor: pointer;
+          text-decoration: none;
+          white-space: nowrap;
+          transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+            background 240ms ease, border-color 240ms ease, color 240ms ease;
+          line-height: 1;
+        }
+
+        .hero-cta-claim {
+          color: #ffffff;
+          background: linear-gradient(135deg, #2a8e9e 0%, #1eb3c4 100%);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          box-shadow:
+            0 12px 28px rgba(30, 179, 196, 0.35),
+            0 2px 6px rgba(0, 0, 0, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        .hero-cta-claim:hover {
+          transform: translateY(-1px);
+          box-shadow:
+            0 16px 36px rgba(30, 179, 196, 0.45),
+            0 3px 8px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-cta-claim__icon {
+          width: 18px;
+          height: 18px;
+          transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .hero-cta-claim:hover .hero-cta-claim__icon {
+          transform: translateX(3px);
+        }
+
+        .hero-cta-follow {
+          color: #ffffff;
+          background: rgba(255, 255, 255, 0.10);
+          border: 1px solid rgba(255, 255, 255, 0.32);
+          backdrop-filter: blur(14px) saturate(140%);
+          -webkit-backdrop-filter: blur(14px) saturate(140%);
+          box-shadow:
+            0 10px 24px rgba(0, 0, 0, 0.20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .hero-cta-follow:hover {
+          background: rgba(255, 255, 255, 0.18);
+          border-color: rgba(255, 255, 255, 0.5);
+          transform: translateY(-1px);
+        }
+
+        .hero-cta-follow__icon {
+          width: 16px;
+          height: 16px;
+        }
+
+        @media (max-width: 480px) {
+          .hero-bottom-cta {
+            width: 92%;
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .hero-cta-claim,
+          .hero-cta-follow {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+
+        .glass-card-expanded {
+          position: relative;
+          width: 100%;
+          overflow: hidden;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0.06) 100%
+          );
+          backdrop-filter: blur(16px) saturate(140%);
+          -webkit-backdrop-filter: blur(16px) saturate(140%);
+          border: 1px solid rgba(255, 255, 255, 0.24);
+          box-shadow:
+            0 16px 44px rgba(0, 0, 0, 0.22),
+            0 2px 6px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+          border-radius: 24px;
+        }
+
+        .hackathon-expanded-rail {
+          height: 3px;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            #7dd3e8 18%,
+            #2a8e9e 50%,
+            #7dd3e8 82%,
+            transparent 100%
+          );
+          opacity: 0.95;
+        }
+
+        .hackathon-expanded-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: clamp(12px, 1.6vh, 18px);
+          text-align: center;
+          padding: clamp(20px, 2.4vh, 28px) clamp(32px, 4.5vw, 72px) clamp(22px, 2.6vh, 30px);
+        }
+
+        .hackathon-expanded-eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          color: rgba(255, 255, 255, 0.9);
+          font-size: clamp(12px, 1.1vw, 14px);
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+
+        .hackathon-expanded-eyebrow-dot {
+          position: relative;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #7dd3e8;
+          box-shadow: 0 0 12px rgba(125, 211, 232, 0.8);
+          flex-shrink: 0;
+        }
+
+        .hackathon-expanded-eyebrow-dot::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          background: #7dd3e8;
+          animation: hero-eyebrow-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes hero-eyebrow-ping {
+          0% {
+            transform: scale(1);
+            opacity: 0.75;
+          }
+          70%,
+          100% {
+            transform: scale(2.2);
+            opacity: 0;
+          }
+        }
+
+        .hackathon-expanded-title {
+          color: #ffffff;
+          font-size: clamp(30px, 3.35vw, 48px);
+          font-weight: 800;
+          letter-spacing: -0.022em;
+          margin: 0;
+          line-height: 1.1;
+          white-space: nowrap;
+          text-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .hackathon-expanded-subtitle {
+          color: rgba(255, 255, 255, 0.92);
+          font-size: clamp(16px, 1.65vw, 21px);
+          font-weight: 500;
+          margin: 0;
+          line-height: 1.45;
+          max-width: 760px;
+        }
+
+        .hackathon-expanded-bullets {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 12px;
+          margin-top: 4px;
+        }
+
+        .exp-pill {
+          display: inline-flex;
+          align-items: center;
+          padding: 10px 20px;
+          border-radius: 999px;
+          font-size: clamp(14px, 1.35vw, 17px);
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          color: rgba(255, 255, 255, 0.95);
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+          .hero-center-area {
+            width: 94%;
+            top: 6px;
+          }
+
+          .hero-timer-inline,
+          .hero-hackathon-expanded {
+            max-width: 100%;
+          }
+
+          .hero-hackathon-expanded {
+            margin-top: clamp(8px, 1.5vh, 14px);
+          }
+
+          .hero-bottom-cta {
+            bottom: clamp(18px, 4vh, 40px);
+            z-index: 20;
+          }
+
+          .hackathon-expanded-content {
+            padding: 18px 20px 20px;
+            gap: 12px;
+          }
+
+          .hackathon-expanded-bullets {
+            gap: 10px;
+          }
+
+          .hackathon-expanded-title {
+            white-space: normal;
+            font-size: clamp(24px, 6vw, 34px);
+            line-height: 1.15;
+          }
+
+          .hackathon-expanded-subtitle {
+            font-size: clamp(15px, 4vw, 18px);
+          }
+
+          .exp-pill {
+            padding: 8px 16px;
+            font-size: clamp(13px, 3.2vw, 15px);
+          }
+        }
+
+        @media (min-width: 900px) and (max-width: 1180px) {
+          .hackathon-expanded-title {
+            font-size: clamp(28px, 3vw, 42px);
+          }
+        }
+
+        .hero-accent-panel.hero-float-left {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: min(440px, 38vw);
+          max-width: calc(100% - 24px);
+          z-index: 2;
+          pointer-events: auto;
+          transform: rotate(-1.4deg);
+          animation: hero-float-left 7.5s ease-in-out infinite;
+        }
+
+        .hero-content-panel.hero-float-right {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: min(920px, 72vw);
+          max-width: calc(100% - 24px);
+          z-index: 2;
+          pointer-events: auto;
+          transform: rotate(0.5deg);
+          animation: hero-float-right 8.2s ease-in-out infinite;
+        }
+
+        .hero-float-left:hover {
+          animation-play-state: paused;
+          transform: rotate(-0.35deg) scale(1.012);
+          transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .hero-float-right:hover {
+          animation-play-state: paused;
+          transform: rotate(0deg) scale(1.005);
+          transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes hero-float-left {
+          0%, 100% { transform: translate(0, 0) rotate(-1.4deg); }
+          50%      { transform: translate(6px, -10px) rotate(-0.9deg); }
+        }
+
+        @keyframes hero-float-right {
+          0%, 100% { transform: translate(0, 0) rotate(0.5deg); }
+          50%      { transform: translate(-6px, 8px) rotate(0.15deg); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-float-left,
+          .hero-float-right {
+            animation: none;
+          }
+        }
+
+        @media (min-width: 992px) and (max-width: 1280px) {
+          .hero-accent-panel.hero-float-left {
+            width: min(340px, 32vw);
+          }
+
+          .hero-content-panel.hero-float-right {
+            width: min(780px, 68vw);
+          }
+        }
+
+        @media (min-width: 1400px) {
+          .hero-content-panel.hero-float-right {
+            width: min(980px, 58vw);
+          }
+        }
+
+        .hero-content-panel--glass {
+          background:
+            linear-gradient(
+              160deg,
+              rgba(2, 51, 69, 0.42) 0%,
+              rgba(2, 51, 69, 0.32) 100%
+            ) !important;
+          border: 1px solid rgba(255, 255, 255, 0.32) !important;
+          backdrop-filter: blur(26px) saturate(1.4);
+          -webkit-backdrop-filter: blur(26px) saturate(1.4);
+          box-shadow:
+            0 28px 70px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+        }
+
+        .hero-content-panel--glass .hero-content-panel__halo {
+          opacity: 0.45;
+        }
+
+        .hero-content-compact {
+          padding: clamp(22px, 2.6vw, 32px) clamp(24px, 2.8vw, 36px) !important;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .hero-content-top {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .hero-content-panel--glass .hero-status-pill {
+          margin-bottom: 0;
+          padding: 11px 20px;
+          font-size: 13px;
+          background: rgba(255, 255, 255, 0.14);
+          border-color: rgba(255, 255, 255, 0.28);
+          color: #ffffff;
+        }
+
+        .hero-content-panel--glass .hero-headline {
+          margin-bottom: 0;
+        }
+
+        .hero-content-panel--glass .hero-headline__line {
+          font-size: clamp(32px, 3.8vw, 54px);
+          color: #ffffff;
+          text-shadow:
+            0 2px 24px rgba(2, 51, 69, 0.95),
+            0 1px 4px rgba(2, 51, 69, 0.7);
+        }
+
+        .hero-content-panel--glass .hero-headline__accent {
+          position: relative;
+        }
+
+        .hero-content-panel--glass .hero-headline__accent .hero-headline__inner {
+          background-image: linear-gradient(
+            90deg,
+            #a5f3fc 0%,
+            #67e8f9 35%,
+            #22d3ee 70%,
+            #06b6d4 100%
+          );
+          filter: drop-shadow(0 2px 16px rgba(2, 51, 69, 0.85))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+          font-weight: 900;
+        }
+
+        .hero-content-panel--glass .hero-lede {
+          margin: 0;
+          max-width: none;
+          font-size: clamp(16px, 1.35vw, 19px);
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.92);
+          text-shadow: 0 1px 12px rgba(2, 51, 69, 0.6);
+        }
+
+        .hero-content-panel--glass .hero-proof-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 12px;
+          margin-top: 0;
+          max-width: none;
+        }
+
+        .hero-content-panel--glass .hero-proof-grid > div {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 14px 16px;
+          border-radius: 16px;
+          background: rgba(255, 255, 255, 0.12);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: none;
+        }
+
+        .hero-content-panel--glass .hero-proof-grid .proof-icon {
+          width: 40px;
+          height: 40px;
+          min-width: 40px;
+          margin-bottom: 0;
+          border-radius: 12px;
+        }
+
+        .hero-content-panel--glass .hero-proof-grid strong {
+          font-size: clamp(17px, 1.5vw, 22px);
+          color: #ffffff;
+          margin-bottom: 3px;
+        }
+
+        .hero-content-panel--glass .hero-proof-grid span {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.78);
+          line-height: 1.25;
+        }
+
+        .hero-content-bottom {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          width: 100%;
+        }
+
+        .hero-content-panel--glass .hero-content-bottom .countdown-glass {
+          width: 100%;
+        }
+
+        .hero-content-panel--glass .hero-cta-row {
+          padding-top: 0;
+          gap: 12px;
+        }
+
+        .hero-content-panel--glass .hero-cta-primary {
+          min-height: 58px;
+          font-size: 16px;
+        }
+
+        .hero-content-panel--glass .hero-secondary-cta {
+          min-height: 52px;
+          font-size: 15px;
+          background: rgba(255, 255, 255, 0.14);
+          border-color: rgba(255, 255, 255, 0.35);
+          color: #ffffff;
+        }
+
+        .hero-content-panel--glass .hero-link-cta {
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 14px;
+        }
+
+        @media (min-width: 768px) {
+          .hero-content-panel--glass .hero-cta-row {
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+          }
+
+          .hero-content-panel--glass .hero-cta-primary,
+          .hero-content-panel--glass .hero-secondary-cta {
+            width: auto;
+          }
+
+          .hero-content-panel--glass .hero-cta-links {
+            flex: 1 1 100%;
+          }
+        }
+
+        @media (max-width: 899px) {
+          .hero-content-panel--glass .hero-proof-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
         }
 
         .sticky-nav .nav-logo-link {
@@ -262,11 +717,11 @@ export default function PageContent({ onNavigate = () => {} }) {
         }
 
         .sticky-nav .nav-grid > li:first-child {
-          min-width: clamp(250px, 17vw, 340px);
+          min-width: clamp(280px, 19vw, 400px);
         }
 
         .sticky-nav .nav-logo {
-          width: clamp(250px, 16.8vw, 340px) !important;
+          width: clamp(280px, 19vw, 400px) !important;
           height: auto !important;
           max-width: none;
         }
@@ -294,89 +749,265 @@ export default function PageContent({ onNavigate = () => {} }) {
           line-height: 1;
         }
 
-        .hero-video-mask {
+        .hero-accent-panel {
           position: relative;
-          flex: 0 0 clamp(620px, 62vw, 1120px);
-          width: clamp(620px, 62vw, 1120px) !important;
-          max-width: 1120px !important;
-          height: clamp(560px, 72vh, 820px);
-          min-height: 560px;
-          padding-top: 0 !important;
-          border-radius: 34px;
+          min-height: clamp(300px, 38vh, 440px);
+          border-radius: 36px;
           overflow: hidden;
-          border: 1px solid rgba(255, 255, 255, 0.82);
-          box-shadow: 0 36px 110px rgba(2, 51, 69, 0.26);
-          background: #023345;
-          transform: translateZ(0);
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          box-shadow:
+            0 38px 110px rgba(2, 51, 69, 0.55),
+            0 2px 8px rgba(2, 51, 69, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.16);
+          background: linear-gradient(160deg, rgba(2, 51, 69, 0.94) 0%, rgba(2, 51, 69, 0.74) 100%);
           will-change: transform;
-          isolation: isolate;
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
         }
 
-        .hero-video-mask::after {
-          content: "";
+        .hero-accent-panel__halo {
           position: absolute;
-          inset: 0;
-          z-index: 0;
-          background: linear-gradient(180deg, rgba(2, 51, 69, 0.03), rgba(2, 51, 69, 0.28));
+          inset: -38% -18% -22% -28%;
+          background:
+            radial-gradient(closest-side, rgba(42, 142, 158, 0.55), transparent 70%),
+            radial-gradient(closest-side, rgba(103, 232, 249, 0.28), transparent 75%);
+          filter: blur(48px);
           pointer-events: none;
+          z-index: -1;
+          opacity: 0.85;
         }
 
-        .hero-video-mask::before {
-          content: "100-hour remote build sprint";
+        .hero-accent-panel__glow {
           position: absolute;
-          top: 24px;
-          left: 24px;
+          inset: -20%;
+          background:
+            radial-gradient(circle at 26% 18%, rgba(42, 142, 158, 0.55), transparent 55%),
+            radial-gradient(circle at 80% 90%, rgba(103, 232, 249, 0.18), transparent 60%);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .hero-accent-poster {
+          position: absolute;
+          inset: 12% 8% 14%;
+          width: auto;
+          height: auto;
+          max-width: 92%;
+          max-height: 78%;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          object-fit: contain;
+          object-position: center;
+          opacity: 1;
+          pointer-events: none;
+          z-index: 1;
+          filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.35));
+        }
+
+        .hero-accent-badge {
+          position: absolute;
           z-index: 2;
-          padding: 11px 16px;
           border-radius: 999px;
-          background: rgba(2, 51, 69, 0.78);
-          color: #ffffff;
-          font-size: 15px;
           font-weight: 900;
           letter-spacing: 0.02em;
+          line-height: 1.2;
         }
 
-        .hero-video {
-          position: absolute;
-          inset: 0;
-          z-index: 1;
-          width: 100%;
-          height: 100%;
-          min-height: 100%;
-          object-fit: cover;
-          object-position: center;
-          display: block;
-          transform: translateZ(0);
-          will-change: transform;
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-          pointer-events: none;
-          outline: none;
-        }
-
-        .hero-video-badge {
-          position: absolute;
+        .hero-accent-badge--top {
+          top: 24px;
           left: 24px;
+          right: 24px;
+          width: fit-content;
+          max-width: calc(100% - 48px);
+          padding: 11px 16px;
+          background: rgba(2, 51, 69, 0.82);
+          color: #ffffff;
+          font-size: clamp(13px, 1.4vw, 15px);
+        }
+
+        .hero-accent-badge--bottom {
+          left: 24px;
+          right: 24px;
           bottom: 24px;
-          z-index: 1;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 8px 10px;
           padding: 12px 18px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.92);
+          background: rgba(255, 255, 255, 0.94);
           color: #023345;
-          font-size: 17px;
-          font-weight: 800;
+          font-size: clamp(14px, 1.5vw, 17px);
           box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
         }
 
-        .hero-video-badge::after {
-          content: "Top 10 to recruiters";
-          display: inline-flex;
-          margin-left: 10px;
-          padding-left: 10px;
-          border-left: 1px solid rgba(2, 51, 69, 0.22);
+        .hero-accent-badge-sep {
+          color: rgba(2, 51, 69, 0.35);
+        }
+
+        .hero-accent-badge-highlight {
           color: #2a8e9e;
+        }
+
+        .hero-content-panel {
+          position: relative;
+          width: 100%;
+          border-radius: 28px;
+          will-change: transform;
+        }
+
+        .hero-content-panel__halo {
+          position: absolute;
+          inset: -22% -18% -30% -10%;
+          background:
+            radial-gradient(closest-side, rgba(103, 232, 249, 0.35), transparent 70%),
+            radial-gradient(closest-side, rgba(8, 145, 178, 0.22), transparent 75%);
+          filter: blur(56px);
+          pointer-events: none;
+          z-index: -1;
+          opacity: 0.75;
+        }
+
+        .hero-content-panel__inner {
+          position: relative;
+          z-index: 1;
+          padding: clamp(28px, 3.4vw, 44px);
+        }
+
+        .hero-status-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 22px;
+          padding: 10px 18px;
+          border-radius: 999px;
+          border: 1px solid rgba(42, 142, 158, 0.24);
+          background: rgba(42, 142, 158, 0.1);
+          color: #023345;
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+
+        .hero-headline {
+          margin: 0 0 18px;
+          display: flex;
+          flex-direction: column;
+          gap: 0.1em;
+          align-items: flex-start;
+        }
+
+        .hero-headline__line {
+          font-size: clamp(34px, 5vw, 68px);
+          font-weight: 800;
+          line-height: 1.04;
+          letter-spacing: -0.025em;
+          color: #023345;
+          display: inline-block;
+          position: relative;
+          cursor: default;
+        }
+
+        .hero-headline__inner {
+          display: inline-block;
+          transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+          will-change: transform;
+        }
+
+        .hero-headline__line:hover .hero-headline__inner {
+          animation: hero-headline-shuffle 720ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes hero-headline-shuffle {
+          0%   { transform: translateX(0); }
+          25%  { transform: translateX(-10px); }
+          55%  { transform: translateX(8px); }
+          80%  { transform: translateX(-4px); }
+          100% { transform: translateX(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-headline__line:hover .hero-headline__inner {
+            animation: none;
+          }
+        }
+
+        .hero-headline__accent .hero-headline__inner {
+          background-image: linear-gradient(90deg, #2a8e9e 0%, #0891b2 55%, #67e8f9 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        .hero-lede {
+          margin: 0 0 26px;
+          max-width: 36em;
+          font-size: clamp(17px, 1.45vw, 21px);
+          line-height: 1.55;
+          font-weight: 500;
+          color: #475569;
+        }
+
+        .hero-cta-row {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 14px;
+          padding-top: 32px;
+        }
+
+        .hero-cta-primary {
+          min-height: 64px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          gap: 10px;
+          width: 100%;
+        }
+
+        .hero-secondary-cta {
+          min-height: 56px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          background-color: #ffffff;
+          color: #023345;
+          font-weight: 700;
+          border: 1px solid #cbd5e1;
+          border-radius: 9999px;
+          gap: 8px;
+          padding: 0 28px;
+          width: 100%;
+        }
+
+        .hero-cta-links {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 12px 20px;
+        }
+
+        @media (min-width: 768px) {
+          .hero-cta-row {
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+          }
+
+          .hero-cta-primary {
+            width: auto;
+            flex: 0 1 auto;
+          }
+
+          .hero-secondary-cta {
+            width: auto;
+            flex: 0 1 auto;
+          }
+
+          .hero-cta-links {
+            flex: 1 1 100%;
+          }
         }
 
         .hero-proof-grid {
@@ -389,12 +1020,12 @@ export default function PageContent({ onNavigate = () => {} }) {
 
         .hero-proof-grid > div {
           position: relative;
-          padding: 20px 22px;
-          border-radius: 22px;
+          padding: 18px 20px;
+          border-radius: 20px;
           background: #ffffff;
-          border: 1px solid rgba(2, 51, 69, 0.08);
-          box-shadow: 0 18px 40px rgba(2, 51, 69, 0.08);
-          transition: border-color 220ms ease;
+          border: 1px solid rgba(2, 51, 69, 0.07);
+          box-shadow: 0 8px 24px rgba(2, 51, 69, 0.06);
+          transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
           cursor: default;
         }
 
@@ -441,110 +1072,13 @@ export default function PageContent({ onNavigate = () => {} }) {
           padding: 0 6px;
         }
 
-        .how-does-it-work {
-          padding: 60px 0;
-          background: linear-gradient(180deg, #ffffff 0%, #f5f9fa 100%);
-        }
-
-        .how-does-it-work .centered-container {
-          text-align: center;
-          margin-bottom: 50px;
-        }
-
-        .flex-container.left-image,
-        .flex-container.right-image {
-          gap: clamp(30px, 5vw, 60px) !important;
-        }
-
-        .flex-container.left-image .feature-image-mask:hover img,
-        .flex-container.right-image .feature-image-mask:hover img {
-          transform: scale(1.02);
-        }
-
-        .judges-roadmap {
-          position: relative;
-          padding: 20px 0 40px;
-        }
-
-        .roadmap-line {
-          position: absolute;
-          left: 50%;
-          top: 0;
-          bottom: 0;
-          width: 3px;
-          background: linear-gradient(180deg, #2a8e9e, #0891b2, #6366f1);
-          transform: translateX(-50%);
-          border-radius: 2px;
-        }
-
-        .roadmap-step {
-          display: flex;
-          align-items: center;
-          margin-bottom: 40px;
-          position: relative;
-        }
-
-        .roadmap-left {
-          flex-direction: row;
-          padding-right: calc(50% + 40px);
-        }
-
-        .roadmap-right {
-          flex-direction: row-reverse;
-          padding-left: calc(50% + 40px);
-        }
-
-        .roadmap-node {
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 56px;
-          height: 56px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-          z-index: 2;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .roadmap-step:hover .roadmap-node {
-          transform: translateX(-50%) scale(1.1);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .roadmap-card {
-          background: white;
-          border-radius: 20px;
-          padding: 24px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-          border: 1px solid rgba(42, 142, 158, 0.1);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-          width: 100%;
-        }
-
-        .roadmap-step:hover .roadmap-card {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 40px rgba(42, 142, 158, 0.12);
-        }
-
-        .roadmap-footer {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          padding-top: 20px;
-          margin-top: 20px;
-        }
-
         @media (max-width: 991px) {
           .sticky-nav .nav-grid > li:first-child {
-            min-width: clamp(190px, 34vw, 250px);
+            min-width: clamp(210px, 38vw, 290px);
           }
 
           .sticky-nav .nav-logo {
-            width: clamp(190px, 36vw, 250px) !important;
+            width: clamp(210px, 40vw, 290px) !important;
           }
 
           .sticky-nav .nav-grid {
@@ -562,16 +1096,48 @@ export default function PageContent({ onNavigate = () => {} }) {
             font-size: 13px;
           }
 
-          .hero-video-mask {
-            flex-basis: auto;
-            width: 100% !important;
-            transform: none;
-            height: 420px;
-            min-height: 420px;
+          .welcome.hero-fullbleed {
+            min-height: auto;
+            padding: 32px 0 48px;
           }
 
-          .hero-video {
-            min-height: 100%;
+          .welcome .hero-foreground {
+            position: relative;
+            inset: auto;
+            height: auto;
+            padding: 0 clamp(16px, 4vw, 24px);
+          }
+
+          .hero-stage {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-height: 0;
+          }
+
+          .hero-accent-panel.hero-float-left,
+          .hero-content-panel.hero-float-right {
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+            width: 100%;
+            max-width: none;
+            animation: none;
+            transform: none;
+          }
+
+          .hero-float-left:hover,
+          .hero-float-right:hover {
+            transform: none;
+          }
+
+          .hero-accent-panel {
+            min-height: 280px;
+          }
+
+          .hero-content-panel__inner {
+            padding: 24px 20px;
           }
 
           .hero-proof-grid {
@@ -659,710 +1225,539 @@ export default function PageContent({ onNavigate = () => {} }) {
           transform: translateX(3px);
         }
 
-        .career-section {
+        .career-accelerator-section {
           position: relative;
           overflow: hidden;
-          padding: 80px 0 100px;
-          background: linear-gradient(180deg, #ffffff 0%, #f5f9fa 100%);
+          padding: clamp(2.5rem, 5vw, 4.5rem) 0 0;
+          background: linear-gradient(180deg, #012531 0%, #023345 70%, #023f57 100%);
         }
 
-        .career-bg-gradient {
+        .career-accelerator-section::before {
+          content: "";
           position: absolute;
           inset: 0;
           background:
-            linear-gradient(135deg, #023345 0%, #034a63 40%, #2a8e9e 70%, #0891b2 100%);
-          opacity: 0.08;
-          z-index: 0;
-        }
-
-        .career-bg-gradient::before {
-          content: "";
-          position: absolute;
-          top: 10%;
-          right: 5%;
-          width: 500px;
-          height: 500px;
-          background: radial-gradient(circle, rgba(42, 142, 158, 0.4) 0%, transparent 70%);
-          border-radius: 50%;
-          filter: blur(60px);
-          animation: float1 8s ease-in-out infinite;
-        }
-
-        .career-bg-gradient::after {
-          content: "";
-          position: absolute;
-          bottom: 10%;
-          left: 5%;
-          width: 400px;
-          height: 400px;
-          background: radial-gradient(circle, rgba(8, 145, 178, 0.35) 0%, transparent 70%);
-          border-radius: 50%;
-          filter: blur(50px);
-          animation: float2 10s ease-in-out infinite;
-        }
-
-        @keyframes float1 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-30px, 30px) scale(1.1); }
-        }
-
-        @keyframes float2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(30px, -20px) scale(1.05); }
-        }
-
-        .career-floating-orb {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(40px);
-          opacity: 0.3;
+            radial-gradient(ellipse 70% 60% at 12% 18%, rgba(42, 142, 158, 0.28), transparent 55%),
+            radial-gradient(ellipse 80% 60% at 100% 0%, rgba(8, 145, 178, 0.22), transparent 55%),
+            radial-gradient(ellipse 60% 50% at 80% 90%, rgba(103, 232, 249, 0.10), transparent 60%);
           pointer-events: none;
-          z-index: 0;
         }
 
-        .career-floating-orb-1 {
-          width: 200px;
-          height: 200px;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2);
-          top: 20%;
-          left: 10%;
-          animation: orbFloat1 12s ease-in-out infinite;
-        }
-
-        .career-floating-orb-2 {
-          width: 150px;
-          height: 150px;
-          background: linear-gradient(135deg, #0891b2, #2a8e9e);
-          bottom: 25%;
-          right: 15%;
-          animation: orbFloat2 15s ease-in-out infinite;
-        }
-
-        .career-floating-orb-3 {
-          width: 100px;
-          height: 100px;
-          background: #023345;
-          top: 60%;
-          left: 50%;
-          animation: orbFloat3 10s ease-in-out infinite;
-        }
-
-        @keyframes orbFloat1 {
-          0%, 100% { transform: translate(0, 0) rotate(0deg); }
-          33% { transform: translate(40px, -30px) rotate(120deg); }
-          66% { transform: translate(-20px, 20px) rotate(240deg); }
-        }
-
-        @keyframes orbFloat2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-40px, 30px) scale(1.2); }
-        }
-
-        @keyframes orbFloat3 {
-          0%, 100% { transform: translate(-50%, 0); }
-          50% { transform: translate(-50%, -40px); }
-        }
-
-        .career-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 clamp(24px, 4vw, 48px);
-          position: relative;
-          z-index: 1;
-        }
-
-        .career-header {
-          text-align: center;
-          max-width: 800px;
-          margin: 0 auto 56px;
-        }
-
-        .career-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 12px 24px;
-          border-radius: 999px;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2);
-          border: none;
-          box-shadow: 0 4px 20px rgba(42, 142, 158, 0.3);
-          color: #ffffff;
-          font-size: 13px;
-          font-weight: 800;
-          letter-spacing: 0.15em;
-          margin-bottom: 24px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .career-badge::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-          animation: badgeShimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes badgeShimmer {
-          0% { left: -100%; }
-          50%, 100% { left: 150%; }
-        }
-
-        .career-badge svg {
-          color: #ffffff;
-          animation: iconBounce 2s ease-in-out infinite;
-        }
-
-        @keyframes iconBounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-2px); }
-        }
-
-        .career-main-title {
-          font-size: clamp(32px, 4.5vw, 56px);
-          font-weight: 800;
-          line-height: 1.1;
-          letter-spacing: -0.025em;
-          color: #023345;
-          margin-bottom: 20px;
-        }
-
-        .career-highlight {
-          background: linear-gradient(135deg, #2a8e9e 0%, #0891b2 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .career-subtitle {
-          font-size: clamp(16px, 1.5vw, 20px);
-          line-height: 1.6;
-          color: #64748b;
-          max-width: 640px;
-          margin: 0 auto;
-        }
-
-        .career-stats-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-          max-width: 1000px;
-          margin: 0 auto 56px;
-        }
-
-        .career-stat-card {
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(42, 142, 158, 0.1);
-          border-radius: 28px;
-          padding: 36px 28px;
-          text-align: center;
-          box-shadow:
-            0 4px 20px rgba(42, 142, 158, 0.06),
-            0 1px 4px rgba(2, 51, 69, 0.02);
-          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-          position: relative;
-        }
-
-        .career-stat-card::after {
+        .career-accelerator-section::after {
           content: "";
           position: absolute;
           inset: 0;
-          border-radius: 28px;
-          padding: 1px;
-          background: linear-gradient(135deg, transparent, rgba(42, 142, 158, 0.3), transparent);
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          opacity: 0;
-          transition: opacity 0.3s ease;
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+          background-size: 64px 64px;
+          mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
+          -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
+          opacity: 0.4;
+          pointer-events: none;
         }
 
-        .career-stat-card:hover::after {
-          opacity: 1;
-        }
-
-        .career-stat-card:hover {
-          background: rgba(255, 255, 255, 0.95);
-          transform: translateY(-8px);
-          box-shadow:
-            0 16px 40px rgba(42, 142, 158, 0.12),
-            0 8px 16px rgba(2, 51, 69, 0.06);
-          border-color: rgba(42, 142, 158, 0.25);
-        }
-
-        .career-stat-icon {
-          width: 64px;
-          height: 64px;
-          border-radius: 20px;
-          background: linear-gradient(135deg, rgba(42, 142, 158, 0.15), rgba(8, 145, 178, 0.1));
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border: 1px solid rgba(42, 142, 158, 0.2);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 20px;
-          color: #2a8e9e;
-        }
-
-        .career-stat-num {
-          font-size: 48px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          line-height: 1;
-          margin-bottom: 10px;
-        }
-
-        .career-stat-label {
-          font-size: 14px;
-          font-weight: 600;
-          color: #475569;
-          line-height: 1.4;
-        }
-
-        .career-flow {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 16px;
-          max-width: 1100px;
-          margin: 0 auto 56px;
-          flex-wrap: wrap;
-        }
-
-        .career-flow-step {
-          display: flex;
-          align-items: flex-start;
-          gap: 16px;
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(42, 142, 158, 0.12);
-          border-radius: 24px;
-          padding: 28px;
-          box-shadow:
-            0 8px 32px rgba(42, 142, 158, 0.06),
-            0 2px 8px rgba(2, 51, 69, 0.03),
-            inset 0 1px 0 rgba(255, 255, 255, 1);
-          flex: 1;
-          min-width: 260px;
-          max-width: 340px;
-          transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .career-flow-step::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, #2a8e9e, #0891b2, #2a8e9e);
-          background-size: 200% 100%;
-          animation: gradientMove 3s linear infinite;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        @keyframes gradientMove {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 200% 50%; }
-        }
-
-        .career-flow-step:hover::before {
-          opacity: 1;
-        }
-
-        .career-flow-step:hover {
-          background: rgba(255, 255, 255, 0.98);
-          transform: translateY(-6px);
-          border-color: rgba(42, 142, 158, 0.3);
-          box-shadow:
-            0 16px 48px rgba(42, 142, 158, 0.1),
-            0 8px 16px rgba(2, 51, 69, 0.05);
-        }
-
-        .career-flow-step:hover {
-          transform: translateY(-4px);
-          border-color: rgba(42, 142, 158, 0.4);
-          box-shadow:
-            0 16px 40px rgba(42, 142, 158, 0.12),
-            0 4px 12px rgba(2, 51, 69, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 1);
-        }
-
-        .career-flow-number {
-          width: 48px;
-          height: 48px;
-          border-radius: 16px;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2);
-          color: #ffffff;
-          font-size: 22px;
-          font-weight: 800;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          box-shadow: 0 4px 16px rgba(42, 142, 158, 0.35);
-        }
-
-        .career-flow-content h3 {
-          font-size: 19px;
-          font-weight: 700;
-          color: #023345;
-          margin: 0 0 8px;
-        }
-
-        .career-flow-content p {
-          font-size: 14px;
-          color: #64748b;
-          margin: 0;
-          line-height: 1.5;
-        }
-
-        .career-flow-connector {
-          color: #2a8e9e;
-          flex-shrink: 0;
-          opacity: 0.5;
-        }
-
-        .recruiter-showcase {
-          display: flex;
-          align-items: stretch;
-          gap: 32px;
-          max-width: 1000px;
-          margin: 0 auto;
-        }
-
-        .recruiter-card {
-          border-radius: 32px;
-          padding: 40px;
-          flex: 1;
-          position: relative;
-          overflow: hidden;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2);
-          box-shadow: 0 20px 60px rgba(42, 142, 158, 0.35);
-          animation: cardPulse 4s ease-in-out infinite;
-        }
-
-        .recruiter-card::before {
-          content: "";
-          position: absolute;
-          inset: -2px;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2, #2a8e9e);
-          border-radius: 34px;
-          z-index: -1;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .recruiter-card:hover::before {
-          opacity: 1;
-          animation: borderGlow 2s linear infinite;
-        }
-
-        @keyframes cardPulse {
-          0%, 100% { box-shadow: 0 20px 60px rgba(42, 142, 158, 0.35); }
-          50% { box-shadow: 0 24px 70px rgba(42, 142, 158, 0.45); }
-        }
-
-        @keyframes borderGlow {
-          0% { filter: hue-rotate(0deg); }
-          100% { filter: hue-rotate(20deg); }
-        }
-
-        .recruiter-card-main {
+        .career-wrap {
           position: relative;
           z-index: 1;
-          display: flex;
-          flex-direction: column;
+          max-width: none;
+          width: 100%;
+          margin: 0 auto;
+          padding: 0 clamp(1rem, 2vw, 2.25rem);
+          display: grid;
+          grid-template-columns: 1.2fr 0.95fr;
+          gap: clamp(1.5rem, 3vw, 3rem);
           align-items: center;
-          justify-content: center;
-          gap: 28px;
-          min-height: 220px;
         }
 
-        .recruiter-avatars {
-          display: flex;
+        .career-left {
+          max-width: none;
+        }
+
+        .career-eyebrow {
+          display: inline-flex;
           align-items: center;
-          justify-content: center;
-          gap: 0;
-        }
-
-        .recruiter-avatar {
-          width: 56px;
-          height: 56px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 3px solid rgba(255, 255, 255, 0.8);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-left: -14px;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-          transition: transform 0.2s ease;
-        }
-
-        .recruiter-avatar:first-child {
-          margin-left: 0;
-        }
-
-        .recruiter-avatar:hover {
-          transform: translateY(-4px) scale(1.1);
-          z-index: 10;
-        }
-
-        .recruiter-avatar svg {
-          color: rgba(255, 255, 255, 0.95);
-          width: 32px;
-          height: 32px;
-        }
-
-        .recruiter-avatar-more {
-          background: rgba(255, 255, 255, 0.95);
-          border: 3px solid rgba(255, 255, 255, 1);
-          font-size: 13px;
-          font-weight: 800;
-          color: #2a8e9e;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .recruiter-avatar-more span {
-          font-size: 13px;
-          font-weight: 800;
-          color: #2a8e9e;
-        }
-
-        .recruiter-count-badge {
-          text-align: center;
-        }
-
-        .recruiter-count {
-          display: block;
-          font-size: 56px;
-          font-weight: 800;
-          color: #ffffff;
-          line-height: 1;
-          margin-bottom: 6px;
-          text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .recruiter-label {
-          display: block;
-          font-size: 15px;
-          font-weight: 700;
-          color: rgba(255, 255, 255, 0.9);
+          gap: 0.6rem;
+          margin: 0 0 1.1rem;
+          padding: 0.5rem 1.05rem 0.5rem 0.85rem;
+          font-size: 0.85rem;
+          font-weight: 900;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
-          letter-spacing: 0.12em;
+          color: #7dd3e8;
+          background: rgba(42, 142, 158, 0.12);
+          border: 1px solid rgba(42, 142, 158, 0.32);
+          border-radius: 999px;
         }
 
-        .recruiter-features {
-          flex: 1.3;
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border: 1px solid rgba(42, 142, 158, 0.15);
-          border-radius: 32px;
-          padding: 32px 36px;
-          box-shadow:
-            0 12px 40px rgba(42, 142, 158, 0.08),
-            0 4px 12px rgba(2, 51, 69, 0.03),
-            inset 0 1px 0 rgba(255, 255, 255, 1);
+        .career-eyebrow__dot {
+          width: 0.5rem;
+          height: 0.5rem;
+          border-radius: 50%;
+          background: #2a8e9e;
+          box-shadow: 0 0 0 4px rgba(42, 142, 158, 0.22);
+        }
+
+        .career-title {
+          margin: 0 0 1rem;
+          color: #ffffff;
+          font-size: clamp(2rem, 4vw, 3.5rem);
+          line-height: 1.05;
+          letter-spacing: -0.035em;
+          font-weight: 800;
+        }
+
+        .career-title__accent {
+          background-image: linear-gradient(95deg, #67e8f9 0%, #22d3ee 45%, #06b6d4 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          display: inline;
+        }
+
+        .career-copy {
+          margin: 0 0 1.4rem;
+          color: rgba(226, 236, 244, 0.94);
+          font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+          line-height: 1.55;
+          font-weight: 500;
+          max-width: 48rem;
+        }
+
+        .career-copy strong {
+          color: #ffffff;
+          font-weight: 800;
+        }
+
+        .career-points {
+          list-style: none;
+          margin: 0 0 1.6rem;
+          padding: 0;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          gap: 20px;
-          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+          gap: 0.7rem;
         }
 
-        .recruiter-features:hover {
-          transform: translateY(-4px);
-          border-color: rgba(42, 142, 158, 0.25);
-          box-shadow:
-            0 16px 48px rgba(42, 142, 158, 0.12),
-            0 8px 16px rgba(2, 51, 69, 0.05);
-        }
-
-        .recruiter-features-title {
-          font-size: 18px;
-          font-weight: 700;
-          color: #023345;
-          margin-bottom: 8px;
-        }
-
-        .recruiter-feature {
+        .career-point {
+          position: relative;
           display: flex;
           align-items: center;
-          gap: 14px;
-          font-size: 15px;
-          font-weight: 500;
-          color: #334155;
+          gap: 0.85rem;
+          color: rgba(241, 245, 249, 0.96);
+          font-size: clamp(1.05rem, 1.2vw, 1.2rem);
+          font-weight: 600;
+          line-height: 1.4;
+          white-space: nowrap;
         }
 
-        .recruiter-feature svg {
+        .career-point__icon {
+          width: 2.1rem;
+          height: 2.1rem;
           flex-shrink: 0;
-          color: #2a8e9e;
+          border-radius: 10px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, rgba(42, 142, 158, 0.28), rgba(8, 145, 178, 0.2));
+          border: 1px solid rgba(103, 232, 249, 0.3);
+          color: #7dd3e8;
+        }
+
+        .career-cta-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.8rem;
+          align-items: center;
         }
 
         .career-cta {
-          text-align: center;
-          margin-top: 48px;
-        }
-
-        .career-cta .yellow-button {
           display: inline-flex;
           align-items: center;
-          justify-content: center;
-          padding: 18px 36px;
-          font-size: 16px;
-          font-weight: 700;
-          border-radius: 999px;
-          min-height: 60px;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2);
-          box-shadow: 0 8px 28px rgba(42, 142, 158, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-          border: none;
-          color: #ffffff !important;
-          position: relative;
-          overflow: hidden;
+          gap: 0.6rem;
+          padding: 0.95rem 1.55rem;
+          border-radius: 9999px;
+          font-size: clamp(0.98rem, 1.08vw, 1.1rem);
+          font-weight: 800;
+          letter-spacing: 0.01em;
+          text-decoration: none;
+          transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
         }
 
-        .career-cta .yellow-button::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: -100%;
+        .career-cta--primary {
+          background: linear-gradient(95deg, #2a8e9e 0%, #0891b2 100%);
+          color: #ffffff;
+          box-shadow: 0 12px 28px rgba(8, 145, 178, 0.35);
+        }
+
+        .career-cta--primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 18px 36px rgba(8, 145, 178, 0.45);
+        }
+
+        .career-cta--ghost {
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          color: #e0f7fa;
+        }
+
+        .career-cta--ghost:hover {
+          background: rgba(255, 255, 255, 0.12);
+          transform: translateY(-2px);
+        }
+
+        .career-right {
           width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-          transition: left 0.5s ease;
         }
 
-        .career-cta .yellow-button:hover::before {
-          left: 100%;
+        /* New prize / outcome cards grid (replaces the recruiter shortlist card) */
+        .career-prizes-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: clamp(0.7rem, 1vw, 1rem);
         }
 
-        .career-cta .yellow-button:hover {
-          transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 14px 40px rgba(42, 142, 158, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        .career-cta .yellow-button:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 14px 36px rgba(42, 142, 158, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        .value-strip {
-          padding: 44px 0;
-          background: linear-gradient(180deg, #f5f9fa 0%, #f5f9fa 100%);
+        .career-prize-card {
           position: relative;
+          isolation: isolate;
+          background: linear-gradient(160deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          border-radius: 1.25rem;
+          padding: clamp(1.4rem, 2vw, 1.85rem) clamp(1.4rem, 2.1vw, 1.95rem);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          box-shadow:
+            0 18px 40px rgba(2, 51, 69, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.10);
+          transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 240ms ease,
+            box-shadow 240ms ease;
         }
 
-        .value-strip::before {
+        .career-prize-card::after {
           content: "";
           position: absolute;
           inset: 0;
+          border-radius: inherit;
+          padding: 1px;
+          background: linear-gradient(140deg, rgba(125, 211, 232, 0.25), rgba(125, 211, 232, 0) 55%);
+          -webkit-mask:
+            linear-gradient(#000 0 0) content-box,
+            linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+          opacity: 0.85;
+        }
+
+        .career-prize-card:hover {
+          transform: translateY(-3px);
+          border-color: rgba(103, 232, 249, 0.40);
+          box-shadow:
+            0 24px 50px rgba(8, 145, 178, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.14);
+        }
+
+        .career-prize-card--wide {
+          grid-column: 1 / -1;
+        }
+
+        .career-prize-card__head {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 0.85rem;
+        }
+
+        .career-prize-card__icon {
+          width: 2.85rem;
+          height: 2.85rem;
+          border-radius: 13px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+
+        .career-prize-card__icon svg {
+          width: 1.4rem;
+          height: 1.4rem;
+        }
+
+        .career-prize-card__value {
+          display: block;
+          font-size: clamp(1.95rem, 2.8vw, 2.5rem);
+          font-weight: 900;
+          letter-spacing: -0.03em;
+          line-height: 1;
+          background-image: linear-gradient(180deg, #ffffff 0%, #cbf2f8 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        .career-prize-card__label {
+          display: block;
+          margin-top: 0.45rem;
+          color: rgba(125, 211, 232, 0.95);
+          font-size: 0.92rem;
+          font-weight: 800;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+        }
+
+        .career-prize-card__title {
+          margin: 0;
+          color: #ffffff;
+          font-size: clamp(1.3rem, 1.6vw, 1.55rem);
+          font-weight: 800;
+          letter-spacing: -0.01em;
+          line-height: 1.25;
+        }
+
+        .career-prize-card__desc {
+          margin: 0;
+          color: rgba(226, 236, 244, 0.94);
+          font-size: clamp(1.1rem, 1.3vw, 1.25rem);
+          line-height: 1.55;
+          font-weight: 500;
+        }
+
+        @media (max-width: 520px) {
+          .career-prizes-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        .career-package {
+          position: relative;
+          isolation: isolate;
+          overflow: hidden;
           background:
-            radial-gradient(ellipse 80% 60% at 50% 100%, rgba(42, 142, 158, 0.06) 0%, transparent 70%);
+            linear-gradient(160deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          border-radius: 1.4rem;
+          padding: clamp(1.1rem, 1.8vw, 1.6rem);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          box-shadow:
+            0 24px 50px rgba(2, 51, 69, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .career-package__glow {
+          position: absolute;
+          inset: -40% -20% auto auto;
+          width: 22rem;
+          height: 22rem;
+          background: radial-gradient(closest-side, rgba(103, 232, 249, 0.35), transparent 70%);
+          filter: blur(20px);
+          z-index: -1;
           pointer-events: none;
         }
 
-        .value-strip-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 20px;
-          position: relative;
-          z-index: 1;
+        .career-package__head {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+          margin-bottom: 1rem;
+          padding-bottom: 0.85rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.14);
         }
 
-        .value-strip-card {
-          padding: 28px 24px;
-          border-radius: 24px;
-          background: #f5f9fa;
-          border: none;
-          text-align: center;
+        .career-package__num-wrap {
           position: relative;
-          overflow: hidden;
-          box-shadow:
-            0 2px 12px rgba(42, 142, 158, 0.04),
-            0 1px 2px rgba(2, 51, 69, 0.02);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          display: inline-flex;
+          align-items: flex-start;
         }
 
-        .value-strip-card::before {
-          content: "";
+        .career-package__num {
+          font-size: clamp(2.6rem, 3.6vw, 3.4rem);
+          font-weight: 900;
+          line-height: 0.9;
+          letter-spacing: -0.05em;
+          background-image: linear-gradient(180deg, #ffffff 0%, #7dd3e8 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        .career-package__badge {
           position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(42, 142, 158, 0.08), transparent);
-          transition: left 0.5s ease;
+          top: -0.2rem;
+          right: -1.85rem;
+          padding: 0.2rem 0.5rem;
+          border-radius: 999px;
+          background: linear-gradient(95deg, #2a8e9e, #0891b2);
+          color: #ffffff;
+          font-size: 0.6rem;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
         }
 
-        .value-strip-card:hover {
-          transform: translateY(-6px);
-          background: #ffffff;
-          box-shadow:
-            0 12px 32px rgba(42, 142, 158, 0.12),
-            0 4px 12px rgba(2, 51, 69, 0.06),
-            0 0 0 1px rgba(42, 142, 158, 0.2);
+        .career-package__label {
+          font-size: clamp(0.88rem, 1vw, 0.98rem);
+          font-weight: 700;
+          color: rgba(226, 236, 244, 0.9);
+          line-height: 1.3;
+          flex: 1;
         }
 
-        .value-strip-card:hover::before {
-          left: 100%;
+        .career-package__list {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: grid;
+          gap: 0.55rem;
         }
 
-        .value-strip-icon {
-          width: 52px;
-          height: 52px;
-          border-radius: 16px;
+        .career-package__item {
+          display: grid;
+          grid-template-columns: 2rem 1fr;
+          gap: 0.75rem;
+          align-items: center;
+          padding: 0.55rem 0.75rem;
+          border-radius: 0.7rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          transition: transform 220ms ease, background 220ms ease, border-color 220ms ease;
+        }
+
+        .career-package__item:hover {
+          transform: translateX(4px);
+          background: rgba(255, 255, 255, 0.07);
+          border-color: rgba(103, 232, 249, 0.35);
+        }
+
+        .career-package__step {
+          width: 2rem;
+          height: 2rem;
+          border-radius: 999px;
+          background: linear-gradient(135deg, rgba(42, 142, 158, 0.5), rgba(8, 145, 178, 0.3));
+          color: #ffffff;
+          font-size: 0.8rem;
+          font-weight: 900;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 16px;
-          transition: transform 0.3s ease;
+          flex-shrink: 0;
+          border: 1px solid rgba(103, 232, 249, 0.35);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
         }
 
-        .value-strip-card:hover .value-strip-icon {
-          transform: scale(1.1) rotate(5deg);
-        }
-
-        .value-strip-card strong {
+        .career-package__item strong {
           display: block;
-          background: linear-gradient(135deg, #2a8e9e, #0891b2);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          font-size: 32px;
-          line-height: 1;
-          margin-bottom: 10px;
+          color: #ffffff;
+          font-size: 0.95rem;
           font-weight: 800;
-          transition: transform 0.3s ease;
+          margin-bottom: 0.1rem;
         }
 
-        .value-strip-card:hover strong {
-          transform: scale(1.05);
-        }
-
-        .value-strip-card span {
-          color: #475569;
-          font-size: 14px;
+        .career-package__item span {
+          color: rgba(203, 213, 225, 0.92);
+          font-size: 0.82rem;
           font-weight: 600;
+          line-height: 1.35;
+        }
+
+        .career-package__note {
+          margin: 0.9rem 0 0;
+          padding: 0.55rem 0.75rem;
+          font-size: 0.76rem;
+          font-weight: 600;
+          color: rgba(186, 201, 214, 0.95);
+          line-height: 1.4;
+          background: rgba(255, 255, 255, 0.04);
+          border-radius: 0.55rem;
+          border: 1px dashed rgba(255, 255, 255, 0.14);
+        }
+
+        .career-stats {
+          position: relative;
+          z-index: 1;
+          margin-top: clamp(1.75rem, 3.2vw, 2.75rem);
+          padding: clamp(1.1rem, 1.8vw, 1.6rem) 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.12);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          background:
+            linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.06) 100%);
+        }
+
+        .career-stats__grid {
+          max-width: none;
+          width: 100%;
+          margin: 0 auto;
+          padding: 0 clamp(1rem, 2vw, 2.25rem);
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: clamp(0.75rem, 1.3vw, 1.25rem);
+        }
+
+        .career-stats__item {
+          position: relative;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: 1.05rem;
+          padding: 1.1rem 1.25rem;
+          text-align: left;
+          border-radius: 1rem;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.10);
+          transition: border-color 220ms ease, background 220ms ease, transform 220ms ease;
+        }
+
+        .career-stats__item:hover {
+          border-color: rgba(103, 232, 249, 0.36);
+          background: rgba(255, 255, 255, 0.07);
+        }
+
+        .career-stats__icon {
+          width: 2.85rem;
+          height: 2.85rem;
+          border-radius: 13px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 0;
+          flex-shrink: 0;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        }
+
+        .career-stats__icon svg {
+          width: 1.4rem;
+          height: 1.4rem;
+        }
+
+        .career-stats__text {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .career-stats__value {
+          display: block;
+          color: #ffffff;
+          font-size: clamp(1.55rem, 2.3vw, 2.15rem);
+          font-weight: 900;
+          line-height: 1;
+          letter-spacing: -0.03em;
+          background-image: linear-gradient(180deg, #ffffff 0%, #cbf2f8 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        .career-stats__label {
+          display: block;
+          margin-top: 0.35rem;
+          color: rgba(208, 222, 232, 0.95);
+          font-size: clamp(0.88rem, 1vw, 0.98rem);
+          font-weight: 700;
+          line-height: 1.25;
+          letter-spacing: 0.06em;
         }
 
         .placeholder-card,
@@ -1387,751 +1782,394 @@ export default function PageContent({ onNavigate = () => {} }) {
           font-weight: 900;
         }
 
-        @media (max-width: 991px) {
-          .value-strip-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-
-          .career-stats-grid {
-            grid-template-columns: 1fr;
-            max-width: 400px;
-          }
-
-          .career-flow {
-            flex-direction: column;
-          }
-
-          .career-flow-connector {
-            transform: rotate(90deg);
-          }
-
-          .career-flow-step {
-            max-width: 100%;
-          }
-
-          .recruiter-showcase {
-            flex-direction: column;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .value-strip-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .career-section {
-            padding: 60px 0 80px;
-          }
-
-          .career-stat-card {
-            padding: 24px 20px;
-          }
-
-          .roadmap-line {
-            left: 28px;
-          }
-
-          .roadmap-step {
-            flex-direction: column !important;
-            padding: 0 0 0 70px !important;
-            align-items: flex-start !important;
-          }
-
-          .roadmap-node {
-            left: 0;
-            transform: translateX(0) !important;
-            width: 48px;
-            height: 48px;
-          }
-
-          .roadmap-step:hover .roadmap-node {
-            transform: scale(1.1) !important;
-          }
-
-          .roadmap-card {
-            padding: 20px;
-          }
-
-          .career-stat-num {
-            font-size: 36px;
-          }
-
-          .recruiter-features {
-            padding: 24px;
-          }
-        }
-
-        @media (max-width: 1100px) {
+        @media (max-width: 1024px) {
           .career-wrap {
-            padding: 0 28px;
+            grid-template-columns: 1fr;
+            align-items: start;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .career-point {
+            white-space: normal;
+          }
+        }
+
+        @media (max-width: 700px) {
+          .career-stats__grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .career-package__badge {
+            right: auto;
+            left: 0;
+            top: -1.6rem;
+          }
+
+          .career-package__head {
             flex-direction: column;
             align-items: flex-start;
-            gap: 36px;
+            gap: 0.6rem;
+          }
+        }
+
+        @media (max-width: 520px) {
+          .career-stats__grid {
+            grid-template-columns: 1fr;
           }
 
-          .career-title {
-            font-size: 48px;
+          .career-stats__item {
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
           }
 
-          .career-copy {
-            font-size: 25px;
+          .career-stats__item:last-child {
+            border-bottom: none;
+          }
+        }
+
+        .how-does-it-work {
+          padding: clamp(3.5rem, 8vw, 6rem) 0;
+          background: #f5f9fa;
+        }
+
+        .how-does-it-work__head {
+          max-width: 40rem;
+          margin: 0 auto clamp(2.75rem, 6vw, 4rem);
+          padding: 0 clamp(1.25rem, 4vw, 3.25rem);
+          text-align: center;
+        }
+
+        .how-does-it-work__label {
+          margin: 0 0 0.75rem;
+          font-size: 0.8125rem;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #2a8e9e;
+        }
+
+        .how-does-it-work__title.heading-3 {
+          margin: 0 0 0.75rem;
+          color: #023345;
+        }
+
+        .how-does-it-work__intro {
+          margin: 0 auto;
+          max-width: 32rem;
+          font-size: 1.0625rem;
+          line-height: 1.55;
+          font-weight: 600;
+          color: #475569;
+        }
+
+        .how-does-it-work__steps {
+          max-width: 72rem;
+          margin: 0 auto;
+          padding: 0 clamp(1.25rem, 4vw, 3.25rem);
+          display: flex;
+          flex-direction: column;
+          gap: clamp(3.5rem, 7vw, 5.5rem);
+        }
+
+        .how-step {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          column-gap: clamp(2.75rem, 6vw, 5.5rem);
+          row-gap: 2rem;
+          align-items: center;
+        }
+
+        .how-step--reverse .how-step__media {
+          order: 1;
+        }
+
+        .how-step--reverse .how-step__copy {
+          order: 2;
+        }
+
+        .how-step__copy {
+          max-width: 28rem;
+        }
+
+        .how-step--reverse .how-step__copy {
+          justify-self: end;
+          text-align: left;
+        }
+
+        .how-step:not(.how-step--reverse) .how-step__copy {
+          justify-self: start;
+        }
+
+        .how-step__num {
+          margin: 0 0 0.5rem;
+          font-size: 0.8125rem;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #2a8e9e;
+        }
+
+        .how-step__title.heading-2 {
+          margin: 0 0 1rem;
+          font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+          line-height: 1.2;
+          color: #023345;
+        }
+
+        .how-step__body {
+          margin: 0;
+          font-size: 1.0625rem;
+          line-height: 1.6;
+          font-weight: 600;
+          color: #475569;
+        }
+
+        .how-step__body br {
+          display: none;
+        }
+
+        .how-step__media {
+          margin: 0;
+          width: 100%;
+          max-width: 34rem;
+          justify-self: center;
+        }
+
+        .how-step--reverse .how-step__media {
+          justify-self: start;
+        }
+
+        .how-step:not(.how-step--reverse) .how-step__media {
+          justify-self: end;
+        }
+
+        .how-step__figure {
+          margin: 0;
+          border-radius: 1.25rem;
+          overflow: hidden;
+          background: #ffffff;
+          border: 1px solid rgba(2, 51, 69, 0.1);
+          box-shadow: 0 14px 44px rgba(2, 51, 69, 0.08);
+        }
+
+        .how-step__figure img {
+          display: block;
+          width: 100%;
+          height: auto;
+          vertical-align: middle;
+        }
+
+        .how-does-it-work .feature-image-mask {
+          padding-top: 0 !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          height: auto !important;
+        }
+
+        @media (max-width: 991px) {
+          .how-step,
+          .how-step--reverse {
+            grid-template-columns: 1fr;
           }
 
-          .career-point {
-            font-size: 24px;
+          .how-step--reverse .how-step__media,
+          .how-step--reverse .how-step__copy,
+          .how-step:not(.how-step--reverse) .how-step__media,
+          .how-step:not(.how-step--reverse) .how-step__copy {
+            order: unset;
+            justify-self: stretch;
+            max-width: none;
           }
 
-          .career-chip {
-            font-size: 18px;
+          .how-step__media {
+            max-width: 28rem;
+            margin: 0 auto;
           }
 
-          .career-right {
-            max-width: 100%;
-          }
-
-          .career-card {
-            max-width: 100%;
-            padding: 28px;
-          }
-
-          .career-card-title {
-            font-size: 26px;
+          .how-step__copy {
+            max-width: none;
           }
         }
 
       `}</style>
-      <section id="career-accelerator-section" className="career-section">
-        <div className="career-bg-gradient"></div>
-        <div className="career-floating-orb career-floating-orb-1"></div>
-        <div className="career-floating-orb career-floating-orb-2"></div>
-        <div className="career-floating-orb career-floating-orb-3"></div>
-        <div className="career-container">
+      <section id="career-accelerator-section" className="career-accelerator-section">
+        <div className="career-wrap">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            className="career-left"
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="career-header"
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="career-badge">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-              CAREER ACCELERATOR
-            </div>
-            <h2 className="career-main-title">Your Work Gets In Front of<br /><span className="career-highlight">+25 Real Recruiters</span></h2>
-            <p className="career-subtitle">
-              Top 10 teams get their projects sent directly to company recruiters with portfolio-ready work, team profiles, and proof of execution.
+            <p className="career-eyebrow">
+              <span className="career-eyebrow__dot" aria-hidden />
+              Recruiter program
             </p>
-          </motion.div>
-
-          <div className="career-stats-grid">
-            {[
-              { num: "+10", label: "Finalist Teams Get Noticed", icon: <Users className="w-6 h-6" />, delay: 0 },
-              { num: "+25", label: "Company Recruiters See Your Work", icon: <Building2 className="w-6 h-6" />, delay: 0.1 },
-              { num: "100%", label: "OPT/H1B Friendly Companies", icon: <Star className="w-6 h-6" />, delay: 0.2 },
-            ].map(({ num, label, icon, delay }) => (
-              <motion.div
-                key={label}
-                className="career-stat-card"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay }}
-                whileHover={{ y: -4 }}
-              >
-                <div className="career-stat-icon">{icon}</div>
-                <div className="career-stat-num">{num}</div>
-                <div className="career-stat-label">{label}</div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            className="career-flow"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="career-flow-step">
-              <div className="career-flow-number">1</div>
-              <div className="career-flow-content">
-                <h3>Build Your Project</h3>
-                <p>100 hours to create something that proves what you can ship</p>
-              </div>
-            </div>
-            <div className="career-flow-connector">
-              <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
-                <path d="M0 12H36M36 12L28 4M36 12L28 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className="career-flow-step">
-              <div className="career-flow-number" style={{background: 'linear-gradient(135deg, #0891b2, #2a8e9e)'}}>2</div>
-              <div className="career-flow-content">
-                <h3>Top +10 Selected</h3>
-                <p>Judges pick standout teams with recruiter-ready deliverables</p>
-              </div>
-            </div>
-            <div className="career-flow-connector">
-              <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
-                <path d="M0 12H36M36 12L28 4M36 12L28 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className="career-flow-step">
-              <div className="career-flow-number" style={{background: 'linear-gradient(135deg, #2a8e9e, #023345)'}}>3</div>
-              <div className="career-flow-content">
-                <h3>Sent to +25 Recruiters</h3>
-                <p>Your work goes directly to hiring teams at OPT-friendly companies</p>
-              </div>
+            <h2 className="career-title">
+              Your work goes in front of{" "}
+              <span className="career-title__accent">people who hire.</span>
+            </h2>
+            <p className="career-copy">
+              The top 10 teams are packaged for <strong>30+ recruiters</strong>—demo, repo, and context—not
+              just another application in a portal.
+            </p>
+            <ul className="career-points">
+              <li className="career-point">
+                <span className="career-point__icon" aria-hidden>
+                  <Sparkles className="w-[18px] h-[18px]" />
+                </span>
+                Recruiters see what you built in 100 hours
+              </li>
+              <li className="career-point">
+                <span className="career-point__icon" aria-hidden>
+                  <Building2 className="w-[18px] h-[18px]" />
+                </span>
+                Open to international students across every visa path
+              </li>
+              <li className="career-point">
+                <span className="career-point__icon" aria-hidden>
+                  <Star className="w-[18px] h-[18px]" />
+                </span>
+                Every finisher gets a participation certificate
+              </li>
+            </ul>
+            <div className="career-cta-row">
+              <a href="#judges-section" className="career-cta career-cta--primary">
+                Meet the recruiter lineup
+                <ArrowRight className="w-[18px] h-[18px]" />
+              </a>
+              <a href="#footer" className="career-cta career-cta--ghost">
+                <Briefcase className="w-[18px] h-[18px]" />
+                Become a hiring partner
+              </a>
             </div>
           </motion.div>
-
-          <motion.div
-            className="recruiter-showcase"
-            initial={{ opacity: 0, y: 30 }}
+          <motion.aside
+            className="career-right"
+            aria-label="Prizes and what every team gets"
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           >
-            <div className="recruiter-card recruiter-card-main">
-              <div className="recruiter-avatars">
-                {[1,2,3,4,5,6].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="recruiter-avatar"
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: 0.3 + (i * 0.05) }}
-                    whileHover={{ y: -3, scale: 1.1 }}
+            <div className="career-prizes-grid">
+              <div className="career-prize-card">
+                <div className="career-prize-card__head">
+                  <span
+                    className="career-prize-card__icon"
+                    style={{ background: "rgba(34, 197, 94, 0.18)", color: "#86efac" }}
                   >
-                    <UserCircle2 className="w-full h-full text-white" />
-                  </motion.div>
-                ))}
-                <motion.div
-                  className="recruiter-avatar recruiter-avatar-more"
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: 0.6 }}
-                >
-                  <span>+19</span>
-                </motion.div>
+                    <Trophy className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <span className="career-prize-card__value">$2,500</span>
+                    <span className="career-prize-card__label">First Prize</span>
+                  </div>
+                </div>
+                <p className="career-prize-card__desc">
+                  Cash prize awarded to the winning team at the close of judging.
+                </p>
               </div>
-              <div className="recruiter-count-badge">
-                <span className="recruiter-count">+25</span>
-                <span className="recruiter-label">Active Recruiters</span>
-              </div>
-            </div>
-            <div className="recruiter-features">
-              <div className="recruiter-feature">
-                <CheckCircle2 className="w-5 h-5 text-[#2a8e9e]" />
-                <span>Project showcase with live demo links</span>
-              </div>
-              <div className="recruiter-feature">
-                <CheckCircle2 className="w-5 h-5 text-[#2a8e9e]" />
-                <span>Team profiles with skills & GitHub</span>
-              </div>
-              <div className="recruiter-feature">
-                <CheckCircle2 className="w-5 h-5 text-[#2a8e9e]" />
-                <span>Verifiable participation certificate</span>
-              </div>
-              <div className="recruiter-feature">
-                <CheckCircle2 className="w-5 h-5 text-[#2a8e9e]" />
-                <span>OPT & H1B friendly company matches</span>
-              </div>
-            </div>
-          </motion.div>
 
-          <motion.div
-            className="career-cta"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <a
-              href="/register"
-              className="yellow-button w-button"
-              onClick={(event) => {
-                event.preventDefault();
-                onNavigate("/register");
-              }}
-            >
-              Start Building Your Portfolio
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </a>
-          </motion.div>
+              <div className="career-prize-card">
+                <div className="career-prize-card__head">
+                  <span
+                    className="career-prize-card__icon"
+                    style={{ background: "rgba(42, 142, 158, 0.28)", color: "#7dd3e8" }}
+                  >
+                    <Sparkles className="w-5 h-5" />
+                  </span>
+                  <h3 className="career-prize-card__title">Cash&nbsp;+ Credits&nbsp;+ Subscription</h3>
+                </div>
+                <p className="career-prize-card__desc">
+                  Winners walk away with the cash prize, API credits to keep building, and a free FirstStep premium subscription.
+                </p>
+              </div>
+
+              <div className="career-prize-card career-prize-card--wide">
+                <div className="career-prize-card__head">
+                  <span
+                    className="career-prize-card__icon"
+                    style={{ background: "rgba(8, 145, 178, 0.28)", color: "#67e8f9" }}
+                  >
+                    <Briefcase className="w-5 h-5" />
+                  </span>
+                  <h3 className="career-prize-card__title">Top 10 teams sent to top recruiters</h3>
+                </div>
+                <p className="career-prize-card__desc">
+                  Your build and team info are shared with our network of OPT/H1B-friendly recruiters so the right people see what you shipped.
+                </p>
+              </div>
+
+              <div className="career-prize-card career-prize-card--wide">
+                <div className="career-prize-card__head">
+                  <span
+                    className="career-prize-card__icon"
+                    style={{ background: "rgba(168, 85, 247, 0.22)", color: "#d8b4fe" }}
+                  >
+                    <Star className="w-5 h-5" />
+                  </span>
+                  <h3 className="career-prize-card__title">Participation certificate for everyone</h3>
+                </div>
+                <p className="career-prize-card__desc">
+                  Every finisher gets an official FirstStep participation certificate to add to their portfolio and LinkedIn.
+                </p>
+              </div>
+            </div>
+          </motion.aside>
         </div>
-      </section>
-      <section className="value-strip">
-        <div className="w-container">
-          <motion.div
-            className="value-strip-grid"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, staggerChildren: 0.15 }}
-          >
-            <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="value-strip-card">
-                <CardContent className="p-0">
-                  <div className="value-strip-icon" style={{background: 'rgba(34, 197, 94, 0.12)', color: '#16a34a'}}>
-                    <Trophy className="w-6 h-6" />
-                  </div>
-                  <strong>$5,000</strong>
-                  <span>Total cash prizes</span>
-                </CardContent>
-              </Card>
-            </motion.div>
-            <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="value-strip-card">
-                <CardContent className="p-0">
-                  <div className="value-strip-icon" style={{background: 'rgba(42, 142, 158, 0.12)', color: '#2a8e9e'}}>
-                    <Building2 className="w-6 h-6" />
-                  </div>
-                  <strong>+25</strong>
-                  <span>Company recruiters</span>
-                </CardContent>
-              </Card>
-            </motion.div>
-            <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="value-strip-card">
-                <CardContent className="p-0">
-                  <div className="value-strip-icon" style={{background: 'rgba(8, 145, 178, 0.12)', color: '#0891b2'}}>
-                    <Timer className="w-6 h-6" />
-                  </div>
-                  <strong>100 hrs</strong>
-                  <span>Remote hackathon</span>
-                </CardContent>
-              </Card>
-            </motion.div>
-            <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className="value-strip-card">
-                <CardContent className="p-0">
-                  <div className="value-strip-icon" style={{background: 'rgba(99, 102, 241, 0.12)', color: '#6366f1'}}>
-                    <Wrench className="w-6 h-6" />
-                  </div>
-                  <strong>Any tools</strong>
-                  <span>Your stack, your way</span>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-      <section id="feature-section" className="how-does-it-work">
         <motion.div
-          data-w-id="dfb716ce-2c21-3a6e-eb0a-c5018a79e113"
-          initial={{ opacity: 0, y: 20 }}
+          className="career-stats"
+          aria-label="Event at a glance"
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="centered-container w-container"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
         >
-          <Badge className="bg-slate-100 text-slate-500 hover:bg-slate-200 border-none px-4 py-1.5 mb-4 text-sm font-bold uppercase tracking-widest shadow-sm">
-            The Process
-          </Badge>
-          <h2 className="heading-3">How It Works</h2>
-        </motion.div>
-        <motion.div 
-          className="flex-container left-image w-container"
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div
-            data-w-id="891ec4c5-950a-21a5-c43b-09b143489e60"
-            className="div-block-2"
-          >
-            <h2 className="heading-2">1. Register &amp; Choose Your Track</h2>
-            <p>
-              Sign up for the hackathon and get access to 3 challenge tracks when the competition begins.
-              Pick the track that best matches your skills, interests, and creativity.
-              <br />
-            </p>
-          </div>
-          <div className="feature-image-mask" style={{ background: 'transparent', boxShadow: 'none' }}>
-            <TiltCard>
-              <Card className="overflow-hidden rounded-[34px] shadow-[0_20px_40px_rgba(0,0,0,0.08)] border-slate-200/60 bg-white/50 backdrop-blur-md">
-                <CardContent className="p-0">
-                  <motion.img
-                    className="w-full h-auto block"
-                    src="/p1.png"
-                    alt="Register and choose your challenge track"
-                    sizes="(max-width: 479px) 93vw, (max-width: 767px) 95vw, (max-width: 991px) 303.96875px, 451.84375px"
-                    data-w-id="891ec4c5-950a-21a5-c43b-09b143489e5f"
-                    srcSet="/p1.png 1182w"
-                  />
-                </CardContent>
-              </Card>
-            </TiltCard>
-          </div>
-        </motion.div>
-        <motion.div 
-          className="flex-container right-image w-container"
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div
-            data-w-id="96ac62ba-6afa-2540-080c-8ce962f94e80"
-            className="feature-image-mask"
-            style={{ background: 'transparent', boxShadow: 'none' }}
-          >
-            <TiltCard>
-              <Card className="overflow-hidden rounded-[34px] shadow-[0_20px_40px_rgba(0,0,0,0.08)] border-slate-200/60 bg-white/50 backdrop-blur-md">
-                <CardContent className="p-0">
-                  <motion.img
-                    src="/p2.png"
-                    alt="Build and submit your project within 100 hours"
-                    sizes="(max-width: 479px) 93vw, (max-width: 767px) 95vw, (max-width: 991px) 282.9375px, 423.75px"
-                    srcSet="/p2.png 1182w"
-                    className="w-full h-auto block"
-                  />
-                </CardContent>
-              </Card>
-            </TiltCard>
-          </div>
-          <div
-            data-w-id="96ac62ba-6afa-2540-080c-8ce962f94e7a"
-            className="div-block-2"
-          >
-            <h2 className="heading-2">
-              2. Build &amp; Submit Within 100 Hours
-              <br />
-            </h2>
-            <p>
-              You&apos;ll have 100 hours to design, build, and submit your project. Work solo or with your
-              team to create a real-world solution that stands out.
-              <br />
-            </p>
-          </div>
-        </motion.div>
-        <motion.div 
-          className="flex-container left-image w-container"
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div
-            data-w-id="b839cd2d-130d-7c4b-59d3-5346fd686093"
-            className="div-block-2"
-          >
-            <h2 className="heading-2">
-              3. Get Evaluated by Industry Judges
-              <br />
-            </h2>
-            <p>
-              Projects will be reviewed based on innovation, execution, technical quality, user experience,
-              and impact. Shortlisted teams move to the final evaluation round.
-              <br />
-            </p>
-          </div>
-          <div
-            data-w-id="b839cd2d-130d-7c4b-59d3-5346fd686099"
-            className="feature-image-mask"
-            style={{ background: 'transparent', boxShadow: 'none' }}
-          >
-            <TiltCard>
-              <Card className="overflow-hidden rounded-[34px] shadow-[0_20px_40px_rgba(0,0,0,0.08)] border-slate-200/60 bg-white/50 backdrop-blur-md">
-                <CardContent className="p-0">
-                  <motion.img
-                    src="/p3.png"
-                    alt="Industry judges evaluate projects"
-                    sizes="(max-width: 991px) 278.296875px, 417.5px"
-                    srcSet="/p3.png 1360w"
-                    className="w-full h-auto block"
-                  />
-                </CardContent>
-              </Card>
-            </TiltCard>
-          </div>
-        </motion.div>
-        <motion.div 
-          className="flex-container right-image w-container"
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div
-            data-w-id="c7657fba-91d3-a188-ac77-2665fe0d99d9"
-            className="feature-image-mask"
-            style={{ background: 'transparent', boxShadow: 'none' }}
-          >
-            <TiltCard>
-              <Card className="overflow-hidden rounded-[34px] shadow-[0_20px_40px_rgba(0,0,0,0.08)] border-slate-200/60 bg-white/50 backdrop-blur-md">
-                <CardContent className="p-0">
-                  <motion.img
-                    src="/p4.png"
-                    alt="Get discovered by recruiters"
-                    sizes="(max-width: 479px) 402.34375px, 577.8125px"
-                    srcSet="/p4.png 1287w"
-                    className="w-full h-auto block"
-                  />
-                </CardContent>
-              </Card>
-            </TiltCard>
-          </div>
-          <div
-            data-w-id="c7657fba-91d3-a188-ac77-2665fe0d99db"
-            className="div-block-2"
-          >
-            <h2 className="heading-2">
-              4. Get Discovered by Recruiters
-              <br />
-            </h2>
-            <p>
-              Top 10 teams will be shared with 50+ recruiter partners from OPT-friendly and H1B-friendly
-              companies. All participants receive a verifiable participation certificate.
-              <br />
-            </p>
+          <div className="career-stats__grid">
+            <motion.div className="career-stats__item" whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
+              <span className="career-stats__icon" style={{ background: "rgba(34, 197, 94, 0.18)", color: "#86efac" }}>
+                <Trophy className="w-5 h-5" />
+              </span>
+              <span className="career-stats__text">
+                <span className="career-stats__value">$5,000</span>
+                <span className="career-stats__label">Worth prize pool</span>
+              </span>
+            </motion.div>
+            <motion.div className="career-stats__item" whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
+              <span className="career-stats__icon" style={{ background: "rgba(42, 142, 158, 0.28)", color: "#7dd3e8" }}>
+                <Users className="w-5 h-5" />
+              </span>
+              <span className="career-stats__text">
+                <span className="career-stats__value">30+</span>
+                <span className="career-stats__label">Hiring partners</span>
+              </span>
+            </motion.div>
+            <motion.div className="career-stats__item" whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
+              <span className="career-stats__icon" style={{ background: "rgba(8, 145, 178, 0.28)", color: "#67e8f9" }}>
+                <Timer className="w-5 h-5" />
+              </span>
+              <span className="career-stats__text">
+                <span className="career-stats__value">100 hrs</span>
+                <span className="career-stats__label">Remote sprint</span>
+              </span>
+            </motion.div>
+            <motion.div className="career-stats__item" whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
+              <span className="career-stats__icon" style={{ background: "rgba(99, 102, 241, 0.22)", color: "#c4b5fd" }}>
+                <Wrench className="w-5 h-5" />
+              </span>
+              <span className="career-stats__text">
+                <span className="career-stats__value">Any stack</span>
+                <span className="career-stats__label">Your tools</span>
+              </span>
+            </motion.div>
           </div>
         </motion.div>
       </section>
-      <section id="tracks-section" className="tracks">
-        <div className="centered-container-2 w-container">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <Badge className="bg-[#2a8e9e14] text-[#2a8e9e] border border-[#2a8e9e3d] hover:bg-[#2a8e9e1f] px-4 py-1.5 text-xs font-bold tracking-[0.2em] uppercase mb-5 rounded-full">
-              Pick Your Path
-            </Badge>
-            <h2 className="heading-3" style={{ opacity: 1 }}>Three Tracks</h2>
-            <p
-              className="paragraph-2 how-does-it-work-paragraph"
-              style={{ opacity: 1 }}
-            >
-              Details are coming soon. Pick the track that best shows recruiters what you can build in 100 remote hours.
-            </p>
-          </motion.div>
-          <div className="cards-grid-container" style={{ opacity: 1 }}>
-            {[
-              {
-                num: "01",
-                title: "AI Career Agent",
-                desc: "Build an AI workflow that helps candidates move faster from job search to recruiter conversations.",
-                img: "/p5.png",
-                imgSet: "/p5.png 1360w",
-                Icon: Bot,
-                accent: "#2a8e9e",
-                bg: "rgba(42, 142, 158, 0.12)",
-                tags: ["AI", "Automation", "LLMs"],
-              },
-              {
-                num: "02",
-                title: "Recruiter Bridge",
-                desc: "Design a way to put great teams, proof of work, and hiring context in front of recruiters.",
-                img: "/p6.png",
-                imgSet: "/p6.png 1181w",
-                Icon: Network,
-                accent: "#0891b2",
-                bg: "rgba(8, 145, 178, 0.12)",
-                tags: ["UX", "Hiring", "Web"],
-              },
-              {
-                num: "03",
-                title: "Open Build",
-                desc: "Use any stack and any tools to build a useful product that makes international hiring easier.",
-                img: "/p7.png",
-                imgSet: "/p7.png 1181w",
-                Icon: Sparkles,
-                accent: "#6366f1",
-                bg: "rgba(99, 102, 241, 0.12)",
-                tags: ["Any Stack", "Open"],
-              },
-            ].map(({ num, title, desc, img, imgSet, Icon, accent, bg, tags }, i) => (
-              <motion.div
-                key={num}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.55, delay: i * 0.08 }}
-                className="w-full h-full"
-              >
-                <TiltCard className="w-full h-full block">
-                  <Card className="track-card group h-full overflow-hidden border border-[#02334514] hover:border-[#2a8e9e66] bg-white rounded-[26px] shadow-[0_20px_45px_rgba(2,51,69,0.08)] transition-colors">
-                    <div className="cards-image-mask relative" style={{ background: bg }}>
-                      <Badge
-                        className="absolute top-4 left-4 z-10 bg-white/90 text-[#023345] border-0 shadow-md font-extrabold tracking-widest px-3 py-1 rounded-full text-xs"
-                      >
-                        TRACK {num}
-                      </Badge>
-                      <div
-                        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
-                        style={{ background: accent, color: "#ffffff" }}
-                      >
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <img
-                        src={img}
-                        sizes="(max-width: 479px) 93vw, (max-width: 767px) 95vw, (max-width: 991px) 229.328125px, 286.65625px"
-                        srcSet={imgSet}
-                        alt={title}
-                        className="cards-image-2"
-                      />
-                    </div>
-                    <CardContent className="px-7 pt-6 pb-7">
-                      <h3 className="font-extrabold text-[22px] leading-tight text-[#023345] mb-2">
-                        {title}
-                      </h3>
-                      <p className="text-slate-600 text-[15px] leading-relaxed mb-4">
-                        {desc}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 mb-5">
-                        {tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
-                            style={{ background: bg, color: accent }}
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                        <div className="brief-button !p-0 !bg-transparent">
-                          Full brief coming soon
-                          <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                        </div>
-                        <Lock className="w-4 h-4 text-slate-400" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TiltCard>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section
-        id="judges-section"
-        className="the-judges scroll-mt-28 border-t border-slate-200/60 bg-gradient-to-b from-slate-50 via-white to-white py-16 md:py-24"
-      >
-        <div className="centered-container-2 w-container">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mx-auto max-w-2xl text-center"
-          >
-            <Badge className="mb-4 border border-[#2a8e9e3d] bg-[#2a8e9e14] px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#2a8e9e] hover:bg-[#2a8e9e1f]">
-              The Panel
-            </Badge>
-            <h2 className="heading-10 text-[#023345]">The Judges</h2>
-            <p className="paragraph-2 mt-3 text-slate-600 md:text-lg">
-              Final demos are scored across innovation, execution, and recruiter-ready polish — up to{" "}
-              <span className="font-semibold text-[#023345]">150 judge points</span> on top of your pre-event
-              milestones.
-            </p>
-          </motion.div>
-
-          <div className="judges-roadmap mx-auto mt-16 max-w-5xl">
-            <div className="roadmap-line"></div>
-            {[
-              {
-                n: "01",
-                role: "Product Leader",
-                Icon: Star,
-                accent: "#2a8e9e",
-                bg: "rgba(42, 142, 158, 0.12)",
-                summary: "Scores product clarity, technical execution, and hiring impact.",
-                bio: "Evaluates UX, product strategy, and viability in a consumer market.",
-                tags: ["Product", "UX"],
-                align: "left",
-              },
-              {
-                n: "02",
-                role: "Engineering VP",
-                Icon: Cpu,
-                accent: "#0891b2",
-                bg: "rgba(8, 145, 178, 0.12)",
-                summary: "Reviews architecture, demo quality, and how well the team used 100 hours.",
-                bio: "Reviews code structure, complexity, and architectural choices under time pressure.",
-                tags: ["Engineering", "Architecture"],
-                align: "right",
-              },
-              {
-                n: "03",
-                role: "Head of Talent",
-                Icon: MessageSquare,
-                accent: "#6366f1",
-                bg: "rgba(99, 102, 241, 0.12)",
-                summary: "Looks for work that makes a candidate easier to evaluate and contact.",
-                bio: "Focuses on how clearly your project communicates skills to hiring managers.",
-                tags: ["Hiring", "Recruiting"],
-                align: "left",
-              },
-            ].map(({ n, role, Icon, accent, bg, summary, bio, tags, align }, i) => (
-              <motion.div
-                key={n}
-                initial={{ opacity: 0, x: align === "left" ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`roadmap-step roadmap-${align}`}
-              >
-                <article className="group relative flex h-full min-h-[420px] flex-col overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-6 shadow-[0_14px_44px_rgba(2,51,69,0.07)] transition-all duration-300 hover:-translate-y-1 hover:border-[#2a8e9e]/40 hover:shadow-[0_22px_56px_rgba(2,51,69,0.11)] md:p-7">
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-40 blur-2xl transition-opacity group-hover:opacity-55"
-                    style={{ background: bg }}
-                  />
-                  <div className="relative flex items-start justify-between gap-3">
-                    <div
-                      className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-white shadow-md ring-4 ring-white/80"
-                      style={{ background: `linear-gradient(145deg, ${accent}, ${accent}dd)` }}
-                    >
-                      <Icon className="h-7 w-7" strokeWidth={2} />
-                    </div>
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      Judge {n}
-                    </span>
-                  </div>
-
-                  <p className="relative mt-6 text-[13px] font-semibold uppercase tracking-wide text-slate-400">
-                    Name reveal soon
-                  </p>
-                  <h3 className="relative mt-1 text-xl font-extrabold leading-snug text-[#023345] md:text-[22px]">
-                    Industry judge · confidential until lineup drop
-                  </h3>
-                  <p className="relative mt-2 text-sm font-bold" style={{ color: accent }}>
-                    {role}
-                  </p>
-                  <p className="relative mt-4 text-[15px] leading-relaxed text-slate-600">{summary}</p>
-
-                  <div className="relative mt-4 rounded-2xl bg-slate-50/95 px-4 py-3 text-sm leading-snug text-slate-600 ring-1 ring-slate-100">
-                    {bio}
-                  </div>
-
-                  <div className="relative mt-4 flex flex-wrap gap-2">
-                    {tags.map((t) => (
-                      <span
-                        key={t}
-                        className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-full"
-                        style={{ background: bg, color: accent }}
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                </article>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HowItWorksSticky />
+      <TracksStack />
+      <JudgesStack />
       <header id="schedule-section" className="schedule scroll-mt-28 border-t border-slate-200/70 bg-white pt-14 md:pt-20">
         <div className="centered-container-2 w-container">
           <h2
@@ -2290,17 +2328,9 @@ export default function PageContent({ onNavigate = () => {} }) {
               REGISTER
             </a>
           </div>
-          <div className="hero-image-mask-2">
-            <img
-              src="/p8.png"
-              style={{ opacity: 0 }}
-              data-w-id="8bc33048-db1c-80ac-0a05-360d5260dbf2"
-              sizes="(max-width: 479px) 91vw, (max-width: 767px) 95vw, (max-width: 991px) 409.609375px, 586.765625px"
-              srcSet="/p8.png 1360w"
-              alt=""
-              className="hero-image-2"
-            />
-          </div>
+          <motion.div className="hero-image-mask-2 register-video-mask">
+            <HeroBackgroundVideo variant="section" />
+          </motion.div>
         </div>
       </header>
       <header id="faq-section" className="have-a-question">
