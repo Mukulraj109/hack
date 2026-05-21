@@ -1,101 +1,103 @@
 import { motion } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
-const LABELS = [
-  { id: 0, text: "100-hour remote build sprint" },
-  { id: 1, text: "get Noticed by Recruiters" },
-  { id: 2, text: "5000+ worth Prize Pool" },
-  { id: 3, text: "100 Teams · 2 members" },
+const PHRASES = [
+  "100-Hour Remote Build Sprint.",
+  "Get Noticed By Recruiters.",
+  "$5,000+ Worth Prize Pool.",
+  "100 Teams · 2 Members.",
 ];
 
-const FloatingLabel = ({ label, index, totalLabels, isHighlighted }) => {
-  // Sequential highlight animation: 1st → 2nd → 3rd → 4th → repeat
-
-  return (
-    <motion.div
-      className={`floating-label-item ${isHighlighted ? "is-highlighted" : ""}`}
-      initial={{ opacity: 0.55 }}
-      animate={{
-        opacity: isHighlighted ? 1 : 0.55,
-        scale: isHighlighted ? 1.03 : 1,
-      }}
-      transition={{
-        duration: 0.5,
-        ease: [0.25, 0.1, 0.25, 1]
-      }}
-    >
-      <motion.div
-        className="floating-label-content"
-        animate={{
-          y: isHighlighted ? [0, -4, 0] : [0, -2, 0],
-        }}
-        transition={{
-          duration: isHighlighted ? 2.5 : 3.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        <span
-          className="floating-label-text"
-          style={{
-            textShadow: isHighlighted
-              ? "0 0 60px rgba(255,255,255,0.7), 0 0 120px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.4)"
-              : "0 1px 3px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.06)",
-          }}
-        >
-          {label.text}
-        </span>
-      </motion.div>
-
-      {/* Glow effect for highlighted - small and contained */}
-      {isHighlighted && (
-        <motion.div
-          className="floating-label-glow"
-          animate={{
-            opacity: [0.4, 0.65, 0.4],
-            scale: [1, 1.08, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      )}
-    </motion.div>
-  );
-};
+const TYPE_SPEED = 55;
+const ERASE_SPEED = 25;
+const HOLD_AFTER = 1800;
+const HOLD_BLANK = 200;
 
 export function FloatingLabels() {
-  const containerRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [displayText, setDisplayText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeProgressIndex, setActiveProgressIndex] = useState(0);
   const [isClient, setIsClient] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const typingRef = useRef<NodeJS.Timeout | null>(null);
+  const erasingRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Sequential highlight animation: 1st → 2nd → 3rd → 4th → repeat
+  const clearTimers = useCallback(() => {
+    if (typingRef.current) clearTimeout(typingRef.current);
+    if (erasingRef.current) clearTimeout(erasingRef.current);
+  }, []);
+
+  const typePhrase = useCallback((phrase: string): Promise<void> => {
+    return new Promise((resolve) => {
+      let i = 0;
+      setDisplayText("");
+      const step = () => {
+        if (i < phrase.length) {
+          setDisplayText(phrase.slice(0, ++i));
+          typingRef.current = setTimeout(step, TYPE_SPEED);
+        } else {
+          resolve();
+        }
+      };
+      step();
+    });
+  }, []);
+
+  const erasePhrase = useCallback((): Promise<void> => {
+    return new Promise((resolve) => {
+      const step = () => {
+        setDisplayText((prev) => {
+          if (prev.length > 0) {
+            erasingRef.current = setTimeout(step, ERASE_SPEED);
+            return prev.slice(0, -1);
+          } else {
+            resolve();
+            return "";
+          }
+        });
+      };
+      step();
+    });
+  }, []);
+
   useEffect(() => {
     if (!isClient) return;
 
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % LABELS.length);
-    }, 2500); // 2.5 seconds per label
+    let cancelled = false;
 
-    return () => clearInterval(interval);
-  }, [isClient]);
-
-  // Track mouse for subtle parallax
-  useEffect(() => {
-    if (!isClient) return;
-
-    let animationFrame;
-    const handleMouseMove = (e) => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
+    const startCycle = async () => {
+      while (!cancelled) {
+        setActiveProgressIndex(currentIndex);
+        await typePhrase(PHRASES[currentIndex]);
+        if (cancelled) break;
+        await new Promise((r) => setTimeout(r, HOLD_AFTER));
+        if (cancelled) break;
+        await erasePhrase();
+        if (cancelled) break;
+        await new Promise((r) => setTimeout(r, HOLD_BLANK));
+        if (cancelled) break;
+        setCurrentIndex((prev) => (prev + 1) % PHRASES.length);
       }
+    };
+
+    startCycle();
+
+    return () => {
+      cancelled = true;
+      clearTimers();
+    };
+  }, [isClient, currentIndex, typePhrase, erasePhrase, clearTimers]);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    let animationFrame: number;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
       animationFrame = requestAnimationFrame(() => {
         const { clientX, clientY } = e;
         const { innerWidth, innerHeight } = window;
@@ -110,77 +112,57 @@ export function FloatingLabels() {
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
+      if (animationFrame) cancelAnimationFrame(animationFrame);
     };
   }, [isClient]);
 
   if (!isClient) return null;
 
-  const totalLabels = LABELS.length;
+  const indexDisplay = `${String(currentIndex + 1).padStart(2, "0")} / 04`;
 
   return (
     <div
-      ref={containerRef}
       className="floating-labels-container"
       role="region"
       aria-label="Hackathon features"
       style={{
-        transform: `perspective(1000px) rotateY(${mousePosition.x * 0.5}deg)`,
+        ["--tw-parallax" as string]: `${mousePosition.x * 0.3}deg`
       }}
     >
-      {/* Subtle gradient scrim for video readability */}
       <div className="floating-labels-scrim" aria-hidden="true" />
 
       <motion.div
-        className="floating-labels-track"
-        style={{
-          transform: `translateY(${mousePosition.y * -1}px)`,
-        }}
+        className="typewriter-section"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
       >
-        {LABELS.map((label, index) => {
-          // Adjusted semi-circle that fits within visible area
-          // Arc from -50 to +50 degrees - shifted down so top label has space
-          const arcStart = -50;
-          const arcEnd = 50;
-          const arcSpan = arcEnd - arcStart;
-          const angle = arcStart + (index / (totalLabels - 1)) * arcSpan;
-          const radians = (angle * Math.PI) / 180;
+        <div className="tw-index">
+          <span className="index-bar" />
+          <span className="tw-index-text">{indexDisplay}</span>
+        </div>
 
-          // Arc radius for good spacing
-          const radius = 165;
+        <div className="tw-line-container">
+          <span className="tw-line">{displayText}</span>
+          <span className="tw-cursor" />
+        </div>
 
-          // Position on the arc
-          const x = Math.cos(radians) * radius;
-          const y = Math.sin(radians) * radius;
-
-          return (
-            <motion.div
-              key={label.id}
-              className="floating-label-wrapper"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              style={{
-                position: "absolute",
-                left: "0",
-                top: `calc(50% + ${y}px)`,
-                transform: `translateX(${x}px) translateX(-100%)`,
-              }}
-            >
-              <FloatingLabel
-                label={label}
-                index={index}
-                totalLabels={totalLabels}
-                isHighlighted={index === activeIndex}
-              />
-            </motion.div>
-          );
-        })}
+        <div className="tw-progress">
+          {PHRASES.map((_, i) => (
+            <motion.span
+              key={i}
+              className={`tw-progress-bar ${i === activeProgressIndex ? "active" : ""}`}
+              animate={
+                i === activeProgressIndex
+                  ? { opacity: 1 }
+                  : { opacity: 0.25 }
+              }
+              transition={{ duration: 0.3 }}
+            />
+          ))}
+        </div>
       </motion.div>
 
-      {/* Ambient particle effects */}
       <div className="floating-labels-particles" aria-hidden="true">
         {[...Array(4)].map((_, i) => (
           <motion.span

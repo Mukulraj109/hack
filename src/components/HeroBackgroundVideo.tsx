@@ -5,9 +5,17 @@ export const HERO_VIDEO_SRC =
 
 export const HERO_VIDEO_POSTER = "/Gemini_Generated_Image_oxc8kaoxc8kaoxc8.png";
 
+/** Team collaboration — used on Register CTA (distinct from hero) */
+export const REGISTER_VIDEO_SRC =
+  "https://videos.pexels.com/video-files/3255275/3255275-uhd_2560_1440_25fps.mp4";
+
+export const REGISTER_VIDEO_POSTER = "/p4.png";
+
 type HeroBackgroundVideoProps = {
   className?: string;
   variant?: "hero" | "section";
+  src?: string;
+  poster?: string;
 };
 
 function usePrefersReducedMotion() {
@@ -27,11 +35,15 @@ function usePrefersReducedMotion() {
 export function HeroBackgroundVideo({
   className = "",
   variant = "hero",
+  src,
+  poster,
 }: HeroBackgroundVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const isHero = variant === "hero";
+  const videoSrc = src ?? HERO_VIDEO_SRC;
+  const videoPoster = poster ?? HERO_VIDEO_POSTER;
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -62,7 +74,7 @@ export function HeroBackgroundVideo({
     <div ref={containerRef} className={rootClass} aria-hidden>
       {prefersReducedMotion ? (
         <img
-          src={HERO_VIDEO_POSTER}
+          src={videoPoster}
           alt=""
           className="hero-bg-media"
           fetchPriority={isHero ? "high" : undefined}
@@ -77,9 +89,9 @@ export function HeroBackgroundVideo({
           loop
           playsInline
           preload={isHero ? "metadata" : "none"}
-          poster={HERO_VIDEO_POSTER}
+          poster={videoPoster}
         >
-          <source src={HERO_VIDEO_SRC} type="video/mp4" />
+          <source src={videoSrc} type="video/mp4" />
         </video>
       )}
       <div className={scrimClass} />

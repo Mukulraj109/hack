@@ -1,20 +1,36 @@
+import { useEffect } from "react";
 import { TiltCard } from "./components/TiltCard";
+import { handleSectionLinkClick, scrollToSection } from "./lib/scrollToSection";
 import { CountdownTimer } from "./components/CountdownTimer";
-import { HeroBackgroundVideo, HERO_VIDEO_POSTER } from "./components/HeroBackgroundVideo";
+import {
+  HeroBackgroundVideo,
+  HERO_VIDEO_POSTER,
+  REGISTER_VIDEO_SRC,
+  REGISTER_VIDEO_POSTER,
+} from "./components/HeroBackgroundVideo";
 import { MarqueeBanner } from "./components/MarqueeBanner";
 import { HowItWorksSticky } from "./components/HowItWorksSticky";
+import { ReelsShowcase } from "./components/ReelsShowcase";
 import { TracksStack } from "./components/TracksStack";
 import { JudgesStack } from "./components/JudgesStack";
 import { FloatingLabels } from "./components/FloatingLabels";
+import { HeroPromoCaption } from "./components/HeroPromoCaption";
 import { HeroCenterCards } from "./components/HeroCenterCards";
+import Footer from "./components/Footer";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2 } from "lucide-react";
+import { Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2, Medal, GraduationCap } from "lucide-react";
 
 const HACKATHON_START = new Date("2026-06-10T20:00:00-04:00");
 
 export default function PageContent({ onNavigate = () => {} }) {
+  useEffect(() => {
+    const id = window.location.hash.replace(/^#/, "");
+    if (!id || !document.getElementById(id)) return;
+    requestAnimationFrame(() => scrollToSection(id));
+  }, []);
+
   return (
     <>
       <header
@@ -22,13 +38,17 @@ export default function PageContent({ onNavigate = () => {} }) {
         data-w-id="8bef9f4b-d3ae-2689-7a83-804b6f6d6df7"
         className="sticky-nav"
       >
-        <nav className="w-container">
-          <ul role="list" className="nav-grid w-list-unstyled">
-            <li id="w-node-_8bef9f4b-d3ae-2689-7a83-804b6f6d6dfa-8e5a2867">
+        <nav className="w-container nav-bar">
+          <div className="nav-bar__inner">
+            <div className="nav-bar__logo">
               <a
                 href="/"
                 aria-current="page"
                 className="nav-logo-link w-inline-block w--current"
+                onClick={(event) => {
+                  event.preventDefault();
+                  onNavigate("/");
+                }}
               >
                 <img
                   src="/firststep-logo.png"
@@ -39,35 +59,65 @@ export default function PageContent({ onNavigate = () => {} }) {
                   decoding="async"
                 />
               </a>
-            </li>
-            <li>
-              <a href="#career-accelerator-section" className="nav-link">
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#tracks-section" className="nav-link">
-                Track
-              </a>
-            </li>
-            <li>
-              <a href="#judges-section" className="nav-link">
-                Judges
-              </a>
-            </li>
-            <li>
+            </div>
+
+            <ul role="list" className="nav-bar__links w-list-unstyled">
+              <li>
+                <a
+                  href="https://firststepjob.com/"
+                  className="nav-link is-active"
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#career-accelerator-section"
+                  className="nav-link"
+                  onClick={(e) =>
+                    handleSectionLinkClick(e.nativeEvent, "career-accelerator-section")
+                  }
+                >
+                  About
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#tracks-section"
+                  className="nav-link"
+                  onClick={(e) =>
+                    handleSectionLinkClick(e.nativeEvent, "tracks-section")
+                  }
+                >
+                  Track
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#judges-section"
+                  className="nav-link"
+                  onClick={(e) =>
+                    handleSectionLinkClick(e.nativeEvent, "judges-section")
+                  }
+                >
+                  Judges
+                </a>
+              </li>
+            </ul>
+
+            <div className="nav-bar__cta">
               <a
                 href="/register"
-                className="yellow-button w-button"
+                className="yellow-button w-button nav-cta-button"
                 onClick={(event) => {
                   event.preventDefault();
                   onNavigate("/register");
                 }}
               >
-                REGISTER NOW
+                Claim Your Spot
               </a>
-            </li>
-          </ul>
+            </div>
+          </div>
         </nav>
       </header>
       <header id="hero" className="welcome hero-fullbleed">
@@ -88,26 +138,19 @@ export default function PageContent({ onNavigate = () => {} }) {
               <CountdownTimer targetDate={HACKATHON_START} variant="glass" />
             </div>
 
-            {/* Expanded Hackathon Card - wider and shorter */}
-            <div className="hero-hackathon-expanded">
+            {/* Hero promo — Mint + Warm Sand (color opt-9) */}
+            <div className="hero-hackathon-expanded hero-promo-mint">
               <motion.div
-                className="glass-card-expanded"
+                className="hero-promo-mint__inner"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.55, delay: 0.15, ease: "easeOut" }}
               >
-                <motion.div className="hackathon-expanded-rail" aria-hidden="true" />
-                <motion.div className="hackathon-expanded-content">
-                  <h2 className="hackathon-expanded-title">FirstStep&apos;s Annual US Tech Hackathon</h2>
-                  <p className="hackathon-expanded-subtitle">
-                    Help job seekers get on recruiters&apos; radar — ship a real project in 100 remote hours.
-                  </p>
-                  <div className="hackathon-expanded-bullets">
-                    <span className="exp-pill">100-hour remote sprint</span>
-                    <span className="exp-pill">Recruiter visibility</span>
-                    <span className="exp-pill">$5,000+ prize pool</span>
-                  </div>
-                </motion.div>
+                <p className="hero-promo-mint__eyebrow">Build your way in.</p>
+                <h2 className="hero-promo-mint__title">
+                  FirstStep&apos;s <em>Annual</em> Hackathon
+                </h2>
+                <HeroPromoCaption />
               </motion.div>
             </div>
           </div>
@@ -126,8 +169,7 @@ export default function PageContent({ onNavigate = () => {} }) {
                 onNavigate("/register");
               }}
             >
-              <span>Claim Your Spot for Free</span>
-              <ArrowRight className="hero-cta-claim__icon" />
+              Claim Your Spot →
             </a>
           </div>
 
@@ -177,10 +219,10 @@ export default function PageContent({ onNavigate = () => {} }) {
           pointer-events: auto;
         }
 
-        /* Timer card: narrower — only the text inside got bigger, width is independent */
+        /* Timer card: narrower layout; digit/label font sizes live in index.css */
         .hero-timer-inline {
           width: 100%;
-          max-width: 720px;
+          max-width: 580px;
           margin: 0 auto;
         }
 
@@ -188,7 +230,7 @@ export default function PageContent({ onNavigate = () => {} }) {
         .hero-hackathon-expanded {
           width: 100%;
           max-width: 1080px;
-          margin: clamp(8px, 1.2vh, 16px) auto 0;
+          margin: clamp(12px, 2vh, 24px) auto 0;
         }
 
         /* Hero CTA buttons — pinned to the bottom, spread apart left/right */
@@ -227,48 +269,36 @@ export default function PageContent({ onNavigate = () => {} }) {
         }
 
         .hero-cta-claim {
-          color: #ffffff;
-          background: linear-gradient(135deg, #2a8e9e 0%, #1eb3c4 100%);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          box-shadow:
-            0 12px 28px rgba(30, 179, 196, 0.35),
-            0 2px 6px rgba(0, 0, 0, 0.18),
-            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+          color: #2a1a00 !important;
+          background: #ffd9a8;
+          border: none;
+          box-shadow: 0 8px 28px rgba(255, 217, 168, 0.45);
         }
 
         .hero-cta-claim:hover {
-          transform: translateY(-1px);
-          box-shadow:
-            0 16px 36px rgba(30, 179, 196, 0.45),
-            0 3px 8px rgba(0, 0, 0, 0.22),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .hero-cta-claim__icon {
-          width: 18px;
-          height: 18px;
-          transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .hero-cta-claim:hover .hero-cta-claim__icon {
-          transform: translateX(3px);
+          color: #2a1a00 !important;
+          background: #ffd9a8;
+          transform: translateY(-2px);
+          box-shadow: 0 12px 36px rgba(255, 217, 168, 0.55);
         }
 
         .hero-cta-follow {
-          color: #ffffff;
-          background: rgba(255, 255, 255, 0.10);
-          border: 1px solid rgba(255, 255, 255, 0.32);
-          backdrop-filter: blur(14px) saturate(140%);
-          -webkit-backdrop-filter: blur(14px) saturate(140%);
+          color: #023345 !important;
+          background: #00ff9d;
+          border: 1px solid rgba(0, 255, 157, 0.85);
           box-shadow:
-            0 10px 24px rgba(0, 0, 0, 0.20),
-            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            0 0 20px rgba(0, 255, 157, 0.45),
+            0 8px 24px rgba(0, 0, 0, 0.22);
         }
 
         .hero-cta-follow:hover {
-          background: rgba(255, 255, 255, 0.18);
-          border-color: rgba(255, 255, 255, 0.5);
-          transform: translateY(-1px);
+          color: #012531 !important;
+          background: #33ffb1;
+          border-color: #66ffc4;
+          transform: translateY(-2px);
+          box-shadow:
+            0 0 28px rgba(0, 255, 157, 0.6),
+            0 12px 28px rgba(0, 0, 0, 0.25);
         }
 
         .hero-cta-follow__icon {
@@ -290,129 +320,110 @@ export default function PageContent({ onNavigate = () => {} }) {
           }
         }
 
-        .glass-card-expanded {
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-          background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.14) 0%,
-            rgba(255, 255, 255, 0.06) 100%
-          );
-          backdrop-filter: blur(16px) saturate(140%);
-          -webkit-backdrop-filter: blur(16px) saturate(140%);
-          border: 1px solid rgba(255, 255, 255, 0.24);
-          box-shadow:
-            0 16px 44px rgba(0, 0, 0, 0.22),
-            0 2px 6px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.12);
-          border-radius: 24px;
-        }
-
-        .hackathon-expanded-rail {
-          height: 3px;
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            #7dd3e8 18%,
-            #2a8e9e 50%,
-            #7dd3e8 82%,
-            transparent 100%
-          );
-          opacity: 0.95;
-        }
-
-        .hackathon-expanded-content {
+        /* Mint + Warm Sand hero promo (color-options opt-9) */
+        .hero-promo-mint__inner {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: clamp(12px, 1.6vh, 18px);
+          justify-content: center;
           text-align: center;
-          padding: clamp(20px, 2.4vh, 28px) clamp(32px, 4.5vw, 72px) clamp(22px, 2.6vh, 30px);
+          gap: clamp(14px, 2vh, 22px);
+          padding: clamp(16px, 2.2vh, 32px) clamp(24px, 4vw, 56px);
+          width: 100%;
         }
 
-        .hackathon-expanded-eyebrow {
+        .hero-promo-mint__eyebrow {
+          font-family: "JetBrains Mono", "SF Mono", monospace;
+          font-size: clamp(16px, 1.8vw, 22px);
+          font-weight: 600;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: #ffe8c4 !important;
+          text-shadow:
+            0 1px 3px rgba(2, 40, 52, 0.55),
+            0 0 18px rgba(255, 217, 168, 0.85),
+            0 0 36px rgba(255, 190, 110, 0.55);
           display: inline-flex;
           align-items: center;
-          gap: 10px;
-          color: rgba(255, 255, 255, 0.9);
-          font-size: clamp(12px, 1.1vw, 14px);
-          font-weight: 800;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
+          gap: 12px;
+          margin: 0;
         }
 
-        .hackathon-expanded-eyebrow-dot {
-          position: relative;
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background: #7dd3e8;
-          box-shadow: 0 0 12px rgba(125, 211, 232, 0.8);
+        .hero-promo-mint__eyebrow::before,
+        .hero-promo-mint__eyebrow::after {
+          content: "";
+          width: 40px;
+          height: 1px;
+          background: #ffd9a8;
+          box-shadow: 0 0 14px rgba(255, 217, 168, 0.7);
           flex-shrink: 0;
         }
 
-        .hackathon-expanded-eyebrow-dot::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: 50%;
-          background: #7dd3e8;
-          animation: hero-eyebrow-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+        .hero-promo-mint__title {
+          font-size: clamp(48px, 7vw, 88px);
+          font-weight: 800;
+          line-height: 1.05;
+          letter-spacing: -0.03em;
+          margin: 0;
+          color: #a8f5d0 !important;
+          text-shadow:
+            0 0 20px rgba(168, 245, 208, 0.55),
+            0 0 40px rgba(168, 245, 208, 0.35),
+            0 4px 30px rgba(0, 0, 0, 0.55);
+          white-space: nowrap;
         }
 
-        @keyframes hero-eyebrow-ping {
-          0% {
-            transform: scale(1);
-            opacity: 0.75;
-          }
-          70%,
-          100% {
-            transform: scale(2.2);
+        .hero-promo-mint__title em {
+          font-family: "Instrument Serif", Georgia, serif;
+          font-style: italic;
+          font-weight: 500;
+          font-size: 1.12em;
+          color: #ffe8c4 !important;
+          text-shadow:
+            0 1px 3px rgba(2, 40, 52, 0.5),
+            0 0 28px rgba(255, 217, 168, 0.8),
+            0 0 52px rgba(255, 190, 110, 0.45);
+        }
+
+        .hero-promo-mint__caption-wrap {
+          margin-top: clamp(4px, 0.6vh, 8px);
+          min-height: clamp(52px, 6vh, 64px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 12px;
+          max-width: 900px;
+        }
+
+        .hero-promo-mint__caption {
+          font-size: clamp(22px, 2.4vw, 32px);
+          line-height: 1.5;
+          font-weight: 600;
+          color: #ffe8c4 !important;
+          letter-spacing: -0.005em;
+          text-shadow:
+            0 1px 3px rgba(2, 51, 69, 0.55),
+            0 2px 6px rgba(0, 0, 0, 0.35),
+            0 0 26px rgba(255, 217, 168, 0.75),
+            0 0 48px rgba(255, 190, 110, 0.48);
+          white-space: pre-wrap;
+        }
+
+        .hero-promo-mint__caption-cursor {
+          display: inline-block;
+          width: 3px;
+          height: 1.1em;
+          background: #a8f5d0;
+          margin-left: 4px;
+          transform: translateY(0.2em);
+          box-shadow: 0 0 18px rgba(168, 245, 208, 0.75);
+          animation: hero-promo-caption-blink 1s steps(2) infinite;
+        }
+
+        @keyframes hero-promo-caption-blink {
+          50% {
             opacity: 0;
           }
-        }
-
-        .hackathon-expanded-title {
-          color: #ffffff;
-          font-size: clamp(30px, 3.35vw, 48px);
-          font-weight: 800;
-          letter-spacing: -0.022em;
-          margin: 0;
-          line-height: 1.1;
-          white-space: nowrap;
-          text-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
-        }
-
-        .hackathon-expanded-subtitle {
-          color: rgba(255, 255, 255, 0.92);
-          font-size: clamp(16px, 1.65vw, 21px);
-          font-weight: 500;
-          margin: 0;
-          line-height: 1.45;
-          max-width: 760px;
-        }
-
-        .hackathon-expanded-bullets {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 12px;
-          margin-top: 4px;
-        }
-
-        .exp-pill {
-          display: inline-flex;
-          align-items: center;
-          padding: 10px 20px;
-          border-radius: 999px;
-          font-size: clamp(14px, 1.35vw, 17px);
-          font-weight: 600;
-          letter-spacing: 0.02em;
-          color: rgba(255, 255, 255, 0.95);
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.22);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         @media (max-width: 768px) {
@@ -435,34 +446,29 @@ export default function PageContent({ onNavigate = () => {} }) {
             z-index: 20;
           }
 
-          .hackathon-expanded-content {
-            padding: 18px 20px 20px;
-            gap: 12px;
+          .hero-promo-mint__inner {
+            padding: 16px 20px;
+            gap: 14px;
           }
 
-          .hackathon-expanded-bullets {
-            gap: 10px;
-          }
-
-          .hackathon-expanded-title {
+          .hero-promo-mint__title {
             white-space: normal;
-            font-size: clamp(24px, 6vw, 34px);
-            line-height: 1.15;
+            font-size: clamp(36px, 9vw, 52px);
+            line-height: 1.1;
           }
 
-          .hackathon-expanded-subtitle {
-            font-size: clamp(15px, 4vw, 18px);
+          .hero-promo-mint__caption-wrap {
+            min-height: 80px;
           }
 
-          .exp-pill {
-            padding: 8px 16px;
-            font-size: clamp(13px, 3.2vw, 15px);
+          .hero-promo-mint__caption {
+            font-size: clamp(18px, 4.5vw, 24px);
           }
         }
 
         @media (min-width: 900px) and (max-width: 1180px) {
-          .hackathon-expanded-title {
-            font-size: clamp(28px, 3vw, 42px);
+          .hero-promo-mint__title {
+            font-size: clamp(52px, 5.5vw, 72px);
           }
         }
 
@@ -713,40 +719,40 @@ export default function PageContent({ onNavigate = () => {} }) {
         .sticky-nav .nav-logo-link {
           display: inline-flex;
           align-items: center;
-          padding: 8px 0;
-        }
-
-        .sticky-nav .nav-grid > li:first-child {
-          min-width: clamp(280px, 19vw, 400px);
+          padding: 0;
+          transform: translateY(-10px);
         }
 
         .sticky-nav .nav-logo {
-          width: clamp(280px, 19vw, 400px) !important;
+          width: clamp(440px, 32vw, 620px) !important;
+          max-width: clamp(440px, 32vw, 620px) !important;
           height: auto !important;
-          max-width: none;
+          max-height: 110px !important;
         }
 
-        .sticky-nav .nav-grid {
-          min-height: 88px;
-          align-items: center;
-          column-gap: 24px;
+        /* Header nav — see index.html; logo size synced here for Vite overrides */
+        .sticky-nav .nav-link::after {
+          transform: scaleX(0.35);
+          opacity: 0.45;
         }
 
-        .sticky-nav .nav-link {
-          font-size: 19px;
-          font-weight: 800;
-          letter-spacing: 0.015em;
-          line-height: 1;
+        .sticky-nav .nav-link:hover::after,
+        .sticky-nav .nav-link:focus-visible::after,
+        .sticky-nav .nav-link.is-active::after {
+          transform: scaleX(1);
+          opacity: 1;
         }
 
-        .sticky-nav .yellow-button {
-          min-height: 56px;
-          padding: 0 28px;
-          border-radius: 9999px;
-          font-size: 15px;
-          font-weight: 900;
-          letter-spacing: 0.025em;
-          line-height: 1;
+        .sticky-nav a.yellow-button.w-button,
+        .sticky-nav .nav-cta-button {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          padding: 11px 26px !important;
+          line-height: 1 !important;
+          font-size: 18px !important;
+          font-weight: 800 !important;
+          min-height: 46px !important;
         }
 
         .hero-accent-panel {
@@ -1073,27 +1079,14 @@ export default function PageContent({ onNavigate = () => {} }) {
         }
 
         @media (max-width: 991px) {
-          .sticky-nav .nav-grid > li:first-child {
-            min-width: clamp(210px, 38vw, 290px);
-          }
-
           .sticky-nav .nav-logo {
-            width: clamp(210px, 40vw, 290px) !important;
+            width: clamp(320px, 44vw, 420px) !important;
+            max-width: min(420px, 52vw) !important;
+            max-height: 88px !important;
           }
 
-          .sticky-nav .nav-grid {
-            min-height: 74px;
-            column-gap: 14px;
-          }
-
-          .sticky-nav .nav-link {
-            font-size: 16px;
-          }
-
-          .sticky-nav .yellow-button {
-            min-height: 48px;
-            padding: 0 18px;
-            font-size: 13px;
+          .sticky-nav .nav-logo-link {
+            transform: translateY(-6px);
           }
 
           .welcome.hero-fullbleed {
@@ -1409,52 +1402,43 @@ export default function PageContent({ onNavigate = () => {} }) {
           width: 100%;
         }
 
-        /* New prize / outcome cards grid (replaces the recruiter shortlist card) */
+        /* Prize cards — flat panels (reference design) */
         .career-prizes-grid {
+          --prize-card-bg: #112229;
+          --prize-card-border: #2d4048;
+          --prize-card-text: #ffffff;
+          --prize-card-text-muted: #d1dde8;
+          --prize-card-label: #94a3b8;
+          --prize-card-gap: 1.5rem;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: clamp(0.7rem, 1vw, 1rem);
+          grid-template-rows: 1fr 1.1fr;
+          gap: var(--prize-card-gap);
+          align-items: stretch;
         }
 
         .career-prize-card {
           position: relative;
-          isolation: isolate;
-          background: linear-gradient(160deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.16);
-          border-radius: 1.25rem;
-          padding: clamp(1.4rem, 2vw, 1.85rem) clamp(1.4rem, 2.1vw, 1.95rem);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          box-shadow:
-            0 18px 40px rgba(2, 51, 69, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.10);
-          transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
-            border-color 240ms ease,
-            box-shadow 240ms ease;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          color: var(--prize-card-text);
+          background: var(--prize-card-bg);
+          border: 1px solid var(--prize-card-border);
+          border-radius: 14px;
+          padding: 1.55rem 1.8rem;
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+          transition: transform 200ms ease, border-color 200ms ease;
         }
 
-        .career-prize-card::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 1px;
-          background: linear-gradient(140deg, rgba(125, 211, 232, 0.25), rgba(125, 211, 232, 0) 55%);
-          -webkit-mask:
-            linear-gradient(#000 0 0) content-box,
-            linear-gradient(#000 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-          opacity: 0.85;
+        .career-prize-card--certificate {
+          padding: 1.9rem 2rem 2.15rem;
+          min-height: 15.5rem;
         }
 
         .career-prize-card:hover {
-          transform: translateY(-3px);
-          border-color: rgba(103, 232, 249, 0.40);
-          box-shadow:
-            0 24px 50px rgba(8, 145, 178, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.14);
+          transform: translateY(-2px);
+          border-color: #3d5560;
         }
 
         .career-prize-card--wide {
@@ -1463,69 +1447,150 @@ export default function PageContent({ onNavigate = () => {} }) {
 
         .career-prize-card__head {
           display: flex;
-          align-items: center;
-          gap: 1rem;
+          align-items: flex-start;
+          gap: 0.85rem;
           margin-bottom: 0.85rem;
         }
 
         .career-prize-card__icon {
-          width: 2.85rem;
-          height: 2.85rem;
-          border-radius: 13px;
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: 10px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
         }
 
         .career-prize-card__icon svg {
-          width: 1.4rem;
-          height: 1.4rem;
+          width: 1.25rem;
+          height: 1.25rem;
         }
 
         .career-prize-card__value {
           display: block;
-          font-size: clamp(1.95rem, 2.8vw, 2.5rem);
-          font-weight: 900;
-          letter-spacing: -0.03em;
-          line-height: 1;
-          background-image: linear-gradient(180deg, #ffffff 0%, #cbf2f8 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
+          font-size: clamp(1.75rem, 2.4vw, 2.15rem);
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          line-height: 1.15;
+          color: var(--prize-card-text);
+        }
+
+        .career-prize-card__value--word {
+          font-size: clamp(1.35rem, 2vw, 1.65rem);
+          letter-spacing: -0.02em;
         }
 
         .career-prize-card__label {
           display: block;
-          margin-top: 0.45rem;
-          color: rgba(125, 211, 232, 0.95);
-          font-size: 0.92rem;
-          font-weight: 800;
-          letter-spacing: 0.18em;
+          margin: 0 0 0.4rem;
+          color: var(--prize-card-label);
+          font-size: 0.8rem;
+          font-weight: 700;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
+        }
+
+        .career-prize-card__head > div .career-prize-card__value {
+          margin-top: 0;
         }
 
         .career-prize-card__title {
           margin: 0;
-          color: #ffffff;
-          font-size: clamp(1.3rem, 1.6vw, 1.55rem);
-          font-weight: 800;
+          color: var(--prize-card-text);
+          font-size: clamp(1.1rem, 1.4vw, 1.28rem);
+          font-weight: 700;
           letter-spacing: -0.01em;
-          line-height: 1.25;
+          line-height: 1.35;
+        }
+
+        .career-prize-card--certificate .career-prize-card__title {
+          font-size: clamp(1.2rem, 1.55vw, 1.42rem);
+          line-height: 1.3;
         }
 
         .career-prize-card__desc {
           margin: 0;
-          color: rgba(226, 236, 244, 0.94);
-          font-size: clamp(1.1rem, 1.3vw, 1.25rem);
+          color: var(--prize-card-text-muted);
+          font-size: clamp(0.95rem, 1.15vw, 1.05rem);
           line-height: 1.55;
-          font-weight: 500;
+          font-weight: 400;
+        }
+
+        .career-prize-card__value-suffix {
+          font-size: 0.52em;
+          font-weight: 700;
+          letter-spacing: 0.02em;
+          vertical-align: middle;
+          white-space: nowrap;
+          color: var(--prize-card-text);
+        }
+
+        .career-prize-card__list {
+          margin: 0;
+          padding-left: 1.2rem;
+          flex: 1;
+          font-size: clamp(0.95rem, 1.12vw, 1.06rem);
+          line-height: 1.58;
+          font-weight: 400;
+        }
+
+        .career-prize-card--certificate .career-prize-card__list {
+          font-size: clamp(1.05rem, 1.25vw, 1.15rem);
+          line-height: 1.62;
+          padding-left: 1.25rem;
+        }
+
+        .career-prize-card__list li {
+          color: var(--prize-card-text-muted) !important;
+        }
+
+        .career-prize-card__list li strong {
+          color: var(--prize-card-text) !important;
+          font-weight: 700;
+        }
+
+        .career-prize-card__list li + li {
+          margin-top: 0.5rem;
+        }
+
+        .career-prize-card--certificate .career-prize-card__list li + li {
+          margin-top: 0.65rem;
+        }
+
+        .career-prize-card--certificate .career-prize-card__head {
+          margin-bottom: 1rem;
+        }
+
+        .career-prize-card--certificate .career-prize-card__icon {
+          width: 2.65rem;
+          height: 2.65rem;
+        }
+
+        .career-prize-card--certificate .career-prize-card__icon svg {
+          width: 1.35rem;
+          height: 1.35rem;
+        }
+
+        .career-prize-card__link {
+          color: #7dd3e8;
+          font-weight: 600;
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+
+        .career-prize-card__link:hover {
+          color: #a5f3fc;
         }
 
         @media (max-width: 520px) {
           .career-prizes-grid {
             grid-template-columns: 1fr;
+            grid-template-rows: auto;
+          }
+
+          .career-prize-card--certificate {
+            min-height: 0;
           }
         }
 
@@ -1993,7 +2058,10 @@ export default function PageContent({ onNavigate = () => {} }) {
         }
 
       `}</style>
-      <section id="career-accelerator-section" className="career-accelerator-section">
+      <section
+        id="career-accelerator-section"
+        className="career-accelerator-section scroll-mt-28"
+      >
         <div className="career-wrap">
           <motion.div
             className="career-left"
@@ -2007,41 +2075,54 @@ export default function PageContent({ onNavigate = () => {} }) {
               Recruiter program
             </p>
             <h2 className="career-title">
-              Your work goes in front of{" "}
+              Your work goes directly in front of{" "}
               <span className="career-title__accent">people who hire.</span>
             </h2>
             <p className="career-copy">
-              The top 10 teams are packaged for <strong>30+ recruiters</strong>—demo, repo, and context—not
-              just another application in a portal.
+              We don&apos;t just bury your project in a portal. The top 10 teams are packaged as a premium
+              talent bundle—including your live demo, GitHub repo, and resumes—and sent directly to{" "}
+              <strong>30+ elite recruiters</strong>.
             </p>
             <ul className="career-points">
               <li className="career-point">
                 <span className="career-point__icon" aria-hidden>
-                  <Sparkles className="w-[18px] h-[18px]" />
+                  <Star className="w-[18px] h-[18px]" />
                 </span>
-                Recruiters see what you built in 100 hours
-              </li>
-              <li className="career-point">
-                <span className="career-point__icon" aria-hidden>
-                  <Building2 className="w-[18px] h-[18px]" />
-                </span>
-                Open to international students across every visa path
+                Recruiters see exactly what you shipped in a 100-hour sprint
               </li>
               <li className="career-point">
                 <span className="career-point__icon" aria-hidden>
                   <Star className="w-[18px] h-[18px]" />
                 </span>
-                Every finisher gets a participation certificate
+                Open to international talent across all visa paths
+              </li>
+              <li className="career-point">
+                <span className="career-point__icon" aria-hidden>
+                  <Star className="w-[18px] h-[18px]" />
+                </span>
+                Every single finisher walks away with a verified credential
               </li>
             </ul>
             <div className="career-cta-row">
-              <a href="#judges-section" className="career-cta career-cta--primary">
-                Meet the recruiter lineup
+              <a
+                href="#judges-section"
+                className="career-cta career-cta--primary"
+                onClick={(e) =>
+                  handleSectionLinkClick(e.nativeEvent, "judges-section")
+                }
+              >
+                Meet the Recruiter Lineup
                 <ArrowRight className="w-[18px] h-[18px]" />
               </a>
-              <a href="#footer" className="career-cta career-cta--ghost">
+              <a
+                href="#footer"
+                className="career-cta career-cta--ghost"
+                onClick={(e) =>
+                  handleSectionLinkClick(e.nativeEvent, "footer")
+                }
+              >
                 <Briefcase className="w-[18px] h-[18px]" />
-                Become a hiring partner
+                Become a Hiring Partner
               </a>
             </div>
           </motion.div>
@@ -2063,13 +2144,39 @@ export default function PageContent({ onNavigate = () => {} }) {
                     <Trophy className="w-5 h-5" />
                   </span>
                   <div>
-                    <span className="career-prize-card__value">$2,500</span>
                     <span className="career-prize-card__label">First Prize</span>
+                    <span className="career-prize-card__value">
+                      $2,500 <span className="career-prize-card__value-suffix">Total Value</span>
+                    </span>
                   </div>
                 </div>
-                <p className="career-prize-card__desc">
-                  Cash prize awarded to the winning team at the close of judging.
-                </p>
+                <ul className="career-prize-card__list">
+                  <li>$1,000 Cash to fund your build.</li>
+                  <li>Premium Plus platform access.</li>
+                  <li>Developer API Credits to scale.</li>
+                </ul>
+              </div>
+
+              <div className="career-prize-card">
+                <div className="career-prize-card__head">
+                  <span
+                    className="career-prize-card__icon"
+                    style={{ background: "rgba(8, 145, 178, 0.28)", color: "#67e8f9" }}
+                  >
+                    <Briefcase className="w-5 h-5" />
+                  </span>
+                  <h3 className="career-prize-card__title">Top 10 Talent Pipeline</h3>
+                </div>
+                <ul className="career-prize-card__list">
+                  <li>
+                    <strong>Direct Fast-Track:</strong> Packaged portfolio sent straight to our network of
+                    OPT/H1B-friendly recruiters.
+                  </li>
+                  <li>
+                    <strong>Skip the HR Black Hole:</strong> Real hiring managers review your actual code and
+                    demo.
+                  </li>
+                </ul>
               </div>
 
               <div className="career-prize-card">
@@ -2078,43 +2185,41 @@ export default function PageContent({ onNavigate = () => {} }) {
                     className="career-prize-card__icon"
                     style={{ background: "rgba(42, 142, 158, 0.28)", color: "#7dd3e8" }}
                   >
-                    <Sparkles className="w-5 h-5" />
+                    <Medal className="w-5 h-5" />
                   </span>
-                  <h3 className="career-prize-card__title">Cash&nbsp;+ Credits&nbsp;+ Subscription</h3>
+                  <div>
+                    <span className="career-prize-card__label">Second Prize</span>
+                    <span className="career-prize-card__value">
+                      $600+ <span className="career-prize-card__value-suffix">Total Value</span>
+                    </span>
+                  </div>
                 </div>
-                <p className="career-prize-card__desc">
-                  Winners walk away with the cash prize, API credits to keep building, and a free FirstStep premium subscription.
-                </p>
+                <ul className="career-prize-card__list">
+                  <li>$500 Cash for the team.</li>
+                  <li>Premium Plan platform access.</li>
+                  <li>$100 API Credits to keep building.</li>
+                </ul>
               </div>
 
-              <div className="career-prize-card career-prize-card--wide">
-                <div className="career-prize-card__head">
-                  <span
-                    className="career-prize-card__icon"
-                    style={{ background: "rgba(8, 145, 178, 0.28)", color: "#67e8f9" }}
-                  >
-                    <Briefcase className="w-5 h-5" />
-                  </span>
-                  <h3 className="career-prize-card__title">Top 10 teams sent to top recruiters</h3>
-                </div>
-                <p className="career-prize-card__desc">
-                  Your build and team info are shared with our network of OPT/H1B-friendly recruiters so the right people see what you shipped.
-                </p>
-              </div>
-
-              <div className="career-prize-card career-prize-card--wide">
+              <div className="career-prize-card career-prize-card--certificate">
                 <div className="career-prize-card__head">
                   <span
                     className="career-prize-card__icon"
                     style={{ background: "rgba(168, 85, 247, 0.22)", color: "#d8b4fe" }}
                   >
-                    <Star className="w-5 h-5" />
+                    <GraduationCap className="w-5 h-5" />
                   </span>
-                  <h3 className="career-prize-card__title">Participation certificate for everyone</h3>
+                  <h3 className="career-prize-card__title">Certificate for Everyone</h3>
                 </div>
-                <p className="career-prize-card__desc">
-                  Every finisher gets an official FirstStep participation certificate to add to their portfolio and LinkedIn.
-                </p>
+                <ul className="career-prize-card__list">
+                  <li>
+                    <strong>Official FirstStep Credential:</strong> Awarded to every finisher who completes the
+                    sprint.
+                  </li>
+                  <li>
+                    <strong>Boost Your Profile:</strong> Fully shareable directly to LinkedIn and your resume.
+                  </li>
+                </ul>
               </div>
             </div>
           </motion.aside>
@@ -2134,7 +2239,7 @@ export default function PageContent({ onNavigate = () => {} }) {
               </span>
               <span className="career-stats__text">
                 <span className="career-stats__value">$5,000</span>
-                <span className="career-stats__label">Worth prize pool</span>
+                <span className="career-stats__label">Total Prize Pool</span>
               </span>
             </motion.div>
             <motion.div className="career-stats__item" whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
@@ -2143,7 +2248,7 @@ export default function PageContent({ onNavigate = () => {} }) {
               </span>
               <span className="career-stats__text">
                 <span className="career-stats__value">30+</span>
-                <span className="career-stats__label">Hiring partners</span>
+                <span className="career-stats__label">Hiring Partners</span>
               </span>
             </motion.div>
             <motion.div className="career-stats__item" whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
@@ -2151,8 +2256,8 @@ export default function PageContent({ onNavigate = () => {} }) {
                 <Timer className="w-5 h-5" />
               </span>
               <span className="career-stats__text">
-                <span className="career-stats__value">100 hrs</span>
-                <span className="career-stats__label">Remote sprint</span>
+                <span className="career-stats__value">100 Hours</span>
+                <span className="career-stats__label">Remote Sprint</span>
               </span>
             </motion.div>
             <motion.div className="career-stats__item" whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 280 }}>
@@ -2160,176 +2265,79 @@ export default function PageContent({ onNavigate = () => {} }) {
                 <Wrench className="w-5 h-5" />
               </span>
               <span className="career-stats__text">
-                <span className="career-stats__value">Any stack</span>
-                <span className="career-stats__label">Your tools</span>
+                <span className="career-stats__value">Any Stack</span>
+                <span className="career-stats__label">Bring Your Own Tools</span>
               </span>
             </motion.div>
           </div>
         </motion.div>
       </section>
+      <ReelsShowcase />
       <HowItWorksSticky />
       <TracksStack />
       <JudgesStack />
-      <header id="schedule-section" className="schedule scroll-mt-28 border-t border-slate-200/70 bg-white pt-14 md:pt-20">
-        <div className="centered-container-2 w-container">
-          <h2
-            data-w-id="5e2f808b-0c2c-2e2e-9917-a7a621163c6b"
-            style={{ opacity: 1 }}
-            className="heading-12"
+      <header id="register-section" className="register-now scroll-mt-28">
+        <div className="flex-container w-container register-now__row">
+          <motion.div
+            className="register-now__copy"
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
           >
-            What&#x27;s Going Down
-          </h2>
-          <p
-            data-w-id="f4302b91-14e5-1924-045c-06ac15933508"
-            style={{ opacity: 1 }}
-            className="paragraph-2"
-          >
-            We will be updating this schedule with workshops. Stay tuned for
-            future announcements.<strong></strong>
-            <br />
-          </p>
-          <div className="div-block-3">
-            <div
-              id="w-node-dbcd020b-8297-e543-eaa6-391bae3cb8dc-8e5a2867"
-              data-w-id="dbcd020b-8297-e543-eaa6-391bae3cb8dc"
-              style={{ opacity: 0 }}
-              className="div-block-5"
-            >
-              <h3 className="heading---schedule"
-               style={{ color: "rgb(42 142 158 / var(--tw-text-opacity, 1))" }}
-               >Day 2</h3>
-              <h4 className="heading-4">Sunday, February 14th (PST)</h4>
-              <div className="div-block-4">
-                <div className="text-block-2">Submit Designs</div>
-                <div className="time">8:30 AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">Judging Begins</div>
-                <div className="time">9:00 AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">
-                  Q&amp;A and Networking with Adobe
-                </div>
-                <div className="time">11:00AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">
-                  Results + Awards + Closing Notes
-                </div>
-                <div className="time">12:00 PM</div>
-              </div>
-            </div>
-            <div
-              id="w-node-_92b3770f-d6a9-22eb-d348-3fbb3b74156c-8e5a2867"
-              data-w-id="92b3770f-d6a9-22eb-d348-3fbb3b74156c"
-              style={{ opacity: 0 }}
-              className="div-block-5"
-            >
-              <h3
-                className="heading---schedule"
-                style={{ color: "rgb(42 142 158 / var(--tw-text-opacity, 1))" }}
-              >
-                Day 1
-              </h3>
-              <h4 className="heading-4">Saturday, February 13th (PST)</h4>
-              <div className="div-block-4">
-                <div className="text-block-2">Opening Ceremony</div>
-                <div className="time">9:00 AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">Breakout to Design!</div>
-                <div className="time">9:30 AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">Team Formation</div>
-                <div className="time">9:30 AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">
-                  Ideating Good Design Solutions with{" "}
-                  <a
-                    href="https://www.linkedin.com/in/eric-j-lee-ba964b13b/"
-                    className="workshop-instructor"
-                  >
-                    Eric
-                  </a>
-                </div>
-                <div className="time">10:30 AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">
-                  Prototyping in Figma with{" "}
-                  <a
-                    href="https://www.linkedin.com/in/zoshuacolah/"
-                    className="workshop-instructor"
-                  >
-                    Zosh
-                  </a>
-                </div>
-                <div className="time">11:30 AM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">
-                  Next Level Interactions with Adobe
-                  <a
-                    href="https://www.linkedin.com/in/zoshuacolah/"
-                    className="workshop-instructor"
-                  ></a>
-                </div>
-                <div className="time">1:00 PM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">
-                  Personal Branding with{" "}
-                  <a
-                    href="https://www.linkedin.com/in/graceling/"
-                    className="workshop-instructor"
-                  >
-                    Grace Ling
-                  </a>
-                </div>
-                <div className="time">5:00 PM</div>
-              </div>
-              <div className="div-block-4">
-                <div className="text-block-2">
-                  Game Night
-                  <a
-                    href="https://www.linkedin.com/in/graceling/"
-                    className="workshop-instructor"
-                  ></a>
-                </div>
-                <div className="time">8:00 PM</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-      <header id="register-section" className="register-now">
-        <div className="flex-container w-container">
-          <div
-            data-w-id="8bc33048-db1c-80ac-0a05-360d5260dbdd"
-            style={{ opacity: 0 }}
-          >
-            <h1>Register Now</h1>
-            <p className="paragraph-4">
-              Everything we do is free – spots are limited so we recommend you
-              register soon!
-              <br />
+            <Badge className="register-now__badge">
+              <Users className="w-3.5 h-3.5" />
+              Free to join
+            </Badge>
+            <h2 className="register-now__title">Claim your spot</h2>
+            <p className="register-now__lead">
+              Join the 100-hour sprint, pick a track, and put proof of work in front of recruiters.
+              Spots are limited — register before tracks fill up.
             </p>
+            <ul className="register-now__points">
+              <li>
+                <span className="register-now__point-icon" aria-hidden>
+                  <Timer className="w-4 h-4" />
+                </span>
+                100-hour remote build window
+              </li>
+              <li>
+                <span className="register-now__point-icon" aria-hidden>
+                  <Users className="w-4 h-4" />
+                </span>
+                Solo or team of up to four
+              </li>
+              <li>
+                <span className="register-now__point-icon" aria-hidden>
+                  <Trophy className="w-4 h-4" />
+                </span>
+                $5,000 prize pool + recruiter intros
+              </li>
+            </ul>
             <a
               href="/register"
-                className="yellow-button w-button"
+              className="yellow-button w-button register-now__cta"
               onClick={(event) => {
                 event.preventDefault();
                 onNavigate("/register");
               }}
             >
-              REGISTER
+              Register now
+              <ArrowRight className="w-4 h-4" />
             </a>
-          </div>
-          <motion.div className="hero-image-mask-2 register-video-mask">
-            <HeroBackgroundVideo variant="section" />
+          </motion.div>
+          <motion.div
+            className="hero-image-mask-2 register-now__media register-video-mask"
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.55, delay: 0.08, ease: "easeOut" }}
+          >
+            <HeroBackgroundVideo
+              variant="section"
+              src={REGISTER_VIDEO_SRC}
+              poster={REGISTER_VIDEO_POSTER}
+            />
           </motion.div>
         </div>
       </header>
@@ -2369,7 +2377,13 @@ export default function PageContent({ onNavigate = () => {} }) {
              
               <br />
             </p>
-            <a href="#faq-section" className="yellow-button w-button">
+            <a
+              href="#faq-section"
+              className="yellow-button w-button"
+              onClick={(e) =>
+                handleSectionLinkClick(e.nativeEvent, "faq-section")
+              }
+            >
               READ FAQ
             </a>
           </motion.div>
@@ -2410,248 +2424,7 @@ export default function PageContent({ onNavigate = () => {} }) {
           </p>
         </div>
       </section>
-      <footer
-        id="footer"
-        data-w-id="c6eb07c7-c60d-b9f5-e76a-4e4fc9403843"
-        style={{ opacity: 0 }}
-        className="footer"
-      >
-        <div className="w-container">
-          <div className="footer-flex-container">
-            <a
-              href="/"
-              aria-current="page"
-              className="footer-logo-link w-inline-block w--current"
-            >
-              <img
-                height=""
-                style={{ opacity: 0 }}
-                data-w-id="c6eb07c7-c60d-b9f5-e76a-4e4fc9403847"
-               sizes="(max-width: 479px) 87vw, (max-width: 767px) 243.6875px, 284.296875px"
-                alt=""
-                className="footer-image-2"
-              />
-            </a>
-            <div
-              data-w-id="c6eb07c7-c60d-b9f5-e76a-4e4fc9403848"
-              style={{ opacity: 0 }}
-            >
-              <h2 className="footer-heading">Stay connected</h2>
-              <ul role="list" className="w-list-unstyled">
-                <li>
-                  <a
-                    href="https://www.facebook.com/FirstStepHack                                                                                                                         /"
-                    className="footer-link"
-                  >
-                    Facebook
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com/FirstStepHack                                                                                                                         uw/"
-                    target="_blank"
-                    className="footer-link"
-                  >
-                    Instagram
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div
-              data-w-id="c9eba20d-29c7-c544-ef55-105183e902c2"
-              style={{ opacity: 0 }}
-            >
-              <h2 className="footer-heading">Links</h2>
-              <ul role="list" className="w-list-unstyled">
-                <li>
-                  <a
-                    href="https://docs.google.com/forms/d/1J-m4nAXngTPy8BKMFAdNsNvB2JlHscp1rktFNQBQLXE"
-                    target="_blank"
-                    className="footer-link"
-                  >
-                    Register Now
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://forms.gle/yYLvGoNvXbAAJgZw7"
-                    target="_blank"
-                    className="footer-link"
-                  >
-                    Become a Mentor
-                  </a>
-                </li>
-              </ul>
-              <a
-                href="https://forms.gle/5tGoyntSoShFzWyA8"
-                target="_blank"
-                className="footer-link"
-              >
-                Sponsor Us
-              </a>
-            </div>
-            <div
-              data-w-id="ce1bc6a9-fd69-bb25-55cc-6d43b61fb118"
-              style={{ opacity: 0 }}
-            >
-              <h2 className="footer-heading">Team</h2>
-              <ul role="list" className="w-list-unstyled">
-                <li className="list-item">
-                  <a
-                    href="https://www.linkedin.com/in/lauren-ng-272197145/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e137241fd827ee722123_lauren.jpeg"
-                      sizes="32px"
-                      srcSet="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e137241fd827ee722123_lauren-p-500.jpeg 500w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e137241fd827ee722123_lauren.jpeg 800w"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/michelle-w-18a94b173/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle.jpg"
-                      sizes="32px"
-                      srcSet="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle-p-500.jpeg 500w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle-p-800.jpeg 800w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle-p-1080.jpeg 1080w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle-p-1600.jpeg 1600w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle-p-2000.jpeg 2000w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle-p-2600.jpeg 2600w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle-p-3200.jpeg 3200w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e20e37cf8d47983d44f8_michelle.jpg 3795w"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/ranjithr99/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e9607377d05ac790f92f261_ranjith%20(2).jpg"
-                      sizes="32px"
-                      srcSet="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e9607377d05ac790f92f261_ranjith%20(2)-p-500.jpeg 500w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e9607377d05ac790f92f261_ranjith%20(2).jpg 1472w"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/vishank-rughwani/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e936e4b73fd9d57fd86259f_vishank.jpg"
-                      sizes="32px"
-                      srcSet="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e936e4b73fd9d57fd86259f_vishank-p-500.jpeg 500w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e936e4b73fd9d57fd86259f_vishank-p-800.jpeg 800w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e936e4b73fd9d57fd86259f_vishank.jpg 922w"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                </li>
-                <li className="list-item">
-                  <a
-                    href="https://www.linkedin.com/in/anastasia-bequette-b9a425185/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e1374660cb21f8db0b1b_anastasia.jpeg"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/judy-nguyen-9b600914b/detail/photo/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e281652c1dab677a3980_Judy.jpeg"
-                      sizes="32px"
-                      srcSet="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e281652c1dab677a3980_Judy-p-500.jpeg 500w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e281652c1dab677a3980_Judy.jpeg 720w"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/zoshuacolah/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e18537cf8d426b3d3bdf_zosh.jpeg"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/ivan-brown-b190641a4/"
-                    className="link-block-4 w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6003f3b95fc12853da31c71d_ivan.jpg"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                </li>
-                <li className="list-item">
-                  <a
-                    href="https://www.linkedin.com/in/shreya-ramakrishnan-8808461a9/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6003f3b949096a28c73ccdf3_shreya.jpg"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/ashmann/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/5e91e1365f86782bf25a0632_ashmann_syngle.jpeg"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/saketh-n/"
-                    target="_blank"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e2f377705c2e0cbe63a5_72474501_1177485192437445_3547657439060951040_o.jpg"
-                      sizes="32px"
-                      srcSet="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e2f377705c2e0cbe63a5_72474501_1177485192437445_3547657439060951040_o-p-500.jpeg 500w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e2f377705c2e0cbe63a5_72474501_1177485192437445_3547657439060951040_o-p-800.jpeg 800w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e2f377705c2e0cbe63a5_72474501_1177485192437445_3547657439060951040_o-p-1080.jpeg 1080w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6001e2f377705c2e0cbe63a5_72474501_1177485192437445_3547657439060951040_o.jpg 1186w"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/shanemartin7631/"
-                    className="link-block w-inline-block"
-                  >
-                    <img
-                      src="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6005df4c7dc6575970a782ed_shane%20martin.jpeg"
-                      sizes="32px"
-                      srcSet="https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6005df4c7dc6575970a782ed_shane%20martin-p-500.jpeg 500w, https://uploads-ssl.webflow.com/5e90237d28e5d0112e5a2866/6005df4c7dc6575970a782ed_shane%20martin.jpeg 800w"
-                      alt=""
-                      className="image-2"
-                    />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div>Copyright © 2021 FirstStepHack                                                                                                                         . All rights reserved.</div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
