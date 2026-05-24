@@ -1,0 +1,522 @@
+.welcome.hero-fullbleed {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: min(100vh, 1120px);
+  padding: clamp(48px, 7vh, 88px) 0 clamp(48px, 6vh, 72px);
+}
+
+.welcome .hero-foreground {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: clamp(6px, 1vh, 16px) clamp(16px, 2.5vw, 56px) clamp(20px, 3.5vh, 48px);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.hero-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  pointer-events: none;
+}
+
+/* Center area for timer and hackathon card */
+.hero-center-area {
+  position: absolute;
+  left: 50%;
+  top: clamp(2px, 0.6vh, 10px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 94%;
+  max-width: 1080px;
+  pointer-events: auto;
+}
+
+/* Timer: minimal flat segments (see index.css) */
+.hero-timer-inline {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto clamp(8px, 1.2vh, 16px);
+}
+
+/* FirstStep hackathon card: wider — independent from the timer's width */
+.hero-hackathon-expanded {
+  width: 100%;
+  max-width: 1080px;
+  margin: clamp(12px, 2vh, 24px) auto 0;
+}
+
+/* Hero CTAs — reference-style chunky buttons (FirstStep logo colors) */
+.hero-bottom-cta {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(32px, 5.5vh, 80px);
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.hero-cta-group {
+  --cta-h: clamp(60px, 7vh, 68px);
+  --cta-text: calc(var(--cta-h) * 0.26);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.btn-follow,
+.btn-claim {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65em;
+  box-sizing: border-box;
+  height: var(--cta-h);
+  min-height: var(--cta-h);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: clamp(32px, 4.5vw, 48px);
+  border-radius: 16px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: var(--cta-text);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  transition:
+    all 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===================== */
+/* FOLLOW BUTTON - Darker teal style (secondary to primary CTA) */
+/* ===================== */
+.btn-follow {
+  background: rgba(2, 51, 69, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(103, 232, 249, 0.4);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.btn-follow__icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  stroke: #7dd3e8;
+}
+
+.btn-follow__label {
+  color: #ffffff;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-follow:hover {
+  background: rgba(2, 51, 69, 0.95);
+  border-color: rgba(103, 232, 249, 0.6);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.25),
+    0 0 20px rgba(103, 232, 249, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.btn-follow:hover .btn-follow__icon {
+  transform: translateY(-1px);
+}
+
+.btn-follow:active {
+  transform: translateY(0px);
+  transition-duration: 100ms;
+}
+
+.btn-follow:focus-visible {
+  outline: 2px solid #7dd3e8;
+  outline-offset: 3px;
+}
+
+/* ===================== */
+/* CLAIM YOUR SPOT BUTTON - Primary CTA with Gradient */
+/* ===================== */
+.btn-claim {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #2a8e9e 0%, #0891b2 50%, #06b6d4 100%);
+  border: 1.5px solid rgba(103, 232, 249, 0.5);
+  box-shadow:
+    0 4px 20px rgba(8, 145, 178, 0.4),
+    0 0 30px rgba(6, 182, 212, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-claim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.btn-claim:hover {
+  background: linear-gradient(135deg, #35a3b5 0%, #0fa3c5 50%, #10c5da 100%);
+  border-color: rgba(103, 232, 249, 0.7);
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 30px rgba(8, 145, 178, 0.5),
+    0 0 40px rgba(6, 182, 212, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn-claim:hover::before {
+  opacity: 1;
+}
+
+.btn-claim:active {
+  transform: translateY(-1px);
+  transition-duration: 100ms;
+}
+
+.btn-claim:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.btn-claim__label {
+  color: #ffffff !important;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-claim__arrow {
+  width: 1.3em;
+  height: 1.3em;
+  flex-shrink: 0;
+  stroke: #ffffff;
+  position: relative;
+  z-index: 1;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-claim:hover .btn-claim__arrow {
+  transform: translateX(5px);
+}
+
+/* Mint + Warm Sand hero promo (color-options opt-9) */
+.hero-promo-mint__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: clamp(14px, 2vh, 22px);
+  padding: clamp(16px, 2.2vh, 32px) clamp(24px, 4vw, 56px);
+  width: 100%;
+}
+
+.hero-promo-mint__eyebrow {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: clamp(16px, 1.8vw, 22px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ffd9a8 !important;
+  text-shadow:
+    0 1px 3px rgba(2, 40, 52, 0.55),
+    0 0 40px rgba(2, 51, 69, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.hero-promo-mint__eyebrow::before,
+.hero-promo-mint__eyebrow::after {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: #ffd9a8;
+  box-shadow: 0 0 12px rgba(255, 217, 168, 0.5);
+  flex-shrink: 0;
+}
+
+.hero-promo-mint__title {
+  font-size: clamp(48px, 7vw, 88px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: #a8f5d0 !important;
+  text-shadow:
+    0 0 40px rgba(2, 51, 69, 0.9),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+.hero-promo-mint__title em {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.12em;
+  color: #ffe8c4 !important;
+  text-shadow:
+    0 1px 3px rgba(2, 40, 52, 0.5),
+    0 0 40px rgba(2, 51, 69, 0.85);
+}
+
+.hero-promo-mint__caption-wrap {
+  margin-top: clamp(4px, 0.6vh, 8px);
+  min-height: clamp(52px, 6vh, 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  max-width: 900px;
+}
+
+.hero-promo-mint__caption {
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.5;
+  font-weight: 600;
+  color: #ffd9a8 !important;
+  letter-spacing: -0.005em;
+  text-shadow:
+    0 1px 3px rgba(2, 51, 69, 0.55),
+    0 0 40px rgba(2, 51, 69, 0.85);
+  white-space: pre-wrap;
+}
+
+.hero-promo-mint__caption-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background: #00ff9d;
+  margin-left: 4px;
+  transform: translateY(0.2em);
+  box-shadow: 0 0 14px rgba(0, 255, 157, 0.65);
+  animation: hero-promo-caption-blink 1s steps(2) infinite;
+}
+
+@keyframes hero-promo-caption-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+
+
+@media (min-width: 900px) and (max-width: 1180px) {
+  .hero-promo-mint__title {
+    font-size: clamp(52px, 5.5vw, 72px);
+  }
+}
+
+/* Unified hero layout — tablet and below */
+@media (max-width: 1023px) {
+  .welcome.hero-fullbleed {
+    min-height: auto;
+    padding: 32px 0 48px;
+  }
+
+  .welcome .hero-foreground {
+    position: relative;
+    inset: auto;
+    height: auto;
+    padding: 0 clamp(16px, 4vw, 24px);
+  }
+
+  .hero-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 0;
+  }
+
+  .floating-labels-container {
+    order: 1;
+  }
+
+  .hero-center-area {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    order: 2;
+  }
+
+  .hero-bottom-cta {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    margin-top: 8px;
+    order: 3;
+  }
+
+  .hero-promo-mint__title {
+    white-space: normal;
+    font-size: clamp(40px, 6vw, 56px);
+    line-height: 1.1;
+  }
+}
+
+@media (max-width: 767px) {
+  html {
+    overflow-x: clip;
+  }
+
+  #root {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
+  /* Override Webflow .welcome margins/padding — flush edge-to-edge on mobile */
+  .welcome.hero-fullbleed {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    min-height: min(88svh, 820px);
+  }
+
+  .welcome .hero-foreground {
+    padding: calc(var(--nav-height-mobile, 64px) + env(safe-area-inset-top, 0px) + 12px)
+      clamp(12px, 3vw, 16px)
+      10px;
+  }
+
+  .hero-stage {
+    gap: 20px;
+  }
+
+  /* Unwrap center area so timer + promo can reorder independently on mobile only */
+  .hero-center-area {
+    display: contents;
+  }
+
+  .hero-timer-inline--lead,
+  .hero-timer-inline {
+    order: 1;
+    width: 100%;
+    max-width: min(100%, 380px);
+    margin: 0 auto 2px;
+  }
+
+  .hero-hackathon-expanded,
+  .hero-promo-mint {
+    order: 2;
+    width: 100%;
+  }
+
+  .floating-labels-container {
+    order: 3;
+  }
+
+  .hero-bottom-cta {
+    order: 4;
+  }
+
+  .hero-timer-inline,
+  .hero-hackathon-expanded {
+    max-width: 100%;
+  }
+
+  .hero-hackathon-expanded {
+    margin-top: clamp(10px, 1.8vh, 16px);
+  }
+
+  .hero-bottom-cta {
+    width: min(92vw, 360px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 11px;
+    --cta-h: 48px;
+    --cta-text: 15px;
+  }
+
+  .btn-follow,
+  .btn-claim {
+    width: 100%;
+    border-radius: 12px;
+    padding-inline: 20px;
+    border-width: 1px;
+  }
+
+  .btn-claim {
+    order: -1;
+  }
+
+  .hero-promo-mint__inner {
+    padding: 18px 22px;
+    gap: 18px;
+  }
+
+  .hero-promo-mint__eyebrow {
+    font-size: clamp(13px, 3.4vw, 15px);
+    gap: 10px;
+  }
+
+  .hero-promo-mint__title {
+    font-size: clamp(30px, 8.5vw, 44px);
+  }
+
+  .hero-promo-mint__eyebrow::before,
+  .hero-promo-mint__eyebrow::after {
+    width: 28px;
+  }
+
+  .hero-promo-mint__caption-wrap {
+    min-height: 72px;
+    margin-top: 2px;
+  }
+
+  .hero-promo-mint__caption {
+    font-size: clamp(19px, 4.8vw, 26px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-cta-group {
+    --cta-h: 52px;
+    gap: 14px;
+  }
+
+  .hero-promo-mint__title {
+    font-size: clamp(40px, 6vw, 56px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-bottom-cta {
+    bottom: clamp(42px, 6.5vh, 68px);
+  }
+}

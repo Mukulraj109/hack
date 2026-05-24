@@ -19,6 +19,22 @@ function getTimeLeft(target: Date): TimeLeft {
 }
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
+
+type CountdownTimerProps = {
+  targetDate: Date;
+  variant?: "default" | "glass" | "minimal";
+  dateLabel?: string;
+};
+
+function MinimalSegment({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="countdown-minimal__segment">
+      <span className="countdown-minimal__value">{pad2(value)}</span>
+      <span className="countdown-minimal__label">{label}</span>
+    </div>
+  );
+}
+
 const FLIP_MS = 550;
 
 function FlipDigit({ digit }: { digit: string }) {
@@ -73,23 +89,21 @@ function FlipUnit({ label, value }: { label: string; value: number }) {
   );
 }
 
-export function CountdownTimer({
-  targetDate,
-  dateLabel = "June 10 · 8:00 PM EST",
+function FlipCountdown({
+  timeLeft,
+  dateLabel,
+  glass,
 }: {
-  targetDate: Date;
-  variant?: "default" | "glass";
-  dateLabel?: string;
+  timeLeft: TimeLeft;
+  dateLabel: string;
+  glass: boolean;
 }) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
-
-  useEffect(() => {
-    const id = setInterval(() => setTimeLeft(getTimeLeft(targetDate)), 1000);
-    return () => clearInterval(id);
-  }, [targetDate]);
-
   return (
-    <div className="flip-clock countdown-glass" role="timer" aria-live="polite">
+    <div
+      className={glass ? "flip-clock countdown-glass" : "flip-clock"}
+      role="timer"
+      aria-live="polite"
+    >
       <div className="flip-clock-header">
         <span className="fc-status">
           <span className="fc-dot" aria-hidden="true" />
@@ -114,6 +128,47 @@ export function CountdownTimer({
         <FlipUnit label="Seconds" value={timeLeft.seconds} />
       </div>
     </div>
+  );
+}
+
+export function CountdownTimer({
+  targetDate,
+  variant = "glass",
+  dateLabel = "June 10 · 8:00 PM EST",
+}: CountdownTimerProps) {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
+
+  useEffect(() => {
+    const id = setInterval(() => setTimeLeft(getTimeLeft(targetDate)), 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+
+  if (variant === "minimal") {
+    return (
+      <div className="countdown-minimal" role="timer" aria-live="polite">
+        <div className="countdown-minimal__panel">
+          <div className="countdown-minimal__meta">
+            <span className="countdown-minimal__status">Hackathon starts in</span>
+            <span className="countdown-minimal__date">{dateLabel}</span>
+          </div>
+
+          <div className="countdown-minimal__grid" aria-label="Time remaining">
+            <MinimalSegment label="Days" value={timeLeft.days} />
+            <MinimalSegment label="Hours" value={timeLeft.hours} />
+            <MinimalSegment label="Minutes" value={timeLeft.minutes} />
+            <MinimalSegment label="Seconds" value={timeLeft.seconds} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <FlipCountdown
+      timeLeft={timeLeft}
+      dateLabel={dateLabel}
+      glass={variant === "glass"}
+    />
   );
 }
 

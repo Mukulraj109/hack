@@ -76,7 +76,7 @@
         color: #00ff9d !important;
       }
 
-      /* Hero promo mint + warm sand — override global body text colors */
+      /* Hero promo — mint + warm sand (opt-9) */
       .hero-promo-mint__eyebrow {
         color: #ffd9a8 !important;
       }
@@ -84,20 +84,26 @@
         color: #a8f5d0 !important;
       }
       .hero-promo-mint__title em {
-        color: #ffd9a8 !important;
+        color: #ffe8c4 !important;
       }
-      .hero-cta-claim {
-        color: #2a1a00 !important;
-        background: #ffd9a8 !important;
+      .hero-cta-group .hero-cta-follow,
+      .hero-cta-group .hero-cta-follow__label {
+        color: #002b3d !important;
+      }
+      .hero-cta-group .hero-cta-follow svg {
+        stroke: #002b3d !important;
+        color: #002b3d !important;
+      }
+      .hero-cta-group .hero-cta-claim,
+      .hero-cta-group .hero-cta-claim__label,
+      .hero-cta-group .hero-cta-claim__arrow {
+        color: #ffffff !important;
       }
       .hero-cta-follow {
-        color: #023345 !important;
-        background: #00ff9d !important;
-        border-color: rgba(0, 255, 157, 0.85) !important;
+        background: #dce9ed !important;
       }
-      .hero-cta-follow:hover {
-        color: #012531 !important;
-        background: #33ffb1 !important;
+      .hero-cta-claim {
+        background: #56a3b1 !important;
       }
       .hero-promo-mint__caption {
         color: #ffd9a8 !important;
@@ -135,9 +141,51 @@
 
       .yellow-button,
       .w-button {
-        background-color: var(--brand-teal) !important;
-        border-color: var(--brand-teal) !important;
-        color: var(--surface) !important;
+        background: linear-gradient(135deg, #2a8e9e 0%, #0891b2 50%, #06b6d4 100%) !important;
+        border-color: transparent !important;
+        border: 1.5px solid rgba(103, 232, 249, 0.4) !important;
+        color: #ffffff !important;
+        box-shadow:
+          0 4px 16px rgba(8, 145, 178, 0.35),
+          0 0 24px rgba(6, 182, 212, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        transition: all 200ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .yellow-button::before,
+      .w-button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 50%);
+        opacity: 0;
+        transition: opacity 200ms ease;
+      }
+
+      .yellow-button:hover,
+      .w-button:hover {
+        transform: translateY(-2px) !important;
+        background: linear-gradient(135deg, #35a3b5 0%, #0fa3c5 50%, #10c5da 100%) !important;
+        box-shadow:
+          0 8px 24px rgba(8, 145, 178, 0.45),
+          0 0 32px rgba(6, 182, 212, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+      }
+
+      .yellow-button:hover::before,
+      .w-button:hover::before {
+        opacity: 1;
+      }
+
+      .yellow-button:active,
+      .w-button:active {
+        transform: translateY(0px) !important;
+        transition-duration: 100ms;
       }
 
       a {
@@ -191,31 +239,35 @@
         border-bottom: 1px solid rgba(2, 51, 69, 0.08);
         /* Webflow IX uses opacity:0 on export; React route must stay visible without IX */
         opacity: 1 !important;
+        display: block !important;
+        visibility: visible !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
         box-sizing: border-box !important;
-        position: sticky !important;
-        top: 0 !important;
         z-index: 1000 !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
       }
 
-      /*
-        Webflow MQs set .sticky-nav { padding-left: 0 }. Use header#nav + logo margin so the mark actually shifts.
-      */
-      header#nav.sticky-nav {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        padding-right: max(20px, env(safe-area-inset-right, 0px)) !important;
-        padding-left: max(0px, env(safe-area-inset-left, 0px)) !important;
-        box-sizing: border-box !important;
-        overflow: visible !important;
-      }
+      @media (min-width: 768px) {
+        .sticky-nav {
+          position: sticky !important;
+          top: 0 !important;
+        }
 
-      header#nav.sticky-nav .nav-logo-link {
-        margin-left: 48px !important;
-        transform: translateY(-10px) !important;
+        header#nav.sticky-nav {
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+          padding-right: max(20px, env(safe-area-inset-right, 0px)) !important;
+          padding-left: max(0px, env(safe-area-inset-left, 0px)) !important;
+          box-sizing: border-box !important;
+          overflow: visible !important;
+        }
+
+        header#nav.sticky-nav .nav-logo-link {
+          margin-left: 48px !important;
+          transform: translateY(-10px) !important;
+        }
       }
 
       .sticky-nav nav.w-container,
@@ -237,7 +289,7 @@
         display: grid !important;
         grid-template-columns: auto 1fr auto !important;
         align-items: center !important;
-        min-height: 88px !important;
+        min-height: 66px !important;
         overflow: visible !important;
         width: 100% !important;
         margin: 0 !important;
@@ -286,9 +338,20 @@
         justify-self: end !important;
         display: flex !important;
         align-items: center !important;
-        padding-right: max(48px, 2vw) !important;
+        padding-right: max(10px, 1vw) !important;
         position: relative !important;
         z-index: 2 !important;
+      }
+
+      .nav-bar__cta .yellow-button,
+      .nav-bar__cta .w-button,
+      .nav-bar__cta .nav-cta-button {
+        padding: 18px 44px !important;
+        min-height: 64px !important;
+        font-size: 20px !important;
+        font-weight: 800 !important;
+        border-radius: 18px !important;
+        gap: 14px !important;
       }
 
       .sticky-nav .nav-link {
@@ -348,16 +411,42 @@
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 11px 26px !important;
+        gap: 14px;
+        padding: 18px 44px !important;
         line-height: 1 !important;
-        min-height: 46px !important;
-        box-shadow: none !important;
-        font-size: 18px !important;
+        min-height: 64px !important;
+        font-size: 20px !important;
         font-weight: 800 !important;
-        border-radius: 999px !important;
+        border-radius: 18px !important;
+        background: linear-gradient(135deg, #2a8e9e 0%, #0891b2 50%, #06b6d4 100%) !important;
+        border: 2px solid rgba(103, 232, 249, 0.5) !important;
+        box-shadow:
+          0 6px 24px rgba(8, 145, 178, 0.4),
+          0 0 32px rgba(6, 182, 212, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.1) !important;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        transition: all 200ms cubic-bezier(0.22, 1, 0.36, 1) !important;
       }
 
-      @media (max-width: 1100px) {
+      .sticky-nav a.yellow-button.w-button:hover,
+      .sticky-nav .nav-cta-button:hover {
+        transform: translateY(-2px) !important;
+        background: linear-gradient(135deg, #35a3b5 0%, #0fa3c5 50%, #10c5da 100%) !important;
+        box-shadow:
+          0 8px 24px rgba(8, 145, 178, 0.45),
+          0 0 32px rgba(6, 182, 212, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+      }
+
+      .sticky-nav a.yellow-button.w-button:active,
+      .sticky-nav .nav-cta-button:active {
+        transform: translateY(0px) !important;
+        transition-duration: 100ms;
+      }
+
+      @media (min-width: 768px) and (max-width: 1100px) {
         .nav-bar__links {
           left: 48% !important;
         }
@@ -387,7 +476,7 @@
         .sticky-nav .nav-cta-button {
           min-height: 42px !important;
           padding: 10px 20px !important;
-          font-size: 16px !important;
+          font-size: 14px !important;
         }
       }
 
@@ -398,6 +487,20 @@
 
         .nav-bar__inner {
           justify-content: space-between !important;
+        }
+
+        /* Match nav.css — fixed header on mobile only */
+        header#nav.sticky-nav {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          width: 100% !important;
+          z-index: 1200 !important;
+          background-color: #ffffff !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          transform: none !important;
         }
       }
 
@@ -431,11 +534,13 @@
         flex-shrink: 0;
       }
 
-      .sticky-nav .nav-bar__logo img.nav-logo {
-        width: clamp(440px, 32vw, 620px) !important;
-        max-width: clamp(440px, 32vw, 620px) !important;
-        height: auto !important;
-        max-height: 110px !important;
+      @media (min-width: 768px) {
+        .sticky-nav .nav-bar__logo img.nav-logo {
+          width: clamp(440px, 32vw, 620px) !important;
+          max-width: clamp(440px, 32vw, 620px) !important;
+          height: auto !important;
+          max-height: 110px !important;
+        }
       }
 
       * {

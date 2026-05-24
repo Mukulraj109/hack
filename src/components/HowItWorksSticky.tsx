@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState, useCallback } from "react";
 import {
   motion,
   AnimatePresence,
@@ -103,6 +103,17 @@ export function HowItWorksSticky() {
 
   const step = STEPS[active];
 
+  const jumpToStep = useCallback((index: number) => {
+    if (!sectionRef.current) return;
+    const rect = sectionRef.current.getBoundingClientRect();
+    const target =
+      window.scrollY +
+      rect.top +
+      (rect.height * (index + 0.5)) / STEPS.length -
+      window.innerHeight / 2;
+    window.scrollTo({ top: target, behavior: "smooth" });
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -112,79 +123,48 @@ export function HowItWorksSticky() {
       aria-label="How it works"
     >
       <div className="hiw-sticky__viewport">
-        <header className="hiw-sticky__head">
-          <p className="hiw-sticky__label">Process</p>
-          <h2 className="hiw-sticky__title">How it works</h2>
-          <p className="hiw-sticky__intro">
-            Four steps from signup to recruiter intros — same timeline for every team.
-          </p>
-        </header>
+        <div className="hiw-sticky__pin-head">
+          <header className="hiw-sticky__head">
+            <p className="hiw-sticky__label">Process</p>
+            <h2 className="hiw-sticky__title">How it works</h2>
+            <p className="hiw-sticky__intro">
+              Four steps from signup to recruiter intros — same timeline for every team.
+            </p>
+          </header>
 
-        <div className="hiw-sticky__progress" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS.length} aria-valuenow={active + 1}>
-          <motion.div className="hiw-sticky__progress-fill" style={{ width: progressWidth }} />
+          <div
+            className="hiw-sticky__progress"
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={STEPS.length}
+            aria-valuenow={active + 1}
+          >
+            <motion.div className="hiw-sticky__progress-fill" style={{ width: progressWidth }} />
+          </div>
         </div>
 
         <div className="hiw-sticky__stage">
-          <div className="hiw-sticky__rail" aria-hidden>
+          <div className="hiw-sticky__rail" aria-label="Process steps">
             {STEPS.map((s, i) => (
-              <button
-                key={s.num}
-                className={`hiw-rail__dot${i === active ? " is-active" : ""}${i < active ? " is-done" : ""}`}
-                onClick={() => {
-                  if (!sectionRef.current) return;
-                  const rect = sectionRef.current.getBoundingClientRect();
-                  const target =
-                    window.scrollY + rect.top + (rect.height * (i + 0.5)) / STEPS.length - window.innerHeight / 2;
-                  window.scrollTo({ top: target, behavior: "smooth" });
-                }}
-                aria-label={`Jump to step ${s.num}: ${s.title}`}
-              >
-                <span className="hiw-rail__num">{s.num}</span>
-                <span className="hiw-rail__bar" aria-hidden />
-              </button>
-            ))}
-          </div>
-
-          <div className="hiw-sticky__copy">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={step.num}
-                initial={{ opacity: 0, y: 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -28 }}
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                className="hiw-copy"
-              >
-                <div className="hiw-copy__head">
+              <Fragment key={s.num}>
+                <button
+                  type="button"
+                  className={`hiw-rail__dot${i === active ? " is-active" : ""}${i < active ? " is-done" : ""}`}
+                  onClick={() => jumpToStep(i)}
+                  aria-label={`Jump to step ${s.num}: ${s.title}`}
+                  aria-current={i === active ? "step" : undefined}
+                >
+                  <span className="hiw-rail__num">{s.num}</span>
+                  <span className="hiw-rail__bar" aria-hidden />
+                </button>
+                {i < STEPS.length - 1 ? (
                   <span
-                    className="hiw-copy__icon"
-                    style={{
-                      background: `${step.accent}22`,
-                      color: step.accent,
-                      borderColor: `${step.accent}55`,
-                    }}
-                  >
-                    <step.Icon className="w-5 h-5" />
-                  </span>
-                  <span className="hiw-copy__num">Step {step.num} <span className="hiw-copy__divider">/</span> {STEPS.length.toString().padStart(2, "0")}</span>
-                </div>
-                <h3 className="hiw-copy__title">{step.title}</h3>
-                <p className="hiw-copy__body">{step.body}</p>
-                <ul className="hiw-copy__bullets">
-                  {step.bullets.map((b, i) => (
-                    <motion.li
-                      key={b}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.15 + i * 0.07 }}
-                    >
-                      <span className="hiw-bullet-dot" style={{ background: step.accent }} aria-hidden />
-                      {b}
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            </AnimatePresence>
+                    className={`hiw-rail__connector${i < active ? " is-done" : ""}${i === active ? " is-active" : ""}`}
+                    aria-hidden
+                  />
+                ) : null}
+              </Fragment>
+            ))}
           </div>
 
           <div className="hiw-sticky__media">
@@ -213,6 +193,51 @@ export function HowItWorksSticky() {
                   <span className="hiw-media__caption-title">{step.title}</span>
                 </figcaption>
               </motion.figure>
+            </AnimatePresence>
+          </div>
+
+          <div className="hiw-sticky__copy">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step.num}
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -28 }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="hiw-copy"
+              >
+                <div className="hiw-copy__head">
+                  <span
+                    className="hiw-copy__icon"
+                    style={{
+                      background: `${step.accent}22`,
+                      color: step.accent,
+                      borderColor: `${step.accent}55`,
+                    }}
+                  >
+                    <step.Icon className="w-5 h-5" />
+                  </span>
+                  <span className="hiw-copy__num">
+                    Step {step.num} <span className="hiw-copy__divider">/</span>{" "}
+                    {STEPS.length.toString().padStart(2, "0")}
+                  </span>
+                </div>
+                <h3 className="hiw-copy__title">{step.title}</h3>
+                <p className="hiw-copy__body">{step.body}</p>
+                <ul className="hiw-copy__bullets">
+                  {step.bullets.map((b, i) => (
+                    <motion.li
+                      key={b}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.15 + i * 0.07 }}
+                    >
+                      <span className="hiw-bullet-dot" style={{ background: step.accent }} aria-hidden />
+                      {b}
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>
