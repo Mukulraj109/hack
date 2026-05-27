@@ -1,3 +1,6 @@
+# Static Site — hackathon frontend (Vite)
+# Set env vars in Render Dashboard before deploy (Vite bakes them at build time).
+
 services:
   - type: web
     name: firststep-hackathon
@@ -8,3 +11,16 @@ services:
       - path: /*
         name: Cache-Control
         value: public, max-age=0, must-revalidate
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+      - key: VITE_AUTH0_DOMAIN
+        sync: false
+      - key: VITE_AUTH0_CLIENT_ID
+        sync: false
+      - key: VITE_AUTH0_AUDIENCE
+        sync: false
+      - key: VITE_AUTH0_CALLBACK_URL
+        sync: false
+      - key: VITE_ZOHO_FORM_URL
+        sync: false

@@ -1,24 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PageContent from "./PageContent";
+import { useAppPath } from "./hooks/useAppPath";
 import TasksPage from "./TasksPage";
+import SprintDashboard from "./SprintDashboard";
+import SubmissionContent from "./Submission";
+import RoadmapContent from "./Roadmap";
+import TeamContent from "./Team";
+import SprintLayout from "./SprintLayout";
+import SprintPortalGate from "./components/SprintPortalGate";
+import { useHackathonAuth } from "./auth/HackathonAuthContext";
+
+function ClaimSpotButton({ className, children, onNavigate }) {
+  const { isAuthenticated, login } = useHackathonAuth();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (isAuthenticated) {
+      onNavigate("/sprint");
+    } else {
+      login("/sprint");
+    }
+  };
+
+  return (
+    <a href="/sprint" className={className} onClick={handleClick}>
+      {children}
+    </a>
+  );
+}
 
 export default function App() {
-  const [path, setPath] = useState(() =>
-    typeof window !== "undefined" ? window.location.pathname : "/",
-  );
+  const { path, handleNavigate } = useAppPath();
 
   useEffect(() => {
-    const handlePopState = () => {
-      setPath(window.location.pathname);
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
     const webflow = window.Webflow;
     if (!webflow) {
-      return () => {
-        window.removeEventListener("popstate", handlePopState);
-      };
+      return undefined;
     }
 
     try {
@@ -34,23 +51,51 @@ export default function App() {
       console.error("Webflow re-init failed", error);
     }
 
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
   }, []);
-
-  const handleNavigate = (nextPath) => {
-    if (window.location.pathname === nextPath) {
-      return;
-    }
-
-    window.history.pushState({}, "", nextPath);
-    setPath(nextPath);
-  };
 
   if (path === "/register" || path === "/tasks") {
     return <TasksPage />;
   }
 
-  return <PageContent onNavigate={handleNavigate} />;
+  if (path === "/sprint") {
+    return (
+      <SprintLayout title="Sprint dashboard" currentPath={path} onNavigate={handleNavigate}>
+        <SprintPortalGate>
+          <SprintDashboard onNavigate={handleNavigate} />
+        </SprintPortalGate>
+      </SprintLayout>
+    );
+  }
+
+  if (path === "/submission") {
+    return (
+      <SprintLayout title="Submissions" currentPath={path} onNavigate={handleNavigate}>
+        <SprintPortalGate>
+          <SubmissionContent />
+        </SprintPortalGate>
+      </SprintLayout>
+    );
+  }
+
+  if (path === "/roadmap") {
+    return (
+      <SprintLayout title="Roadmap" currentPath={path} onNavigate={handleNavigate}>
+        <SprintPortalGate>
+          <RoadmapContent />
+        </SprintPortalGate>
+      </SprintLayout>
+    );
+  }
+
+  if (path === "/team") {
+    return (
+      <SprintLayout title="Team" currentPath={path} onNavigate={handleNavigate}>
+        <SprintPortalGate>
+          <TeamContent />
+        </SprintPortalGate>
+      </SprintLayout>
+    );
+  }
+
+  return <PageContent onNavigate={handleNavigate} ClaimSpotButton={ClaimSpotButton} />;
 }

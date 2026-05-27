@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --bp-mobile: 767px;
   --bp-tablet: 1023px;
@@ -79,19 +81,26 @@ html {
     linear-gradient(180deg, rgba(2, 51, 69, 0.28) 0%, rgba(2, 51, 69, 0.4) 100%);
 }
 
+/* Hero fullbleed — tablet/mobile: pan to left (people), desktop unchanged */
+@media (max-width: 1023px) {
+  .hero-bg-video--fullbleed .hero-bg-media {
+    object-position: 32% 52%;
+  }
+}
+
 @media (max-width: 767px) {
   .hero-scrim--hero {
     background:
       radial-gradient(
-        ellipse 90% 60% at 50% 20%,
-        rgba(2, 51, 69, 0.55) 0%,
-        transparent 70%
+        ellipse 85% 55% at 50% 38%,
+        rgba(2, 51, 69, 0.65) 0%,
+        transparent 68%
       ),
-      linear-gradient(180deg, rgba(2, 51, 69, 0.4) 0%, rgba(2, 51, 69, 0.65) 100%);
+      linear-gradient(180deg, rgba(2, 51, 69, 0.42) 0%, rgba(2, 51, 69, 0.58) 100%);
   }
 
-  .hero-bg-media {
-    object-position: center 22%;
+  .hero-bg-video--fullbleed .hero-bg-media {
+    object-position: 26% 54%;
   }
 }
 
@@ -2302,6 +2311,281 @@ html {
     min-height: 200px;
   }
 
+  /* Tracks only — compact deck for phone readability */
+  #tracks-section.trackstack {
+    --trackstack-head-in-card: clamp(108px, 15vh, 132px);
+    --trackstack-step: 34px;
+    padding: 32px 0 28px;
+  }
+
+  #tracks-section .trackstack__head--in-card {
+    padding: 14px 16px 10px;
+  }
+
+  #tracks-section .trackstack__eyebrow {
+    margin-bottom: 10px;
+    padding: 5px 12px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+
+  #tracks-section .trackstack__title {
+    font-size: clamp(22px, 6.2vw, 26px);
+    margin-bottom: 8px;
+    line-height: 1.15;
+  }
+
+  #tracks-section .trackstack__intro {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  #tracks-section .trackstack__cards {
+    gap: 20px;
+    padding-bottom: 48px;
+  }
+
+  #tracks-section .trackstack__card {
+    border-radius: 20px;
+  }
+
+  #tracks-section .trackstack__card--lead .trackstack__card-rail {
+    border-radius: 20px 20px 0 0;
+  }
+
+  #tracks-section .trackstack__card-inner {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  #tracks-section .trackstack__card-meta {
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  #tracks-section .trackstack__card-num {
+    font-size: 38px;
+  }
+
+  #tracks-section .trackstack__card-chip {
+    padding: 6px 12px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+
+  #tracks-section .trackstack__card-title {
+    font-size: 20px;
+    margin-bottom: 8px;
+    line-height: 1.15;
+  }
+
+  #tracks-section .trackstack__card-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  #tracks-section .trackstack__card-tags {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  #tracks-section .trackstack__card-tag {
+    font-size: 10px;
+    padding: 5px 10px;
+    letter-spacing: 0.12em;
+  }
+
+  #tracks-section .trackstack__card-foot {
+    padding-top: 14px;
+  }
+
+  #tracks-section .trackstack__card-cta {
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  #tracks-section .trackstack__card-lock {
+    width: 28px;
+    height: 28px;
+  }
+
+  #tracks-section .trackstack__card-iconwrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    top: 4px;
+    right: 4px;
+  }
+
+  #tracks-section .trackstack__card-iconwrap svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  #tracks-section .trackstack__card-media {
+    order: 0;
+    min-height: 0;
+    max-height: 132px;
+    border-radius: 16px;
+  }
+
+  #tracks-section .trackstack__card-img {
+    padding: 10px;
+    max-height: 112px;
+    object-fit: contain;
+  }
+
+  /* Judges — same compact deck pattern as tracks (phone only) */
+  #judges-section.trackstack {
+    --trackstack-head-in-card: clamp(108px, 15vh, 132px);
+    --trackstack-step: 34px;
+    padding: 32px 0 28px;
+  }
+
+  #judges-section .trackstack__head--in-card {
+    padding: 14px 16px 10px;
+  }
+
+  #judges-section .trackstack__eyebrow {
+    margin-bottom: 10px;
+    padding: 5px 12px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+
+  #judges-section .trackstack__title {
+    font-size: clamp(22px, 6.2vw, 26px);
+    margin-bottom: 8px;
+    line-height: 1.15;
+  }
+
+  #judges-section .trackstack__intro {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  #judges-section .trackstack__cards {
+    gap: 20px;
+    padding-bottom: 48px;
+  }
+
+  #judges-section .trackstack__card {
+    border-radius: 20px;
+  }
+
+  #judges-section .trackstack__card--lead .trackstack__card-rail {
+    border-radius: 20px 20px 0 0;
+  }
+
+  #judges-section .trackstack__card-inner {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  #judges-section .trackstack__card-meta {
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  #judges-section .trackstack__card-num {
+    font-size: 38px;
+  }
+
+  #judges-section .trackstack__card-chip {
+    padding: 6px 12px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+
+  #judges-section .trackstack__card-kicker {
+    margin-bottom: 4px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  #judges-section .trackstack__card-title {
+    font-size: 17px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  #judges-section .trackstack__card-role {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  #judges-section .trackstack__card-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  #judges-section .trackstack__card-callout {
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  #judges-section .trackstack__card-tags {
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  #judges-section .trackstack__card-tag {
+    font-size: 10px;
+    padding: 5px 10px;
+    letter-spacing: 0.12em;
+  }
+
+  #judges-section .trackstack__card-foot--note {
+    padding-top: 12px;
+    gap: 8px;
+  }
+
+  #judges-section .trackstack__card-foot-text {
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+
+  #judges-section .trackstack__card-foot--note svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #judges-section .trackstack__card-iconwrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    top: 4px;
+    right: 4px;
+  }
+
+  #judges-section .trackstack__card-iconwrap svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  #judges-section .trackstack__card-media--judge {
+    order: 0;
+    min-height: 0;
+    max-height: 84px;
+    border-radius: 16px;
+  }
+
+  #judges-section .trackstack__card-icon-hero {
+    min-height: 0;
+    max-height: 72px;
+    opacity: 0.28;
+  }
+
+  #judges-section .trackstack__card-icon-hero svg {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3113,3 +3397,245 @@ html {
     animation: none;
   }
 }
+
+@theme inline {
+  --animate-meteor-effect: meteor 5s linear infinite;
+  @keyframes meteor {
+  0% {
+    transform: rotate(215deg) translateX(0);
+    opacity: 1;
+    }
+  70% {
+    opacity: 1;
+    }
+  100% {
+    transform: rotate(215deg) translateX(-500px);
+    opacity: 0;
+    }
+  }
+}
+
+/* =========================================================
+   Stitch Design System - Prefix: stitch-
+   ========================================================= */
+
+@layer base {
+  :root {
+    /* Stitch Colors */
+    --stitch-surface: #f7f9fb;
+    --stitch-surface-dim: #d8dadc;
+    --stitch-surface-bright: #f7f9fb;
+    --stitch-surface-container-lowest: #ffffff;
+    --stitch-surface-container-low: #f2f4f6;
+    --stitch-surface-container: #eceef0;
+    --stitch-surface-container-high: #e6e8ea;
+    --stitch-surface-container-highest: #e0e3e5;
+    --stitch-on-surface: #191c1e;
+    --stitch-on-surface-variant: #3d4947;
+    --stitch-primary: #00685f;
+    --stitch-on-primary: #ffffff;
+    --stitch-primary-container: #008378;
+    --stitch-on-primary-container: #f4fffc;
+    --stitch-primary-fixed: #89f5e7;
+    --stitch-secondary: #006591;
+    --stitch-on-secondary: #ffffff;
+    --stitch-surface-variant: #e0e3e5;
+    --stitch-outline: #6d7a77;
+    --stitch-background: #f7f9fb;
+    --stitch-on-background: #191c1e;
+    --stitch-error: #ba1a1a;
+    --stitch-on-error: #ffffff;
+  }
+}
+
+/* Stitch Glass Card */
+.stitch-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.08);
+}
+
+.stitch-glass:hover {
+  backdrop-filter: blur(16px);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Stitch Material Symbols */
+.stitch-material-symbols {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Stitch Background Mesh */
+.stitch-bg-mesh {
+  background:
+    radial-gradient(at 0% 0%, rgba(13, 148, 136, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 101, 145, 0.05) 0px, transparent 50%);
+}
+
+/* Stitch Typography */
+.stitch-display-lg {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.stitch-headline-md {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.stitch-headline-sm {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+.stitch-body-lg {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+}
+
+.stitch-body-md {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.stitch-body-sm {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.stitch-label-md {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+.stitch-label-sm {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 14px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+/* =========================================================
+   Sprint Dashboard - Stitch Design
+   ========================================================= */
+
+/* Sprint Dashboard Color Palette */
+@layer base {
+  :root {
+    --sprint-primary: #00685f;
+    --sprint-primary-light: #89f5e7;
+    --sprint-primary-container: #008378;
+    --sprint-secondary: #006591;
+    --sprint-secondary-light: #c9e6ff;
+    --sprint-surface: #f7f9fb;
+    --sprint-surface-container: #eceef0;
+    --sprint-surface-container-low: #f2f4f6;
+    --sprint-surface-container-high: #e6e8ea;
+    --sprint-surface-variant: #e0e3e5;
+    --sprint-on-surface: #191c1e;
+    --sprint-on-surface-variant: #3d4947;
+    --sprint-on-background: #191c1e;
+    --sprint-on-primary: #ffffff;
+    --sprint-on-primary-container: #f4fffc;
+    --sprint-on-secondary: #ffffff;
+    --sprint-on-secondary-container: #004666;
+  }
+}
+
+/* Sprint Dashboard Tailwind Extensions */
+@layer utilities {
+  .font-headline-sm { font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; font-size: 24px; line-height: 32px; }
+  .font-headline-md { font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; font-size: 32px; line-height: 40px; letter-spacing: -0.01em; }
+  .font-display-lg { font-family: 'Hanken Grotesk', sans-serif; font-weight: 700; font-size: 48px; line-height: 56px; letter-spacing: -0.02em; }
+  .font-display-lg-mobile { font-family: 'Hanken Grotesk', sans-serif; font-weight: 700; font-size: 36px; line-height: 42px; letter-spacing: -0.02em; }
+  .font-body-md { font-family: 'Inter', sans-serif; font-size: 16px; line-height: 24px; }
+  .font-body-sm { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 20px; }
+  .font-body-lg { font-family: 'Inter', sans-serif; font-size: 18px; line-height: 28px; }
+  .font-label-sm { font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 14px; letter-spacing: 0.04em; font-weight: 500; }
+  .font-label-md { font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 16px; letter-spacing: 0.02em; font-weight: 500; }
+
+  /* Sprint Colors */
+  .bg-sprint-primary { background-color: var(--sprint-primary); }
+  .bg-sprint-primary-container { background-color: var(--sprint-primary-container); }
+  .bg-sprint-secondary { background-color: var(--sprint-secondary); }
+  .bg-sprint-surface { background-color: var(--sprint-surface); }
+  .bg-sprint-surface-container { background-color: var(--sprint-surface-container); }
+  .bg-sprint-surface-container-low { background-color: var(--sprint-surface-container-low); }
+  .bg-sprint-surface-container-high { background-color: var(--sprint-surface-container-high); }
+  .bg-sprint-surface-variant { background-color: var(--sprint-surface-variant); }
+  .bg-sprint-primary-fixed { background-color: var(--sprint-primary-light); }
+
+  .text-sprint-primary { color: var(--sprint-primary); }
+  .text-sprint-primary-container { color: var(--sprint-primary-container); }
+  .text-sprint-secondary { color: var(--sprint-secondary); }
+  .text-sprint-on-surface { color: var(--sprint-on-surface); }
+  .text-sprint-on-surface-variant { color: var(--sprint-on-surface-variant); }
+  .text-sprint-on-background { color: var(--sprint-on-background); }
+  .text-sprint-on-primary { color: var(--sprint-on-primary); }
+  .text-sprint-on-primary-container { color: var(--sprint-on-primary-container); }
+  .text-sprint-on-secondary { color: var(--sprint-on-secondary); }
+  .text-sprint-on-secondary-container { color: var(--sprint-on-secondary-container); }
+
+  /* Sprint Glass Card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(13, 148, 136, 0.08);
+  }
+
+  .glass-card:hover {
+    backdrop-filter: blur(16px);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+
+  /* Sprint Material Symbols */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  /* Sprint Background Mesh */
+  .bg-mesh {
+    background:
+      radial-gradient(at 0% 0%, rgba(13, 148, 136, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(0, 101, 145, 0.05) 0px, transparent 50%);
+  }
+
+  /* Sprint Shadow utilities */
+  .shadow-sprint-primary\/20 {
+    --tw-shadow-color: rgba(0, 104, 95, 0.2);
+  }
+}
+
+/* Sprint Font Classes */
+.font-display-lg { font-family: 'Hanken Grotesk', sans-serif; font-weight: 700; }
+.font-headline-sm { font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; }
+.font-headline-md { font-family: 'Hanken Grotesk', sans-serif; font-weight: 600; }
+.font-body-md { font-family: 'Inter', sans-serif; }
+.font-body-sm { font-family: 'Inter', sans-serif; }
+.font-body-lg { font-family: 'Inter', sans-serif; }
+.font-label-sm { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+.font-label-md { font-family: 'JetBrains Mono', monospace; font-weight: 500; }

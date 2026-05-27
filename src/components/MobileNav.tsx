@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, type MouseEvent } from "react";
 import { X, Menu } from "lucide-react";
 import { handleSectionLinkClick } from "../lib/scrollToSection";
+import { useHackathonAuth } from "../auth/HackathonAuthContext";
 
 export type NavLinkItem = {
   href: string;
@@ -26,6 +27,17 @@ export function MobileNav({
   onNavigate,
 }: MobileNavProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const { isAuthenticated, login } = useHackathonAuth();
+
+  const handleClaimSpot = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    onClose();
+    if (isAuthenticated) {
+      onNavigate("/sprint");
+    } else {
+      login("/sprint");
+    }
+  };
 
   useEffect(() => {
     document.body.classList.toggle("nav-menu-open", isOpen);
@@ -120,13 +132,9 @@ export function MobileNav({
             ))}
           </ul>
           <a
-            href="/register"
+            href="/sprint"
             className="mobile-nav-panel__cta yellow-button w-button nav-cta-button"
-            onClick={(event) => {
-              event.preventDefault();
-              onClose();
-              onNavigate("/register");
-            }}
+            onClick={handleClaimSpot}
           >
             Claim Your Spot
           </a>

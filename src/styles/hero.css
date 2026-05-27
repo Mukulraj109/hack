@@ -343,6 +343,7 @@
     position: relative;
     inset: auto;
     height: auto;
+    z-index: 1;
     padding: 0 clamp(16px, 4vw, 24px);
   }
 
@@ -399,10 +400,11 @@
     padding: 0 !important;
     width: 100%;
     max-width: 100%;
-    min-height: min(88svh, 820px);
+    min-height: min(72svh, 680px);
   }
 
   .welcome .hero-foreground {
+    z-index: 1;
     padding: calc(var(--nav-height-mobile, 64px) + env(safe-area-inset-top, 0px) + 12px)
       clamp(12px, 3vw, 16px)
       10px;

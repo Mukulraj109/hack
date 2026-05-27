@@ -16,6 +16,8 @@ import { FloatingLabels } from "./components/FloatingLabels";
 import { HeroPromoCaption } from "./components/HeroPromoCaption";
 import { MobileNav } from "./components/MobileNav";
 import Footer from "./components/Footer";
+import { ShimmerCard } from "./components/ui/shimmer-card";
+import WhatsAppButton from "./components/WhatsAppButton";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,12 +27,30 @@ const HACKATHON_START = new Date("2026-06-10T20:00:00-04:00");
 
 const NAV_LINKS = [
   { href: "https://firststepjob.com/", label: "Home", isActive: true, external: true },
+  { href: "https://firststepjob.com/products-services", label: "Products & Services", external: true },
   { href: "#career-accelerator-section", label: "About", sectionId: "career-accelerator-section" },
   { href: "#tracks-section", label: "Track", sectionId: "tracks-section" },
   { href: "#judges-section", label: "Judges", sectionId: "judges-section" },
 ];
 
-export default function PageContent({ onNavigate = () => {} }) {
+export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: ClaimBtn }) {
+  const ClaimSpot =
+    ClaimBtn ||
+    function DefaultClaim({ className, children }) {
+      return (
+        <a
+          href="/sprint"
+          className={className}
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate("/sprint");
+          }}
+        >
+          {children}
+        </a>
+      );
+    };
+
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
@@ -85,6 +105,16 @@ export default function PageContent({ onNavigate = () => {} }) {
               </li>
               <li>
                 <a
+                  href="https://firststepjob.com/products-services"
+                  className="nav-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Products & Services
+                </a>
+              </li>
+              <li>
+                <a
                   href="#career-accelerator-section"
                   className="nav-link"
                   onClick={(e) =>
@@ -119,16 +149,9 @@ export default function PageContent({ onNavigate = () => {} }) {
             </ul>
 
             <div className="nav-bar__cta nav-bar__cta--desktop">
-              <a
-                href="/register"
-                className="yellow-button w-button nav-cta-button"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onNavigate("/register");
-                }}
-              >
+              <ClaimSpot className="yellow-button w-button nav-cta-button" onNavigate={onNavigate}>
                 Claim Your Spot
-              </a>
+              </ClaimSpot>
             </div>
 
             <MobileNav
@@ -188,20 +211,13 @@ export default function PageContent({ onNavigate = () => {} }) {
               </button>
 
               {/* Claim Your Spot Button - Primary CTA with Gradient */}
-              <a
-                href="/register"
-                className="btn-claim"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onNavigate("/register");
-                }}
-              >
+              <ClaimSpot className="btn-claim" onNavigate={onNavigate}>
                 <span className="btn-claim__label">Claim Your Spot</span>
                 <svg className="btn-claim__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12"/>
                   <polyline points="12 5 19 12 12 19"/>
                 </svg>
-              </a>
+              </ClaimSpot>
             </div>
           </div>
 
@@ -286,7 +302,7 @@ export default function PageContent({ onNavigate = () => {} }) {
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           >
             <div className="career-prizes-grid">
-              <div className="career-prize-card">
+              <ShimmerCard highlightColor="rgba(34, 197, 94, 0.3)" className="career-prize-card">
                 <div className="career-prize-card__head">
                   <span
                     className="career-prize-card__icon"
@@ -306,31 +322,9 @@ export default function PageContent({ onNavigate = () => {} }) {
                   <li>2 Premium Plus accounts.</li>
                   <li>Developer API Credits to scale.</li>
                 </ul>
-              </div>
+              </ShimmerCard>
 
-              <div className="career-prize-card">
-                <div className="career-prize-card__head">
-                  <span
-                    className="career-prize-card__icon"
-                    style={{ background: "rgba(8, 145, 178, 0.28)", color: "#67e8f9" }}
-                  >
-                    <Briefcase className="w-5 h-5" />
-                  </span>
-                  <h3 className="career-prize-card__title">Top 10 Talent Pipeline</h3>
-                </div>
-                <ul className="career-prize-card__list">
-                  <li>
-                    <strong>Direct Fast-Track:</strong> Packaged portfolio sent straight to our network of
-                    OPT/H1B-friendly recruiters.
-                  </li>
-                  <li>
-                    <strong>Skip the HR Black Hole:</strong> Real hiring managers review your actual code and
-                    demo.
-                  </li>
-                </ul>
-              </div>
-
-              <div className="career-prize-card">
+              <ShimmerCard highlightColor="rgba(42, 142, 158, 0.3)" className="career-prize-card">
                 <div className="career-prize-card__head">
                   <span
                     className="career-prize-card__icon"
@@ -350,9 +344,30 @@ export default function PageContent({ onNavigate = () => {} }) {
                   <li>2 Premium Plan accounts.</li>
                   <li>$100 API Credits to keep building.</li>
                 </ul>
-              </div>
+              </ShimmerCard>
+              <ShimmerCard highlightColor="rgba(8, 145, 178, 0.3)" className="career-prize-card">
+                <div className="career-prize-card__head">
+                  <span
+                    className="career-prize-card__icon"
+                    style={{ background: "rgba(8, 145, 178, 0.28)", color: "#67e8f9" }}
+                  >
+                    <Briefcase className="w-5 h-5" />
+                  </span>
+                  <h3 className="career-prize-card__title">Top 10 Talent Pipeline</h3>
+                </div>
+                <ul className="career-prize-card__list">
+                  <li>
+                    <strong>Direct Fast-Track:</strong> Packaged portfolio sent straight to our network of
+                    OPT/H1B-friendly recruiters.
+                  </li>
+                  <li>
+                    <strong>Skip the HR Black Hole:</strong> Real hiring managers review your actual code and
+                    demo.
+                  </li>
+                </ul>
+              </ShimmerCard>
 
-              <div className="career-prize-card career-prize-card--certificate">
+              <ShimmerCard highlightColor="rgba(168, 85, 247, 0.3)" className="career-prize-card career-prize-card--certificate">
                 <div className="career-prize-card__head">
                   <span
                     className="career-prize-card__icon"
@@ -371,7 +386,7 @@ export default function PageContent({ onNavigate = () => {} }) {
                     <strong>Boost Your Profile:</strong> Fully shareable directly to LinkedIn and your resume.
                   </li>
                 </ul>
-              </div>
+              </ShimmerCard>
             </div>
           </motion.aside>
         </div>
@@ -465,17 +480,10 @@ export default function PageContent({ onNavigate = () => {} }) {
                 $5,000 prize pool + recruiter intros
               </li>
             </ul>
-            <a
-              href="/register"
-              className="yellow-button w-button register-now__cta"
-              onClick={(event) => {
-                event.preventDefault();
-                onNavigate("/register");
-              }}
-            >
+            <ClaimSpot className="yellow-button w-button register-now__cta" onNavigate={onNavigate}>
               Register now
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </ClaimSpot>
           </motion.div>
           <motion.div
             className="hero-image-mask-2 register-now__media register-video-mask"
@@ -573,6 +581,7 @@ export default function PageContent({ onNavigate = () => {} }) {
         </motion.div>
       </section>
       <Footer />
+      <WhatsAppButton />
     </>
   );
 }

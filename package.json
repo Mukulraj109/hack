@@ -10,10 +10,12 @@
     "cursor:site-review": "tsx scripts/cursor-site-review.ts"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.17.0",
     "@fontsource-variable/geist": "^5.2.8",
+    "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.38.0",
+    "framer-motion": "^12.40.0",
     "lucide-react": "^1.14.0",
     "radix-ui": "^1.4.3",
     "react": "^18.3.1",
