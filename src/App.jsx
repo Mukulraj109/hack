@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import PageContent from "./PageContent";
 import { useAppPath } from "./hooks/useAppPath";
-import TasksPage from "./TasksPage";
 import SprintDashboard from "./SprintDashboard";
 import SubmissionContent from "./Submission";
 import RoadmapContent from "./Roadmap";
@@ -9,6 +8,9 @@ import TeamContent from "./Team";
 import SprintLayout from "./SprintLayout";
 import SprintPortalGate from "./components/SprintPortalGate";
 import { useHackathonAuth } from "./auth/HackathonAuthContext";
+import { RequireHackathonAuth } from "./auth/RequireHackathonAuth";
+import { RequireHackathonAdmin } from "./auth/RequireHackathonAdmin";
+import AdminVerification from "./AdminVerification";
 
 function ClaimSpotButton({ className, children, onNavigate }) {
   const { isAuthenticated, login } = useHackathonAuth();
@@ -53,14 +55,20 @@ export default function App() {
 
   }, []);
 
+  useEffect(() => {
+    if (path === "/register" || path === "/tasks") {
+      handleNavigate("/sprint");
+    }
+  }, [path, handleNavigate]);
+
   if (path === "/register" || path === "/tasks") {
-    return <TasksPage />;
+    return null;
   }
 
   if (path === "/sprint") {
     return (
       <SprintLayout title="Sprint dashboard" currentPath={path} onNavigate={handleNavigate}>
-        <SprintPortalGate>
+        <SprintPortalGate returnTo={path} onNavigate={handleNavigate}>
           <SprintDashboard onNavigate={handleNavigate} />
         </SprintPortalGate>
       </SprintLayout>
@@ -70,7 +78,7 @@ export default function App() {
   if (path === "/submission") {
     return (
       <SprintLayout title="Submissions" currentPath={path} onNavigate={handleNavigate}>
-        <SprintPortalGate>
+        <SprintPortalGate returnTo={path} onNavigate={handleNavigate}>
           <SubmissionContent />
         </SprintPortalGate>
       </SprintLayout>
@@ -80,7 +88,7 @@ export default function App() {
   if (path === "/roadmap") {
     return (
       <SprintLayout title="Roadmap" currentPath={path} onNavigate={handleNavigate}>
-        <SprintPortalGate>
+        <SprintPortalGate returnTo={path} onNavigate={handleNavigate}>
           <RoadmapContent />
         </SprintPortalGate>
       </SprintLayout>
@@ -90,9 +98,21 @@ export default function App() {
   if (path === "/team") {
     return (
       <SprintLayout title="Team" currentPath={path} onNavigate={handleNavigate}>
-        <SprintPortalGate>
+        <SprintPortalGate returnTo={path} onNavigate={handleNavigate}>
           <TeamContent />
         </SprintPortalGate>
+      </SprintLayout>
+    );
+  }
+
+  if (path === "/admin") {
+    return (
+      <SprintLayout title="Admin" currentPath={path} onNavigate={handleNavigate}>
+        <RequireHackathonAuth returnTo="/admin" onNavigate={handleNavigate}>
+          <RequireHackathonAdmin onNavigate={handleNavigate}>
+            <AdminVerification />
+          </RequireHackathonAdmin>
+        </RequireHackathonAuth>
       </SprintLayout>
     );
   }

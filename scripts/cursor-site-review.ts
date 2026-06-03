@@ -10,7 +10,7 @@ const PROMPT = `You are reviewing a static marketing site that was exported from
 Read these paths relative to the repo root and nothing else unless needed for cross-references:
 - index.html
 - vite.config.js
-- src/App.jsx, src/PageContent.jsx, src/TasksPage.jsx, src/main.jsx
+- src/App.jsx, src/PageContent.jsx, src/main.jsx
 
 Produce a concise report with these sections only:
 1. **Stack summary** (one short paragraph: how routing, Webflow CSS/JS, and React interact).

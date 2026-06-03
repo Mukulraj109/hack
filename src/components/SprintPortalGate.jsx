@@ -2,11 +2,11 @@ import { RequireHackathonAuth } from "../auth/RequireHackathonAuth";
 import RegistrationBanner, { PendingAccountBanner } from "./RegistrationBanner";
 import { useHackathonAuth } from "../auth/HackathonAuthContext";
 
-export default function SprintPortalGate({ children }) {
+export default function SprintPortalGate({ children, returnTo = "/sprint", onNavigate }) {
   const { user, refreshSession } = useHackathonAuth();
 
   return (
-    <RequireHackathonAuth>
+    <RequireHackathonAuth returnTo={returnTo} onNavigate={onNavigate}>
       <div className="sprint-portal-gate">
         <RegistrationBanner user={user} onRefresh={refreshSession} />
         <PendingAccountBanner user={user} />

@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback, type MouseEvent } from "react";
 import { X, Menu } from "lucide-react";
 import { handleSectionLinkClick } from "../lib/scrollToSection";
 import { useHackathonAuth } from "../auth/HackathonAuthContext";
+import { ZOHO_HIRING_PARTNER_FORM_URL } from "../config/zohoForms";
 
 export type NavLinkItem = {
   href: string;
@@ -131,13 +132,31 @@ export function MobileNav({
               </li>
             ))}
           </ul>
-          <a
-            href="/sprint"
-            className="mobile-nav-panel__cta yellow-button w-button nav-cta-button"
-            onClick={handleClaimSpot}
-          >
-            Claim Your Spot
-          </a>
+          <div className="mobile-nav-panel__ctas">
+            <a
+              href="/sprint"
+              className="mobile-nav-panel__cta yellow-button w-button nav-cta-button"
+              onClick={handleClaimSpot}
+            >
+              Claim Your Spot
+            </a>
+            <a
+              href={ZOHO_HIRING_PARTNER_FORM_URL || "#"}
+              target={ZOHO_HIRING_PARTNER_FORM_URL ? "_blank" : undefined}
+              rel={ZOHO_HIRING_PARTNER_FORM_URL ? "noopener noreferrer" : undefined}
+              className="mobile-nav-panel__cta mobile-nav-panel__cta--partner nav-partner-button w-button"
+              aria-disabled={!ZOHO_HIRING_PARTNER_FORM_URL}
+              onClick={(event) => {
+                if (!ZOHO_HIRING_PARTNER_FORM_URL) {
+                  event.preventDefault();
+                  return;
+                }
+                onClose();
+              }}
+            >
+              Become a Partner
+            </a>
+          </div>
         </nav>
       </div>
 

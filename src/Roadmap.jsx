@@ -1,6 +1,22 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./styles/sprint-portal.css";
+
+function useSprintMobileLayout() {
+  const [mobile, setMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  return mobile;
+}
 
 // Material Icon Component
 function Icon({ name, filled = false, size = 24, style = {} }) {
@@ -16,12 +32,13 @@ function Icon({ name, filled = false, size = 24, style = {} }) {
 }
 
 // Enhanced Glass Card with 3D effect
-function GlassCard({ children, style = {}, className = "", isActive = false, glowColor = "#00685f" }) {
+function GlassCard({ children, style = {}, className = "", isActive = false, isMobile = false }) {
   const [isHovered, setIsHovered] = useState(false);
+  const hoverLift = !isMobile && isHovered;
 
   return (
     <motion.div
-      className={`rounded-2xl p-8 ${className}`}
+      className={`roadmap-glass-card rounded-2xl p-8 ${className}`}
       style={{
         background: "rgba(255, 255, 255, 0.95)",
         backdropFilter: "blur(20px)",
@@ -29,16 +46,16 @@ function GlassCard({ children, style = {}, className = "", isActive = false, glo
         border: `1px solid rgba(255, 255, 255, ${isActive ? "0.8" : "0.5"})`,
         boxShadow: isActive
           ? `0 25px 50px -12px rgba(0, 106, 97, 0.25), 0 0 40px rgba(0, 106, 97, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)`
-          : isHovered
+          : hoverLift
           ? `0 20px 40px rgba(13, 148, 136, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)`
           : `0 4px 20px rgba(13, 148, 136, 0.08), inset 0 1px 0 rgba(255,255,255,0.6)`,
-        transform: isHovered ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
-        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+        transform: hoverLift ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
+        transition: isMobile ? "box-shadow 0.25s ease" : "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         ...style
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ y: -8 }}
+      onMouseEnter={isMobile ? undefined : () => setIsHovered(true)}
+      onMouseLeave={isMobile ? undefined : () => setIsHovered(false)}
+      whileHover={isMobile ? undefined : { y: -8 }}
     >
       {/* Top highlight */}
       <div
@@ -54,7 +71,7 @@ function GlassCard({ children, style = {}, className = "", isActive = false, glo
 }
 
 // Timeline Node Marker with 3D effect
-function TimelineNode({ status = "completed", isActive = false }) {
+function TimelineNode({ status = "completed", isActive = false, isMobile = false }) {
   const config = {
     completed: { bg: "linear-gradient(135deg, #00685f 0%, #008378 100%)", icon: "check", glow: "#00685f" },
     active: { bg: "linear-gradient(135deg, #00685f 0%, #00a08a 100%)", icon: "play_arrow", glow: "#00685f" },
@@ -89,7 +106,7 @@ function TimelineNode({ status = "completed", isActive = false }) {
           background: c.bg,
           boxShadow: `0 8px 32px ${c.glow}40, inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.1)`,
         }}
-        whileHover={{ scale: 1.15 }}
+        whileHover={isMobile ? undefined : { scale: 1.15 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
       >
         {/* Inner highlight */}
@@ -103,7 +120,7 @@ function TimelineNode({ status = "completed", isActive = false }) {
       </motion.div>
       {/* Bottom connector */}
       <div
-        className="absolute left-1/2 top-full w-1 -translate-x-1/2"
+        className="roadmap-timeline-node__stem absolute left-1/2 top-full w-1 -translate-x-1/2"
         style={{
           height: "80px",
           background: status === "completed" || status === "active"
@@ -119,7 +136,7 @@ function TimelineNode({ status = "completed", isActive = false }) {
 function PhaseHeader({ phase, index }) {
   return (
     <motion.div
-      className="relative flex justify-center mb-12"
+      className="roadmap-phase-header relative flex justify-center mb-12"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -179,12 +196,12 @@ function PhaseHeader({ phase, index }) {
 }
 
 // Milestone Card with enhanced styling
-function MilestoneCard({ milestone, index, isLeft }) {
+function MilestoneCard({ milestone, index, isLeft, isMobile = false }) {
   const isGlowing = milestone.isGlowing;
 
   return (
     <motion.div
-      className={`flex items-center gap-8 mb-16 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
+      className={`roadmap-milestone-row flex items-center gap-8 mb-16 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
       initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -192,14 +209,14 @@ function MilestoneCard({ milestone, index, isLeft }) {
     >
       {/* Card */}
       <div className="flex-1 max-w-xl">
-        <GlassCard isActive={isGlowing} glowColor={isGlowing ? "#00685f" : "#006591"}>
+        <GlassCard isActive={isGlowing} isMobile={isMobile}>
           {milestone.content}
         </GlassCard>
       </div>
 
       {/* Timeline Node */}
       <div className="flex-shrink-0">
-        <TimelineNode status={milestone.status} isActive={isGlowing} />
+        <TimelineNode status={milestone.status} isActive={isGlowing} isMobile={isMobile} />
       </div>
 
       {/* Spacer for symmetry */}
@@ -210,9 +227,84 @@ function MilestoneCard({ milestone, index, isLeft }) {
 
 const CARD_SPRING = { type: "spring", stiffness: 380, damping: 28 };
 
-// Floating contact CTA — aligned to main column (past sidebar), not nested GlassCard
-function FloatingBanner() {
+const CONTACT_EMAIL = "Hackathon@firststepjob.com";
+
+/** Mobile-only: left FAB (like WhatsApp) with expandable contact panel */
+function RoadmapContactFab({ onDismiss }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDocClick = (e) => {
+      if (rootRef.current && !rootRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="roadmap-contact-fab">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="roadmap-contact-fab__panel"
+            role="dialog"
+            aria-label="Contact support"
+            initial={{ opacity: 0, y: 10, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 380, damping: 28 }}
+          >
+            <button
+              type="button"
+              className="roadmap-contact-fab__panel-close"
+              onClick={() => setOpen(false)}
+              aria-label="Close contact menu"
+            >
+              <Icon name="close" size={18} style={{ color: "#6d7a77" }} />
+            </button>
+            <p className="roadmap-contact-fab__title">Have questions?</p>
+            <p className="roadmap-contact-fab__subtitle">Contact the team</p>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="roadmap-contact-fab__cta"
+            >
+              Contact Us
+            </a>
+            <button
+              type="button"
+              className="roadmap-contact-fab__dismiss"
+              onClick={() => onDismiss?.()}
+            >
+              Don&apos;t show again
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <button
+        type="button"
+        className={`roadmap-contact-fab__trigger${open ? " roadmap-contact-fab__trigger--open" : ""}`}
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label={open ? "Close contact menu" : "Open contact menu"}
+      >
+        <Icon name="support_agent" size={26} style={{ color: "#00685f" }} />
+      </button>
+    </div>
+  );
+}
+
+// Desktop: floating contact bar in main column. Mobile: left FAB only.
+function FloatingBanner({ isMobile = false }) {
   const [isVisible, setIsVisible] = useState(true);
+
+  if (isMobile) {
+    return isVisible ? <RoadmapContactFab onDismiss={() => setIsVisible(false)} /> : null;
+  }
 
   return (
     <AnimatePresence>
@@ -229,33 +321,35 @@ function FloatingBanner() {
             whileHover={{ y: -4, boxShadow: "0 20px 50px rgba(0, 104, 95, 0.16)" }}
             transition={CARD_SPRING}
           >
-            <div className="roadmap-contact-bar__icon-wrap" aria-hidden>
-              <Icon name="support_agent" size={22} style={{ color: "#00685f" }} />
-            </div>
+            <div className="roadmap-contact-bar__head">
+              <div className="roadmap-contact-bar__icon-wrap" aria-hidden>
+                <Icon name="support_agent" size={22} style={{ color: "#00685f" }} />
+              </div>
 
-            <div className="roadmap-contact-bar__copy">
-              <p className="roadmap-contact-bar__title">Have questions?</p>
-              <p className="roadmap-contact-bar__subtitle">Contact the team</p>
+              <div className="roadmap-contact-bar__copy">
+                <p className="roadmap-contact-bar__title">Have questions?</p>
+                <p className="roadmap-contact-bar__subtitle">Contact the team</p>
+              </div>
+
+              <button
+                type="button"
+                className="roadmap-contact-bar__close"
+                onClick={() => setIsVisible(false)}
+                aria-label="Dismiss contact banner"
+              >
+                <Icon name="close" size={20} style={{ color: "#6d7a77" }} />
+              </button>
             </div>
 
             <motion.a
-              href="mailto:Hackathon@firststepjob.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="roadmap-contact-bar__cta"
               whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 500, damping: 24 }}
             >
               Contact Us
             </motion.a>
-
-            <button
-              type="button"
-              className="roadmap-contact-bar__close"
-              onClick={() => setIsVisible(false)}
-              aria-label="Dismiss contact banner"
-            >
-              <Icon name="close" size={20} style={{ color: "#6d7a77" }} />
-            </button>
           </motion.div>
         </motion.div>
       )}
@@ -263,8 +357,98 @@ function FloatingBanner() {
   );
 }
 
+/** Information sessions — Zoho signup per session (URLs from env when provided) */
+const INFORMATION_SESSIONS = [
+  {
+    icon: "lightbulb",
+    label: "Strategy & Briefs",
+    formUrl: import.meta.env.VITE_ZOHO_INFO_SESSION_STRATEGY,
+  },
+  {
+    icon: "code",
+    label: "Technical Overview",
+    formUrl: import.meta.env.VITE_ZOHO_INFO_SESSION_TECHNICAL,
+  },
+  {
+    icon: "videocam",
+    label: "Pitch & Demo Prep",
+    formUrl: import.meta.env.VITE_ZOHO_INFO_SESSION_PITCH,
+  },
+];
+
+function InformationSessionsMilestone({ isMobile = false }) {
+  return (
+    <div>
+      <div className="flex items-center gap-4 mb-6">
+        <div
+          className="w-14 h-14 rounded-xl flex items-center justify-center"
+          style={{ background: "linear-gradient(135deg, #00685f20 0%, #00685f10 100%)" }}
+        >
+          <Icon name="auto_stories" size={28} style={{ color: "#00685f" }} />
+        </div>
+        <div>
+          <h3
+            className="text-2xl font-bold"
+            style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}
+          >
+            Information sessions
+          </h3>
+          <p className="text-base" style={{ color: "#6d7a77" }}>
+            Want to learn more about the hackathon? Join our session.
+          </p>
+        </div>
+      </div>
+      <div className="space-y-3">
+        {INFORMATION_SESSIONS.map((session) => {
+          const hasForm = Boolean(session.formUrl);
+          const RowTag = hasForm ? motion.a : motion.div;
+          const rowProps = hasForm
+            ? {
+                href: session.formUrl,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              }
+            : {};
+
+          return (
+            <RowTag
+              key={session.label}
+              className="flex items-center justify-between p-4 rounded-xl transition-all hover:scale-[1.02]"
+              style={{
+                background: "#f8fafc",
+                border: "1px solid rgba(0,0,0,0.05)",
+                textDecoration: "none",
+                cursor: hasForm ? "pointer" : "default",
+              }}
+              whileHover={isMobile ? undefined : { background: "#f0f4f4" }}
+              {...rowProps}
+            >
+              <div className="flex items-center gap-3">
+                <Icon name={session.icon} size={20} style={{ color: "#00685f" }} />
+                <span className="font-medium" style={{ color: "#002B36" }}>
+                  {session.label}
+                </span>
+              </div>
+              <span
+                className="text-sm font-semibold px-3 py-1 rounded-lg"
+                style={{
+                  background: hasForm ? "#00685f" : "#00685f15",
+                  color: hasForm ? "#f4fffc" : "#00685f",
+                }}
+              >
+                {hasForm ? "Sign up" : "Coming soon"}
+              </span>
+            </RowTag>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // Main Roadmap Content
 export default function RoadmapContent() {
+  const isMobile = useSprintMobileLayout();
   const phases = [
     {
       phaseLabel: "Phase 1",
@@ -302,44 +486,7 @@ export default function RoadmapContent() {
         },
         {
           status: "completed",
-          content: (
-            <div>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #00685f20 0%, #00685f10 100%)" }}>
-                  <Icon name="auto_stories" size={28} style={{ color: "#00685f" }} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold" style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}>Information Series</h3>
-                  <p className="text-base" style={{ color: "#6d7a77" }}>Essential resources for participants</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { icon: "lightbulb", text: "Strategy & Briefs" },
-                  { icon: "code", text: "Technical Rubric" },
-                  { icon: "videocam", text: "Perfect Pitch Video" },
-                ].map((item, i) => (
-                  <motion.div
-                    key={item.text}
-                    className="flex items-center justify-between p-4 rounded-xl transition-all hover:scale-[1.02]"
-                    style={{
-                      background: "#f8fafc",
-                      border: "1px solid rgba(0,0,0,0.05)"
-                    }}
-                    whileHover={{ background: "#f0f4f4" }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon name={item.icon} size={20} style={{ color: "#00685f" }} />
-                      <span className="font-medium" style={{ color: "#002B36" }}>{item.text}</span>
-                    </div>
-                    <span className="text-sm font-medium px-3 py-1 rounded-lg" style={{ background: "#00685f15", color: "#00685f" }}>
-                      Available
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          ),
+          content: <InformationSessionsMilestone isMobile={isMobile} />,
         },
       ],
     },
@@ -477,7 +624,7 @@ export default function RoadmapContent() {
   ];
 
   return (
-    <div className="relative min-h-screen" style={{ background: "linear-gradient(180deg, #f7f9fb 0%, #f0f4f4 50%, #f7f9fb 100%)" }}>
+    <div className="roadmap-shell relative min-h-screen" style={{ background: "linear-gradient(180deg, #f7f9fb 0%, #f0f4f4 50%, #f7f9fb 100%)" }}>
       {/* Background decorations */}
       <div
         className="fixed top-0 right-0 w-[600px] h-[600px] rounded-full opacity-30 pointer-events-none"
@@ -488,7 +635,7 @@ export default function RoadmapContent() {
         style={{ background: "radial-gradient(circle, rgba(0, 101, 145, 0.15) 0%, transparent 70%)", filter: "blur(60px)" }}
       />
 
-      <div className="relative max-w-6xl mx-auto px-8 py-16">
+      <div className="roadmap-page relative max-w-6xl mx-auto px-8 py-16">
         {/* Hero Header */}
         <motion.header
           className="text-center mb-20"
@@ -540,7 +687,7 @@ export default function RoadmapContent() {
         </motion.header>
 
         {/* Timeline Container */}
-        <div className="relative">
+        <div className="roadmap-timeline relative">
           {/* Central Timeline Line */}
           <div
             className="absolute left-1/2 top-0 bottom-0 w-2 -translate-x-1/2 rounded-full hidden md:block"
@@ -563,6 +710,7 @@ export default function RoadmapContent() {
                     milestone={milestone}
                     index={milestoneIndex}
                     isLeft={milestoneIndex % 2 === 0}
+                    isMobile={isMobile}
                   />
                 ))}
               </div>
@@ -570,12 +718,10 @@ export default function RoadmapContent() {
           ))}
         </div>
 
-        {/* Bottom spacing for floating banner */}
-        <div className="h-32" />
+        <div className="roadmap-page__footer-spacer h-32" aria-hidden="true" />
       </div>
 
-      {/* Floating Contact Banner */}
-      <FloatingBanner />
+      <FloatingBanner isMobile={isMobile} />
     </div>
   );
 }

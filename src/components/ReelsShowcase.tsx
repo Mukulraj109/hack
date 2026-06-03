@@ -65,15 +65,21 @@ function GlassCard({
   reel,
   index,
   isMobile,
+  variant = "default",
 }: {
   reel: ReelItem;
   index: number;
   isMobile: boolean;
+  variant?: "default" | "sprint";
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [reduced, setReduced] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const isSprint = variant === "sprint";
+  const enableTilt = !isMobile && !isSprint;
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -126,7 +132,7 @@ function GlassCard({
   }, [reduced, isMobile]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isMobile || !wrapRef.current) return;
+    if (!enableTilt || !wrapRef.current) return;
     const rect = wrapRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -135,13 +141,13 @@ function GlassCard({
   };
 
   const handleMouseEnter = () => {
-    if (isMobile) return;
+    if (!enableTilt) return;
     setIsHovered(true);
     scale.set(1.05);
   };
 
   const handleMouseLeave = () => {
-    if (isMobile) return;
+    if (!enableTilt) return;
     setIsHovered(false);
     scale.set(1);
     mouseX.set(0);
@@ -151,27 +157,27 @@ function GlassCard({
   return (
     <motion.div
       ref={wrapRef}
-      className="reel-glass-card"
+      className={`reel-glass-card${isSprint ? " reel-glass-card--sprint" : ""}`}
       data-reel-index={index}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={enableTilt ? handleMouseMove : undefined}
+      onMouseEnter={enableTilt ? handleMouseEnter : undefined}
+      onMouseLeave={enableTilt ? handleMouseLeave : undefined}
       style={
-        isMobile
-          ? undefined
-          : {
+        enableTilt
+          ? {
               rotateX,
               rotateY,
               scale,
               transformStyle: "preserve-3d",
             }
+          : undefined
       }
-      initial={{ opacity: 0, y: isMobile ? 24 : 60, scale: isMobile ? 1 : 0.8 }}
+      initial={{ opacity: 0, y: isMobile || isSprint ? 24 : 60, scale: isMobile || isSprint ? 1 : 0.8 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{
-        duration: isMobile ? 0.5 : 0.7,
-        delay: isMobile ? index * 0.06 : index * 0.15,
+        duration: isMobile || isSprint ? 0.5 : 0.7,
+        delay: isMobile || isSprint ? index * 0.06 : index * 0.15,
         ease: [0.22, 1, 0.36, 1],
       }}
     >
@@ -181,11 +187,11 @@ function GlassCard({
       />
 
       <div className="reel-glass-card__body">
-        {reel.badge && (
+        {reel.badge && !isSprint && (
           <motion.div
             className="reel-glass-card__badge"
             initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: isHovered && !isMobile ? 1 : 0.85, x: 0 }}
+            animate={{ opacity: isHovered && enableTilt ? 1 : 0.85, x: 0 }}
             transition={{ duration: 0.3 }}
           >
             <Sparkles className="w-3 h-3" />
@@ -211,6 +217,8 @@ function GlassCard({
               playsInline
               preload="metadata"
               poster={reel.poster}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
             >
               <source src={reel.src} type="video/mp4" />
             </video>
@@ -218,18 +226,20 @@ function GlassCard({
 
           <div className="reel-glass-card__gradient-overlay" />
 
-          <motion.div
-            className="reel-glass-card__play"
-            aria-hidden="true"
-            animate={{ scale: isHovered && !isMobile ? 1.15 : 1 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          >
-            <Play className="reel-glass-card__play-icon" fill="currentColor" />
-          </motion.div>
+          {!isPlaying && (
+            <motion.div
+              className="reel-glass-card__play"
+              aria-hidden="true"
+              animate={{ scale: isHovered && enableTilt ? 1.15 : 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <Play className="reel-glass-card__play-icon" fill="currentColor" />
+            </motion.div>
+          )}
 
           <motion.div
             className="reel-glass-card__glow"
-            animate={{ opacity: isHovered && !isMobile ? 1 : 0 }}
+            animate={{ opacity: isHovered && enableTilt ? 1 : 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
             style={{
               background: isHovered
@@ -242,14 +252,14 @@ function GlassCard({
         <motion.div className="reel-glass-card__meta">
           <motion.h3
             className="reel-glass-card__title"
-            animate={{ x: isHovered && !isMobile ? 4 : 0 }}
+            animate={{ x: isHovered && enableTilt ? 4 : 0 }}
             transition={{ duration: 0.3 }}
           >
             {reel.title}
           </motion.h3>
           <motion.p
             className="reel-glass-card__caption"
-            animate={{ x: isHovered && !isMobile ? 4 : 0 }}
+            animate={{ x: isHovered && enableTilt ? 4 : 0 }}
             transition={{ duration: 0.3, delay: 0.05 }}
           >
             {reel.caption}
@@ -259,7 +269,7 @@ function GlassCard({
         <motion.div
           className="reel-glass-card__underline"
           initial={{ scaleX: 0 }}
-          animate={{ scaleX: isHovered && !isMobile ? 1 : 0 }}
+          animate={{ scaleX: isHovered && enableTilt ? 1 : 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
@@ -267,7 +277,13 @@ function GlassCard({
   );
 }
 
-export function ReelsShowcase({ reels = REEL_PLACEHOLDERS }: { reels?: ReelItem[] }) {
+export function ReelsShowcase({
+  reels = REEL_PLACEHOLDERS,
+  variant = "default",
+}: {
+  reels?: ReelItem[];
+  variant?: "default" | "sprint";
+}) {
   const isMobile = useMobileReelsLayout();
   const gridRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -322,43 +338,53 @@ export function ReelsShowcase({ reels = REEL_PLACEHOLDERS }: { reels?: ReelItem[
     card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   };
 
+  const isSprint = variant === "sprint";
+
   return (
-    <section id="reels-section" className="reels-showcase scroll-mt-28" aria-label="Event reels">
+    <section
+      id="reels-section"
+      className={`reels-showcase scroll-mt-28${isSprint ? " reels-showcase--sprint" : ""}`}
+      aria-label="Event reels"
+    >
       <motion.header
         className="reels-showcase__head"
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: isSprint ? 12 : 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <motion.p
-          className="reels-showcase__label"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <Sparkles className="w-4 h-4 inline mr-2" />
-          Highlights
-        </motion.p>
+        {!isSprint && (
+          <motion.p
+            className="reels-showcase__label"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <Sparkles className="w-4 h-4 inline mr-2" />
+            Highlights
+          </motion.p>
+        )}
         <motion.h2
           className="reels-showcase__title"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: isSprint ? 0.1 : 0.2 }}
         >
           See it in motion
         </motion.h2>
-        <motion.p
-          className="reels-showcase__intro"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          Short clips from past sprints and the community — placeholders for now; swap in your reels when they&apos;re ready.
-        </motion.p>
+        {!isSprint && (
+          <motion.p
+            className="reels-showcase__intro"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Short clips from past sprints and the community — placeholders for now; swap in your reels when they&apos;re ready.
+          </motion.p>
+        )}
       </motion.header>
 
       <motion.div
@@ -370,7 +396,7 @@ export function ReelsShowcase({ reels = REEL_PLACEHOLDERS }: { reels?: ReelItem[
         transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
       >
         {reels.map((reel, i) => (
-          <GlassCard key={reel.id} reel={reel} index={i} isMobile={isMobile} />
+          <GlassCard key={reel.id} reel={reel} index={i} isMobile={isMobile} variant={variant} />
         ))}
       </motion.div>
 

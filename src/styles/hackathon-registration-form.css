@@ -1,0 +1,267 @@
+/* Registration form popup modal */
+
+.hackathon-reg-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  background: rgba(0, 43, 54, 0.58);
+  backdrop-filter: blur(4px);
+}
+
+.hackathon-reg-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(1200px, calc(100vw - 2rem));
+  height: calc(100vh - 1rem);
+  max-height: calc(100vh - 1rem);
+  overflow: hidden;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow:
+    0 28px 80px rgba(0, 43, 54, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.hackathon-reg-modal__body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #f4f8f7;
+  padding: 0;
+}
+
+.hackathon-reg-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-shrink: 0;
+  padding: 1.1rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(0, 104, 95, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(137, 245, 231, 0.08) 100%
+  );
+}
+
+.hackathon-reg-modal__header-copy {
+  min-width: 0;
+}
+
+.hackathon-reg-modal__eyebrow {
+  margin: 0 0 0.25rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #00685f !important;
+}
+
+.hackathon-reg-modal__title {
+  margin: 0;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #002b36 !important;
+}
+
+.hackathon-reg-modal__email {
+  margin: 0.45rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #3d4947 !important;
+}
+
+.hackathon-reg-modal__email strong {
+  color: #00685f !important;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.hackathon-reg-modal__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 10px;
+  background: #eceef0;
+  color: #002b36;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.hackathon-reg-modal__close:hover {
+  background: #dfe3e6;
+}
+
+.hackathon-reg-modal__iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+.hackathon-reg-modal__iframe--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hackathon-reg-modal__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  background: rgba(244, 248, 247, 0.94);
+  color: #3d4947 !important;
+  font-size: 0.9375rem;
+}
+
+.hackathon-reg-modal__spinner {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 104, 95, 0.18);
+  border-top-color: #00685f;
+  animation: hackathon-reg-modal-spin 0.75s linear infinite;
+}
+
+@keyframes hackathon-reg-modal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hackathon-reg-modal__error {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: #93000a !important;
+  font-size: 0.9375rem;
+}
+
+.hackathon-reg-modal__footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid rgba(0, 104, 95, 0.1);
+  background: rgba(0, 104, 95, 0.03);
+}
+
+.hackathon-reg-modal__hint {
+  margin: 0;
+  flex: 1 1 220px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #6d7a77 !important;
+}
+
+.hackathon-reg-modal__footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+}
+
+/* Shared buttons (banner + modal) */
+.hackathon-reg-form__btn,
+.hackathon-reg-banner__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 999px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+  white-space: nowrap;
+}
+
+.hackathon-reg-form__btn--primary,
+.hackathon-reg-banner__btn--primary {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #00685f 0%, #007a6f 100%) !important;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 104, 95, 0.35);
+}
+
+.hackathon-reg-form__btn--primary:hover,
+.hackathon-reg-banner__btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 104, 95, 0.4);
+}
+
+.hackathon-reg-form__btn--secondary,
+.hackathon-reg-banner__btn--secondary {
+  color: #00685f !important;
+  background: #ffffff !important;
+  border: 2px solid rgba(0, 104, 95, 0.35);
+}
+
+.hackathon-reg-form__btn--secondary:hover,
+.hackathon-reg-banner__btn--secondary:hover {
+  color: #004d47 !important;
+  background: rgba(0, 104, 95, 0.06) !important;
+  border-color: #00685f;
+}
+
+@media (max-width: 768px) {
+  .hackathon-reg-modal__backdrop {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .hackathon-reg-modal {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .hackathon-reg-modal__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hackathon-reg-modal__footer-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hackathon-reg-form__btn,
+  .hackathon-reg-banner__btn {
+    width: 100%;
+  }
+}

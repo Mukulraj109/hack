@@ -1,8 +1,9 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-export async function apiFetch(path, { token, method = "GET", body } = {}) {
+export async function apiFetch(path, { token, method = "GET", body, formData, headers: customHeaders } = {}) {
   const headers = {
-    "Content-Type": "application/json",
+    ...(formData ? {} : { "Content-Type": "application/json" }),
+    ...(customHeaders || {}),
   };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -11,7 +12,7 @@ export async function apiFetch(path, { token, method = "GET", body } = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: formData ?? (body ? JSON.stringify(body) : undefined),
   });
 
   const data = await res.json().catch(() => ({}));

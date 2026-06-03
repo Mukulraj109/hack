@@ -15,6 +15,7 @@ import { JudgesStack } from "./components/JudgesStack";
 import { FloatingLabels } from "./components/FloatingLabels";
 import { HeroPromoCaption } from "./components/HeroPromoCaption";
 import { MobileNav } from "./components/MobileNav";
+import HiringPartnerButton from "./components/HiringPartnerButton";
 import Footer from "./components/Footer";
 import { ShimmerCard } from "./components/ui/shimmer-card";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -152,6 +153,7 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
               <ClaimSpot className="yellow-button w-button nav-cta-button" onNavigate={onNavigate}>
                 Claim Your Spot
               </ClaimSpot>
+              <HiringPartnerButton className="nav-partner-button w-button" />
             </div>
 
             <MobileNav
@@ -281,16 +283,10 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
                 Meet the Recruiter Lineup
                 <ArrowRight className="w-[18px] h-[18px]" />
               </a>
-              <a
-                href="#footer"
-                className="career-cta career-cta--ghost"
-                onClick={(e) =>
-                  handleSectionLinkClick(e.nativeEvent, "footer")
-                }
-              >
+              <HiringPartnerButton className="career-cta career-cta--ghost">
                 <Briefcase className="w-[18px] h-[18px]" />
                 Become a Hiring Partner
-              </a>
+              </HiringPartnerButton>
             </div>
           </motion.div>
           <motion.aside

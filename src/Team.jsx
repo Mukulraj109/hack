@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import "./styles/sprint-portal.css";
 import TeamSetupPanel from "./components/TeamSetupPanel";
+import PosterShareModal from "./components/team/PosterShareModal";
+import {
+  getTemplateById,
+  defaultTemplateId,
+  INSTAGRAM_TEMPLATES,
+  LINKEDIN_TEMPLATES,
+} from "./components/team/posterTemplates";
+import { useTeamSocialProof } from "./hooks/useTeamSocialProof";
+import { fetchSocialConfig } from "./lib/configCache";
 import { useHackathonAuth } from "./auth/HackathonAuthContext";
+import WhatsAppButton from "./components/WhatsAppButton";
+import { apiFetch } from "./lib/api";
 
 function memberDisplayName(m) {
   const name = [m.firstName, m.lastName].filter(Boolean).join(" ").trim();
@@ -23,6 +34,7 @@ function memberToCard(m) {
   const bio = bioParts.join(" ") || "Building with the team during the 100-hour sprint.";
 
   return {
+    id: m.id,
     name: memberDisplayName(m),
     role: m.isLeader ? "Team Captain" : "Core Member",
     isCaptain: Boolean(m.isLeader),
@@ -30,6 +42,7 @@ function memberToCard(m) {
     bio,
     isActive: Boolean(m.isCurrentUser),
     status: m.isCurrentUser ? "Active in Workspace" : "Ready for Review",
+    headshotUrl: m.headshotUrl || "",
   };
 }
 
@@ -75,8 +88,27 @@ function GlassCard({ children, style = {}, className = "" }) {
 }
 
 // Profile Card Component
-function ProfileCard({ member, index }) {
+function ProfileCard({ member, index, onUploadHeadshot, uploadState, onRemoveMember, removeBusy }) {
   const [isHovered, setIsHovered] = useState(false);
+  const fileInputRef = useRef(null);
+  const isUploading = uploadState?.memberId === member.id && uploadState?.status === "uploading";
+  const canRemove = Boolean(onRemoveMember && !member.isCaptain);
+  const isRemoving = removeBusy?.memberId === member.id;
+
+  const handlePick = () => {
+    if (!member.isActive || isUploading) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      await onUploadHeadshot?.(member.id, file);
+    } finally {
+      event.target.value = "";
+    }
+  };
 
   return (
     <motion.div
@@ -85,19 +117,42 @@ function ProfileCard({ member, index }) {
       transition={{ delay: index * 0.15, duration: 0.5 }}
     >
       <GlassCard>
-        <div className="flex flex-col md:flex-row gap-6 items-center">
-          {/* Avatar Placeholder */}
+        <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+          {/* Avatar / Headshot */}
           <motion.div
-            className="w-48 h-48 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer bg-white/50 transition-all"
+            className="w-32 h-32 md:w-40 md:h-40 shrink-0 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer bg-white/50 transition-all"
             style={{
               borderColor: isHovered ? "rgba(0, 104, 95, 0.6)" : "rgba(0, 104, 95, 0.3)",
             }}
             whileHover={{ scale: 1.05 }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={handlePick}
           >
-            <Icon name="add_a_photo" size={48} style={{ color: "rgba(0, 104, 95, 0.4)" }} />
-            <p className="text-sm mt-2" style={{ color: "rgba(0, 104, 95, 0.6)" }}>Upload Headshot</p>
+            {member.headshotUrl ? (
+              <img
+                src={member.headshotUrl}
+                alt={`${member.name} headshot`}
+                className="h-full w-full rounded-2xl object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <>
+                <Icon name="add_a_photo" size={48} style={{ color: "rgba(0, 104, 95, 0.4)" }} />
+                <p className="text-sm mt-2" style={{ color: "rgba(0, 104, 95, 0.6)" }}>
+                  {member.isActive ? "Upload Headshot" : "No headshot yet"}
+                </p>
+              </>
+            )}
+            {member.isActive && (
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={handleFileSelected}
+              />
+            )}
           </motion.div>
 
           {/* Member Info */}
@@ -140,6 +195,21 @@ function ProfileCard({ member, index }) {
             <p className="text-sm leading-relaxed line-clamp-2" style={{ color: "#6d7a77" }}>
               {member.bio}
             </p>
+            {member.isActive && (
+              <p className="text-xs" style={{ color: "#6d7a77" }}>
+                Allowed: JPG, PNG, WEBP up to 5MB.
+              </p>
+            )}
+            {isUploading && (
+              <p className="text-xs font-medium" style={{ color: "#00685f" }}>
+                Uploading headshot...
+              </p>
+            )}
+            {uploadState?.memberId === member.id && uploadState?.status === "error" && (
+              <p className="text-xs font-medium" style={{ color: "#ba1a1a" }}>
+                {uploadState.message}
+              </p>
+            )}
 
             {/* Status */}
             <div className="flex items-center gap-2">
@@ -153,6 +223,32 @@ function ProfileCard({ member, index }) {
                 {member.status}
               </span>
             </div>
+
+            {canRemove && (
+              <div className="pt-2">
+                <motion.button
+                  type="button"
+                  disabled={isRemoving}
+                  className="rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50"
+                  style={{
+                    background: "rgba(186, 26, 26, 0.08)",
+                    color: "#ba1a1a",
+                    border: "1px solid rgba(186, 26, 26, 0.25)",
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => onRemoveMember(member.id, member.name)}
+                >
+                  <Icon name="person_remove" size={18} style={{ marginRight: 6, verticalAlign: "middle" }} />
+                  {isRemoving ? "Removing…" : "Remove from team"}
+                </motion.button>
+                {removeBusy?.memberId === member.id && removeBusy?.status === "error" && (
+                  <p className="mt-2 text-xs font-medium" style={{ color: "#ba1a1a" }}>
+                    {removeBusy.message}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </GlassCard>
@@ -161,7 +257,13 @@ function ProfileCard({ member, index }) {
 }
 
 // Meet The Competitors Section
-function MeetCompetitorsSection({ members = [] }) {
+function MeetCompetitorsSection({
+  members = [],
+  onUploadHeadshot,
+  uploadState,
+  onRemoveMember,
+  removeBusy,
+}) {
   const cards = members.map(memberToCard);
 
   return (
@@ -172,7 +274,7 @@ function MeetCompetitorsSection({ members = [] }) {
       transition={{ delay: 0.4, duration: 0.5 }}
     >
       <h2 className="text-xl font-bold" style={{ fontFamily: "'Hanken Grotesk', sans-serif", color: "#002B36" }}>
-        Meet the Competitors
+        Meet the Team Members
       </h2>
       {cards.length === 0 ? (
         <GlassCard>
@@ -183,7 +285,15 @@ function MeetCompetitorsSection({ members = [] }) {
       ) : (
         <div className="space-y-6">
           {cards.map((member, i) => (
-            <ProfileCard key={members[i]?.id ?? i} member={member} index={i} />
+            <ProfileCard
+              key={members[i]?.id ?? i}
+              member={member}
+              index={i}
+              onUploadHeadshot={onUploadHeadshot}
+              uploadState={uploadState}
+              onRemoveMember={onRemoveMember}
+              removeBusy={removeBusy}
+            />
           ))}
         </div>
       )}
@@ -191,107 +301,59 @@ function MeetCompetitorsSection({ members = [] }) {
   );
 }
 
-// Instagram poster — fills shared-width frame (9:16)
-function InstagramPoster({ teamTitle = "YOUR TEAM", memberNames = "Your team" }) {
-  return (
-    <div className="team-instagram-poster">
-      <div className="team-instagram-poster__grid" aria-hidden />
-      <div className="team-instagram-poster__body">
-        <div>
-          <div
-            className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg"
-            style={{
-              background: "rgba(255, 255, 255, 0.12)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-            }}
-          >
-            <Icon name="rocket_launch" size={20} style={{ color: "#ffffff" }} />
-          </div>
-          <p className="team-instagram-poster__eyebrow">FirstStep Annual Hackathon</p>
-          <h4 className="team-instagram-poster__headline">
-            THE NEXT GEN
-            <br />
-            <span>BUILDERS.</span>
-          </h4>
-          <div className="mt-3 flex gap-2">
-            {[1, 2].map((i) => (
-              <div
-                key={i}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-                style={{
-                  border: "1px solid rgba(255, 255, 255, 0.35)",
-                  background: "rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                <Icon name="person" size={14} style={{ color: "rgba(255,255,255,0.5)" }} />
-              </div>
-            ))}
-          </div>
-          <p className="team-instagram-poster__names">{memberNames}</p>
+function SocialProofStatusCard({ platform, proof }) {
+  const label = platform === "instagram" ? "Instagram" : "LinkedIn";
+  if (!proof) {
+    return (
+      <div className="team-proof-card">
+        <div className="team-proof-card__row">
+          <strong style={{ color: "#002B36", fontSize: 14 }}>{label}</strong>
+          <span className="team-proof-card__badge team-proof-card__badge--pending">Not submitted</span>
         </div>
-        <div>
-          <div className="mb-2 h-px w-full" style={{ background: "rgba(255, 255, 255, 0.25)" }} />
-          <p className="team-instagram-poster__team-line">TEAM: {teamTitle}</p>
-          <p className="team-instagram-poster__tag">#ShipIn100Hrs</p>
-        </div>
+        <p className="team-proof-card__meta">Create a poster and submit proof to earn 25 team points.</p>
       </div>
-      <div className="team-poster-hover">
-        <Icon name="zoom_in" size={18} /> Preview 9:16
-      </div>
-    </div>
-  );
-}
+    );
+  }
 
-// LinkedIn poster — same column width as Instagram frame
-function LinkedInPoster({ teamTitle = "YOUR TEAM", memberNames = "Your team" }) {
+  const submitter = proof.submittedBy
+    ? [proof.submittedBy.firstName, proof.submittedBy.lastName].filter(Boolean).join(" ") ||
+      proof.submittedBy.email
+    : "Team member";
+
+  const badgeClass =
+    proof.status === "verified"
+      ? "team-proof-card__badge--verified"
+      : proof.status === "rejected"
+        ? "team-proof-card__badge--rejected"
+        : "team-proof-card__badge--pending";
+
+  const badgeLabel =
+    proof.status === "verified"
+      ? "Verified"
+      : proof.status === "rejected"
+        ? "Rejected"
+        : "Under review";
+
   return (
-    <div className="team-linkedin-poster">
-      <div className="absolute top-0 right-0 h-20 w-20 rounded-bl-full" style={{ background: "rgba(0, 104, 95, 0.1)" }} />
-      <div className="absolute bottom-0 left-0 h-14 w-14 rounded-tr-full" style={{ background: "rgba(57, 184, 253, 0.12)" }} />
-      <div className="team-linkedin-poster__body">
-        <div>
-          <div className="mb-3 flex items-center gap-2">
-            <div className="h-7 w-1 shrink-0 rounded-full" style={{ background: "#00685f" }} />
-            <span
-              className="text-xs font-bold"
-              style={{ color: "#191c1e", fontFamily: "'Hanken Grotesk', sans-serif" }}
-            >
-              FirstStep Annual Hackathon &apos;24
-            </span>
-          </div>
-          <h4
-            className="mb-2 text-xl font-bold"
-            style={{ color: "#00685f", fontFamily: "'Hanken Grotesk', sans-serif" }}
-          >
-            {teamTitle}
-          </h4>
-          <p className="text-sm leading-relaxed" style={{ color: "#6d7a77" }}>
-            {memberNames}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex -space-x-2">
-            {[
-              { bg: "#008378", iconColor: "#f4fffc" },
-              { bg: "#39b8fd", iconColor: "#004666" },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white shadow-sm"
-                style={{ background: item.bg }}
-              >
-                <Icon name="person" size={14} style={{ color: item.iconColor }} />
-              </div>
-            ))}
-          </div>
-          <span className="text-xs" style={{ color: "#6d7a77", fontFamily: "'JetBrains Mono', monospace" }}>
-            {memberNames}
-          </span>
-        </div>
+    <div className="team-proof-card">
+      <div className="team-proof-card__row">
+        <strong style={{ color: "#002B36", fontSize: 14 }}>{label}</strong>
+        <span className={`team-proof-card__badge ${badgeClass}`}>{badgeLabel}</span>
       </div>
-      <div className="team-poster-hover">
-        <Icon name="zoom_in" size={18} /> Preview 1:1
-      </div>
+      <p className="team-proof-card__meta">
+        Submitted by {submitter}
+        {proof.postUrl && (
+          <>
+            {" · "}
+            <a href={proof.postUrl} target="_blank" rel="noreferrer" className="team-proof-card__link">
+              View post
+            </a>
+          </>
+        )}
+      </p>
+      {proof.screenshotUrl && (
+        <img src={proof.screenshotUrl} alt={`${label} proof screenshot`} className="team-proof-card__thumb" loading="lazy" />
+      )}
     </div>
   );
 }
@@ -305,98 +367,503 @@ function PosterSlot({ label, variant, children }) {
   );
 }
 
-// Shareable posters — same width grid, top-aligned with narrative column
-function ShareablePostersSection({ teamTitle, memberNames }) {
+function TeamExplainerSection() {
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [showControls, setShowControls] = useState(true);
+  const controlsTimeoutRef = useRef(null);
+
+  const videoUrl = import.meta.env.VITE_TEAM_INFO_VIDEO_URL || "https://www.w3schools.com/html/mov_bbb.mp4";
+
+  const handlePlayPause = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    if (el.paused) {
+      el.play().catch(() => {});
+    } else {
+      el.pause();
+    }
+  };
+
+  const handleMuteToggle = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = !el.muted;
+    setIsMuted(el.muted);
+  };
+
+  const handleTimeUpdate = () => {
+    const el = videoRef.current;
+    if (!el || !el.duration) return;
+    setProgress((el.currentTime / el.duration) * 100);
+  };
+
+  const handleProgressClick = (e) => {
+    const el = videoRef.current;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    if (el && el.duration) {
+      el.currentTime = percent * el.duration;
+    }
+  };
+
+  const handleMouseMove = () => {
+    setShowControls(true);
+    if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    if (isPlaying) {
+      controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 2500);
+    }
+  };
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => { setIsPlaying(false); setShowControls(true); };
+    const onEnded = () => { setIsPlaying(false); setShowControls(true); };
+    el.addEventListener("play", onPlay);
+    el.addEventListener("pause", onPause);
+    el.addEventListener("ended", onEnded);
+    el.addEventListener("timeupdate", handleTimeUpdate);
+
+    // Reel-style: ensure autoplay kicks off, then fade controls out
+    el.play().catch(() => {});
+    const hideTimer = setTimeout(() => {
+      if (!el.paused) setShowControls(false);
+    }, 2500);
+
+    return () => {
+      clearTimeout(hideTimer);
+      el.removeEventListener("play", onPlay);
+      el.removeEventListener("pause", onPause);
+      el.removeEventListener("ended", onEnded);
+      el.removeEventListener("timeupdate", handleTimeUpdate);
+    };
+  }, []);
+
   return (
     <motion.div
-      className="team-posters-card"
       initial={{ opacity: 0, x: 24 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.35, duration: 0.5 }}
+      style={{ display: "flex", justifyContent: "center", width: "100%" }}
     >
-      <GlassCard className="team-posters-glass">
-        <div className="mb-6 flex items-center gap-2">
-          <Icon name="auto_fix_high" size={24} style={{ color: "#00685f" }} />
-          <h2 className="text-xl font-bold" style={{ fontFamily: "'Hanken Grotesk', sans-serif", color: "#002B36" }}>
-            Shareable Team Hype Posters
-          </h2>
+      <div
+        ref={containerRef}
+        style={{
+          position: "relative",
+          borderRadius: "24px",
+          overflow: "hidden",
+          background: "radial-gradient(circle at 50% 0%, #1a2530 0%, #0f1419 70%)",
+          boxShadow: "0 24px 48px -12px rgba(0, 104, 95, 0.25), 0 0 40px rgba(0, 106, 97, 0.1)",
+          border: "1px solid rgba(255, 255, 255, 0.6)",
+          aspectRatio: "9 / 16",
+          width: "100%",
+          maxWidth: "340px",
+          maxHeight: "600px",
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => isPlaying && setShowControls(false)}
+      >
+        {/* Context Badge */}
+        <div style={{
+          position: "absolute",
+          top: "16px",
+          left: "16px",
+          zIndex: 10,
+          background: "rgba(0, 0, 0, 0.4)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+          borderRadius: "9999px",
+          padding: "6px 12px",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          color: "#ffffff",
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: "11px",
+          fontWeight: "600",
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          pointerEvents: "none"
+        }}>
+          <Icon name="info" size={14} style={{ color: "#89f5e7" }} />
+          How it works
         </div>
 
-        <div className="team-posters-stack">
-          <PosterSlot label="Instagram (9:16)" variant="story">
-            <InstagramPoster teamTitle={teamTitle} memberNames={memberNames} />
-          </PosterSlot>
-          <PosterSlot label="LinkedIn (1:1)" variant="square">
-            <LinkedInPoster teamTitle={teamTitle} memberNames={memberNames} />
-          </PosterSlot>
-        </div>
+        <video
+            ref={videoRef}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              background: "#0f1419",
+              cursor: "pointer",
+            }}
+            autoPlay
+            muted={isMuted}
+            loop
+            playsInline
+            onClick={handlePlayPause}
+          >
+            <source src={videoUrl} type="video/mp4" />
+          </video>
 
-        <div className="team-posters-actions">
-          <motion.button
-            className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm"
+          {/* Play/Pause overlay — shown when paused or on hover */}
+          <div
             style={{
-              background: "#ffffff",
-              border: "2px solid #00685f",
-              color: "#00685f"
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
+              opacity: showControls || !isPlaying ? 1 : 0,
+              transition: "opacity 0.25s ease",
+              background: !isPlaying
+                ? "linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4) 100%)"
+                : "transparent",
             }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
           >
-            <Icon name="photo_library" size={18} /> Download Instagram Poster
-          </motion.button>
-          <motion.button
-            className="w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm"
+            <motion.div
+              initial={false}
+              animate={{ scale: isPlaying ? 0.8 : 1, opacity: isPlaying ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.15)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "2px solid rgba(255,255,255,0.3)",
+                pointerEvents: "none",
+              }}
+            >
+              <Icon name="play_arrow" filled size={36} style={{ color: "#ffffff", marginLeft: "4px" }} />
+            </motion.div>
+          </div>
+
+          {/* Bottom controls bar */}
+          <div
             style={{
-              background: "linear-gradient(135deg, #00685f 0%, #007a6f 100%)",
-              color: "#ffffff",
-              boxShadow: "0 4px 12px rgba(0, 104, 95, 0.3)"
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: "12px 16px",
+              background: "linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%)",
+              opacity: showControls || !isPlaying ? 1 : 0,
+              transition: "opacity 0.25s ease",
+              pointerEvents: showControls || !isPlaying ? "auto" : "none",
             }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
           >
-            <Icon name="download" size={18} /> Download LinkedIn Poster
-          </motion.button>
+            {/* Progress bar */}
+            <div
+              onClick={handleProgressClick}
+              style={{
+                height: "4px",
+                background: "rgba(255,255,255,0.2)",
+                borderRadius: "2px",
+                marginBottom: "10px",
+                cursor: "pointer",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${progress}%`,
+                  background: "#2a8e9e",
+                  borderRadius: "2px",
+                  transition: "width 0.1s linear",
+                }}
+              />
+            </div>
+
+            {/* Control buttons row */}
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <button
+                onClick={(e) => { e.stopPropagation(); handlePlayPause(); }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#ffffff",
+                  padding: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "4px",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+              >
+                <Icon name={isPlaying ? "pause" : "play_arrow"} filled size={24} />
+              </button>
+
+              <button
+                onClick={(e) => { e.stopPropagation(); handleMuteToggle(); }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#ffffff",
+                  padding: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "4px",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+              >
+                <Icon name={isMuted ? "volume_off" : "volume_up"} size={22} />
+              </button>
+
+              <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "12px", fontFamily: "'JetBrains Mono', monospace", marginLeft: "4px" }}>
+                {isPlaying ? "Playing" : "Paused"}
+              </span>
+
+              <div style={{ flex: 1 }} />
+
+              <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px" }}>
+                Platform Reel
+              </span>
+            </div>
+          </div>
         </div>
-      </GlassCard>
     </motion.div>
   );
 }
 
-// FAB Button
-function FABButton() {
+function TemplateGallerySection({ teamTitle, memberNames, members, onOpenModal }) {
+  const [hashtag, setHashtag] = useState("#ShipIn100Hrs");
+
+  useEffect(() => {
+    fetchSocialConfig()
+      .then((res) => setHashtag(res.data?.hashtag || "#ShipIn100Hrs"))
+      .catch(() => {});
+  }, []);
+
+  const posterMembers = members.map((m) => ({
+    ...m,
+    displayName: memberDisplayName(m),
+  }));
+
+  const posterProps = { teamTitle, memberNames, members: posterMembers, hashtag };
+
   return (
-    <motion.button
-      className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center z-50"
-      style={{
-        background: "linear-gradient(135deg, #00685f 0%, #007a6f 100%)",
-        color: "#ffffff",
-        boxShadow: "0 10px 40px rgba(0, 104, 95, 0.4)"
-      }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      animate={{ boxShadow: [
-        "0 10px 40px rgba(0, 104, 95, 0.4)",
-        "0 15px 50px rgba(0, 104, 95, 0.5)",
-        "0 10px 40px rgba(0, 104, 95, 0.4)"
-      ]}}
-      transition={{ duration: 2, repeat: Infinity }}
-    >
-      <Icon name="add" size={32} />
-    </motion.button>
+    <div className="mt-16">
+      <div className="mb-8 flex items-center gap-3">
+        <Icon name="auto_fix_high" size={28} style={{ color: "#00685f" }} />
+        <h2 className="text-2xl font-bold" style={{ fontFamily: "'Hanken Grotesk', sans-serif", color: "#002B36" }}>
+          Shareable Team Posters
+        </h2>
+      </div>
+      <p style={{ color: "#6d7a77", lineHeight: 1.7, marginBottom: "40px", maxWidth: "680px" }}>
+        Select a template below to download your team poster. Share it on social media and submit the link to earn points.
+      </p>
+
+      {/* Instagram Templates */}
+      <div className="mb-12">
+        <h3 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: "#002B36" }}>
+          <Icon name="photo_camera" size={20} style={{ color: "#E1306C" }} />
+          Instagram Templates
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {INSTAGRAM_TEMPLATES.map((t) => {
+            const Preview = t.component;
+            return (
+              <GlassCard key={t.id} className="flex flex-col h-full" style={{ padding: "24px" }}>
+                <div className="mb-4">
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(225,48,108,0.1)", color: "#E1306C" }}>
+                    {t.label}
+                  </span>
+                </div>
+                <PosterSlot label="Story format" variant="story">
+                  <Preview {...posterProps} />
+                </PosterSlot>
+                <div className="mt-auto pt-5">
+                  <button
+                    type="button"
+                    className="w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 text-sm transition-all"
+                    style={{
+                      background: "rgba(0, 104, 95, 0.1)",
+                      color: "#00685f",
+                      border: "1px solid rgba(0, 104, 95, 0.2)",
+                    }}
+                    onClick={() => onOpenModal("instagram", t.id)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#00685f";
+                      e.currentTarget.style.color = "#ffffff";
+                      e.currentTarget.style.borderColor = "#00685f";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(0, 104, 95, 0.1)";
+                      e.currentTarget.style.color = "#00685f";
+                      e.currentTarget.style.borderColor = "rgba(0, 104, 95, 0.2)";
+                    }}
+                  >
+                    <Icon name="download" size={18} /> Select & Share
+                  </button>
+                </div>
+              </GlassCard>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* LinkedIn Templates */}
+      <div>
+        <h3 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: "#002B36" }}>
+          <Icon name="work" size={20} style={{ color: "#0A66C2" }} />
+          LinkedIn Templates
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {LINKEDIN_TEMPLATES.map((t) => {
+            const Preview = t.component;
+            return (
+              <GlassCard key={t.id} className="flex flex-col h-full" style={{ padding: "24px" }}>
+                <div className="mb-4">
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(10,102,194,0.1)", color: "#0A66C2" }}>
+                    {t.label}
+                  </span>
+                </div>
+                <PosterSlot label="Landscape format" variant="square">
+                  <Preview {...posterProps} />
+                </PosterSlot>
+                <div className="mt-auto pt-5">
+                  <button
+                    type="button"
+                    className="w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 text-sm transition-all"
+                    style={{
+                      background: "rgba(0, 104, 95, 0.1)",
+                      color: "#00685f",
+                      border: "1px solid rgba(0, 104, 95, 0.2)",
+                    }}
+                    onClick={() => onOpenModal("linkedin", t.id)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#00685f";
+                      e.currentTarget.style.color = "#ffffff";
+                      e.currentTarget.style.borderColor = "#00685f";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(0, 104, 95, 0.1)";
+                      e.currentTarget.style.color = "#00685f";
+                      e.currentTarget.style.borderColor = "rgba(0, 104, 95, 0.2)";
+                    }}
+                  >
+                    <Icon name="share" size={18} /> Select & Share
+                  </button>
+                </div>
+              </GlassCard>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 
 // Main Team Component
 export default function TeamContent() {
-  const { team } = useHackathonAuth();
+  const { team, refreshSession, getAccessToken, user, canWrite } = useHackathonAuth();
+  const { proofByPlatform, submitProof, reload: reloadProofs } = useTeamSocialProof(team?.id);
+  const [uploadState, setUploadState] = useState({ status: "idle", memberId: null, message: "" });
+  const [removeBusy, setRemoveBusy] = useState({ status: "idle", memberId: null, message: "" });
+  const [modalPlatform, setModalPlatform] = useState(null);
+  const [modalTemplateId, setModalTemplateId] = useState(null);
   const displayTitle = team?.title || "Your team";
   const displayCode = team?.inviteCode || "—";
   const members = team?.members ?? [];
+  const isCaptain = Boolean(members.find((m) => m.isCurrentUser && m.isLeader));
   const posterTeamTitle = (team?.title || "Your team").toUpperCase();
   const posterMemberNames =
     members.length > 0
       ? members.map(memberDisplayName).join(" & ")
       : "Your team";
+
+  const handleRemoveMember = async (memberId, memberName) => {
+    if (!team?.id || !isCaptain || !canWrite) return;
+    const label = memberName || "this teammate";
+    if (!window.confirm(`Remove ${label} from the team? They can rejoin with the Team ID if there is an open slot.`)) {
+      return;
+    }
+
+    setRemoveBusy({ status: "loading", memberId, message: "" });
+    try {
+      const token = await getAccessToken();
+      await apiFetch(`/api/teams/${team.id}/members/${memberId}`, {
+        token,
+        method: "DELETE",
+      });
+      await refreshSession();
+      setRemoveBusy({ status: "idle", memberId: null, message: "" });
+    } catch (err) {
+      setRemoveBusy({
+        status: "error",
+        memberId,
+        message: err?.message || "Could not remove team member.",
+      });
+    }
+  };
+
+  const handleUploadHeadshot = async (memberId, file) => {
+    if (!user || memberId !== user.id) return;
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setUploadState({
+        status: "error",
+        memberId,
+        message: "Invalid file type. Use JPG, PNG, or WEBP.",
+      });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadState({
+        status: "error",
+        memberId,
+        message: "Image is too large. Max allowed size is 5MB.",
+      });
+      return;
+    }
+
+    setUploadState({ status: "uploading", memberId, message: "" });
+    try {
+      const token = await getAccessToken();
+      const formData = new FormData();
+      formData.append("headshot", file);
+      await apiFetch("/api/hackathon/me/headshot", {
+        token,
+        method: "POST",
+        formData,
+      });
+      await refreshSession();
+      setUploadState({ status: "success", memberId, message: "Headshot uploaded." });
+    } catch (err) {
+      setUploadState({
+        status: "error",
+        memberId,
+        message: err?.message || "Headshot upload failed. Please try again.",
+      });
+    }
+  };
 
   return (
     <div className="relative min-h-screen" style={{ background: "linear-gradient(180deg, #f7f9fb 0%, #f0f4f4 100%)" }}>
@@ -406,7 +873,7 @@ export default function TeamContent() {
         filter: "blur(60px)"
       }} />
 
-      <div className="relative max-w-[1440px] mx-auto px-8 py-8">
+      <div className="team-page relative max-w-[1440px] mx-auto px-8 py-8">
         <TeamSetupPanel />
         {/* Top Identity Banner */}
         <motion.header
@@ -444,22 +911,56 @@ export default function TeamContent() {
         </motion.header>
 
         {/* Main Split Layout — columns share the same top edge */}
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-10">
-          <div className="flex flex-col gap-8 lg:col-span-6">
-            <MeetCompetitorsSection members={members} />
-          </div>
-
-          <div className="w-full lg:col-span-4">
-            <ShareablePostersSection
-              teamTitle={posterTeamTitle}
-              memberNames={posterMemberNames}
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+          <div className="flex flex-col gap-8 lg:col-span-7">
+            <MeetCompetitorsSection
+              members={members}
+              onUploadHeadshot={handleUploadHeadshot}
+              uploadState={uploadState}
+              onRemoveMember={isCaptain && canWrite ? handleRemoveMember : undefined}
+              removeBusy={removeBusy}
             />
           </div>
+
+          <div className="w-full lg:col-span-5">
+            <TeamExplainerSection />
+          </div>
         </div>
+
+        {team?.id && (
+          <TemplateGallerySection
+            teamTitle={posterTeamTitle}
+            memberNames={posterMemberNames}
+            members={members}
+            onOpenModal={(platform, templateId) => {
+              setModalPlatform(platform);
+              setModalTemplateId(templateId);
+            }}
+          />
+        )}
       </div>
 
-      {/* FAB Button */}
-      <FABButton />
+      <PosterShareModal
+        open={Boolean(modalPlatform)}
+        platform={modalPlatform || "instagram"}
+        initialTemplateId={modalTemplateId}
+        onClose={() => {
+          setModalPlatform(null);
+          setModalTemplateId(null);
+        }}
+        teamTitle={posterTeamTitle}
+        memberNames={posterMemberNames}
+        members={members}
+        teamId={team?.id}
+        canWrite={canWrite}
+        existingProof={modalPlatform ? proofByPlatform[modalPlatform] : null}
+        onSubmitProof={async (payload) => {
+          await submitProof(payload);
+          await reloadProofs();
+        }}
+      />
+
+      <WhatsAppButton />
     </div>
   );
 }

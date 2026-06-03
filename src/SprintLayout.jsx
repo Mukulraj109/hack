@@ -1,9 +1,19 @@
 // Shared Layout for Sprint Dashboard pages
 // Contains Header, Sidebar, and wraps page content
 
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useHackathonAuth } from "./auth/HackathonAuthContext";
 import "./styles/sprint-portal.css";
+import "./styles/sprint-portal-mobile.css";
 import SubmissionCountdownBar from "./components/sprint/SubmissionCountdownBar";
 import SprintUserMenu from "./components/sprint/SprintUserMenu";
+import Footer from "./components/Footer";
+import WhatsAppButton from "./components/WhatsAppButton";
+
+const SPRINT_SIDEBAR_WIDTH = 288;
+const SPRINT_SIDEBAR_COLLAPSED_WIDTH = 72;
+const SPRINT_TOP_BAR_HEIGHT = 116;
+const SIDEBAR_STORAGE_KEY = "sprint-sidebar-collapsed";
 
 // Material Icon Component
 function Icon({ name, filled = false, size = 24, style = {} }) {
@@ -18,192 +28,248 @@ function Icon({ name, filled = false, size = 24, style = {} }) {
   );
 }
 
-// Sidebar Navigation
-function Sidebar({ currentPath, onNavigate }) {
+function readSidebarCollapsed() {
+  try {
+    return localStorage.getItem(SIDEBAR_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+// Sidebar Navigation (brand logo lives in the top bar)
+function Sidebar({ currentPath, onNavigate, collapsed, onToggleCollapsed, closeSidebarOnMobile, isAdmin }) {
   const navItems = [
     { icon: "dashboard", label: "Dashboard", path: "/sprint" },
     { icon: "upload_file", label: "Submission", path: "/submission" },
     { icon: "map", label: "Roadmap", path: "/roadmap" },
     { icon: "group", label: "Team", path: "/team" },
+    ...(isAdmin
+      ? [{ icon: "admin_panel_settings", label: "Admin", path: "/admin" }]
+      : []),
     { icon: "event", label: "Event Site", path: "/" },
   ];
 
   return (
-    <aside style={{
-      position: "fixed",
-      left: 0,
-      top: 0,
-      height: "100%",
-      width: "256px",
-      background: "rgba(255, 255, 255, 0.85)",
-      backdropFilter: "blur(12px)",
-      borderRight: "1px solid rgba(255, 255, 255, 0.4)",
-      boxShadow: "0 4px 20px rgba(13, 148, 136, 0.08), 0 0 1px rgba(2, 51, 69, 0.08)",
-      display: "flex",
-      flexDirection: "column",
-      paddingTop: "32px",
-      paddingBottom: "32px",
-      paddingLeft: "16px",
-      paddingRight: "16px",
-      gap: "16px",
-      zIndex: 60
-    }}>
-      {/* Logo and Branding - Clickable to home */}
-      <div
-        style={{ marginBottom: "32px", paddingLeft: "8px", cursor: "pointer" }}
-        onClick={() => onNavigate("/")}
-      >
-        <img
-          src="/firststep-logo.png"
-          alt="FirstStep Logo"
-          style={{
-            width: "180px",
-            height: "auto",
-            display: "block",
-            marginBottom: "2px"
-          }}
-        />
-        <p style={{
-          fontFamily: "'Inter', sans-serif",
-          fontSize: "14px",
-          fontWeight: "600",
-          color: "#3d4947",
-          margin: 0,
-          paddingLeft: "16px"
-        }}>Hackathon Portal</p>
-      </div>
-
-      <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: "4px" }}>
+    <aside
+      className={`sprint-sidebar${collapsed ? " sprint-sidebar--collapsed" : ""}`}
+      aria-label="Portal navigation"
+      aria-expanded={!collapsed}
+    >
+      <nav className="sprint-sidebar__nav">
         {navItems.map((item) => {
           const isActive = currentPath === item.path;
           return (
             <a
               key={item.label}
               href={item.path === "#" ? "#" : undefined}
+              title={collapsed ? item.label : undefined}
               onClick={(e) => {
                 e.preventDefault();
                 if (item.path !== "#" && onNavigate) {
                   onNavigate(item.path);
+                  if (closeSidebarOnMobile) closeSidebarOnMobile();
                 }
               }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                paddingLeft: "16px",
-                paddingRight: "16px",
-                paddingTop: "12px",
-                paddingBottom: "12px",
-                borderRadius: "8px",
-                borderRight: isActive ? "4px solid #00685f" : "4px solid transparent",
-                background: isActive ? "rgba(0, 104, 95, 0.1)" : "transparent",
-                color: isActive ? "#00685f" : "#3d4947",
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "14px",
-                fontWeight: isActive ? "700" : "500",
-                textDecoration: "none",
-                transition: "all 0.2s ease",
-                transform: "translateX(0)",
-                cursor: "pointer"
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = "#eceef0";
-                  e.currentTarget.style.transform = "translateX(4px)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.transform = "translateX(0)";
-                }
-              }}
+              className={`sprint-sidebar__link${isActive ? " sprint-sidebar__link--active" : ""}`}
             >
               <Icon name={item.icon} filled={isActive} />
-              {item.label}
+              <span className="sprint-sidebar__label">{item.label}</span>
             </a>
           );
         })}
       </nav>
 
-      <div style={{ marginTop: "auto", borderTop: "1px solid #eceef0", paddingTop: "16px" }}>
-        <a
-          href="#"
-          onClick={(e) => { e.preventDefault(); }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            paddingLeft: "16px",
-            paddingRight: "16px",
-            paddingTop: "12px",
-            paddingBottom: "12px",
-            borderRadius: "8px",
-            color: "#3d4947",
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "14px",
-            fontWeight: "500",
-            textDecoration: "none",
-            transition: "all 0.2s ease",
-            cursor: "pointer"
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#eceef0"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-        >
-          <Icon name="help" />
-          Support
-        </a>
-      </div>
+      <button
+        type="button"
+        className="sprint-sidebar__toggle"
+        onClick={onToggleCollapsed}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        <Icon name={collapsed ? "chevron_right" : "chevron_left"} size={22} />
+        <span className="sprint-sidebar__toggle-label">
+          {collapsed ? "Expand" : "Collapse"}
+        </span>
+      </button>
     </aside>
   );
 }
 
-// Header Component
-function Header({ title }) {
+// Sticky top bar: sidebar logo + hackathon title + page title + profile (one row)
+function SprintTopBar({ title, onNavigate, collapsed, onToggleCollapsed, brandWidth }) {
   return (
-    <header style={{
-      background: "rgba(255, 255, 255, 0.85)",
-      backdropFilter: "blur(12px)",
-      borderBottom: "1px solid rgba(255, 255, 255, 0.4)",
-      boxShadow: "0 4px 20px rgba(13, 148, 136, 0.08)",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      height: "64px",
-      width: "100%",
-      paddingLeft: "40px",
-      paddingRight: "40px",
-      boxSizing: "border-box",
-    }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        <h2 style={{
-          fontFamily: "'Hanken Grotesk', sans-serif",
-          fontSize: "24px",
-          lineHeight: "32px",
-          fontWeight: "700",
-          color: "#00685f"
-        }}>{title}</h2>
+    <div className="sprint-top-bar">
+      <div
+        className={`sprint-top-bar__brand${collapsed ? " sprint-top-bar__brand--collapsed" : ""}`}
+        style={{ width: brandWidth }}
+      >
+        {collapsed ? (
+          <button
+            type="button"
+            className="sprint-top-bar__menu-btn"
+            onClick={onToggleCollapsed}
+            aria-label="Expand navigation"
+          >
+            <Icon name="menu" size={26} />
+          </button>
+        ) : (
+          <div
+            role="button"
+            tabIndex={0}
+            className="sprint-top-bar__brand-hit"
+            onClick={() => onNavigate?.("/")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigate?.("/");
+              }
+            }}
+          >
+            <img
+              src="/firststep-logo.png"
+              alt="FirstStep"
+              className="sprint-top-bar__brand-logo"
+            />
+          </div>
+        )}
       </div>
-      <SprintUserMenu />
+
+      <header className="sprint-top-bar__header">
+        <h2 className="sprint-top-bar__hackathon-title">First Step Annual Hackathon 2026</h2>
+        <h2 className="sprint-top-bar__page-title">{title}</h2>
+        <div className="sprint-top-bar__profile">
+          <SprintUserMenu variant="header" />
+        </div>
+      </header>
+    </div>
+  );
+}
+
+// Mobile-only header: [menu] · logo (top) + event title (below) · [profile]
+function SprintMobileHeader({ collapsed, onToggleCollapsed, onNavigate, headerRef, isGuest }) {
+  return (
+    <header className="sprint-mobile-header" ref={headerRef}>
+      {!isGuest && (
+        <button
+          type="button"
+          className="sprint-mobile-header__menu"
+          onClick={onToggleCollapsed}
+          aria-label={collapsed ? "Open navigation" : "Close navigation"}
+          aria-expanded={!collapsed}
+        >
+          <Icon name={collapsed ? "menu" : "close"} size={22} />
+        </button>
+      )}
+
+      <div className="sprint-mobile-header__brand">
+        <a
+          href="/"
+          className="sprint-mobile-header__logo-link"
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate?.("/");
+          }}
+        >
+          <img
+            src="/firststep-logo.png"
+            alt="FirstStep"
+            className="sprint-mobile-header__logo"
+            width={278}
+            height={156}
+            decoding="async"
+          />
+        </a>
+        <p className="sprint-mobile-header__hackathon">First Step Annual Hackathon 2026</p>
+      </div>
+
+      <div className="sprint-mobile-header__profile">
+        <SprintUserMenu variant="header" />
+      </div>
     </header>
   );
 }
 
 // Main Layout Component
 export default function SprintLayout({ children, title, currentPath, onNavigate }) {
+  const { isAuthenticated, loading: authLoading, isAdmin } = useHackathonAuth();
+  const isGuest = !authLoading && !isAuthenticated;
   const isSubmission = currentPath === "/submission";
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(readSidebarCollapsed);
+  const mobileHeaderRef = useRef(null);
+  const [mobileTopBarHeight, setMobileTopBarHeight] = useState(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, sidebarCollapsed ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }, [sidebarCollapsed]);
+
+  /* Mobile: sync drawer offset to measured header height (inline desktop var must not leave a gap) */
+  useLayoutEffect(() => {
+    const el = mobileHeaderRef.current;
+    if (!el || typeof window === "undefined") return undefined;
+
+    const sync = () => {
+      if (window.innerWidth <= 767) {
+        setMobileTopBarHeight(el.offsetHeight);
+      } else {
+        setMobileTopBarHeight(null);
+      }
+    };
+
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    window.addEventListener("resize", sync);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", sync);
+    };
+  }, []);
+
+  /* Tab change: scroll to top, close mobile drawer */
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    if (typeof window !== "undefined" && window.innerWidth <= 767) {
+      setSidebarCollapsed(true);
+    }
+  }, [currentPath]);
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarCollapsed((v) => !v);
+  }, []);
+
+  const closeSidebarOnMobile = useCallback(() => {
+    if (window.innerWidth <= 767) {
+      setSidebarCollapsed(true);
+    }
+  }, []);
+
+  const sidebarWidth = sidebarCollapsed ? SPRINT_SIDEBAR_COLLAPSED_WIDTH : SPRINT_SIDEBAR_WIDTH;
+  const contentOffset = isGuest ? 0 : sidebarWidth;
+  const brandWidth = isGuest ? SPRINT_SIDEBAR_WIDTH : sidebarWidth;
 
   return (
     <div
-      className={isSubmission ? "sprint-portal sprint-portal--submission" : "sprint-portal"}
+      className={[
+        "sprint-portal",
+        isSubmission ? "sprint-portal--submission" : "",
+        sidebarCollapsed ? "sprint-portal--sidebar-collapsed" : "",
+        isGuest ? "sprint-portal--guest" : "",
+      ].filter(Boolean).join(" ")}
       style={{
-      minHeight: "100vh",
-      background: "radial-gradient(at 0% 0%, rgba(13, 148, 136, 0.05) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(0, 101, 145, 0.05) 0px, transparent 50%), #f7f9fb",
-      fontFamily: "'Inter', sans-serif",
-      color: "#191c1e"
-    }}
+        "--sprint-sidebar-width": `${sidebarWidth}px`,
+        "--sprint-content-offset": `${contentOffset}px`,
+        "--sprint-top-bar-height":
+          mobileTopBarHeight != null
+            ? `${mobileTopBarHeight}px`
+            : `${SPRINT_TOP_BAR_HEIGHT}px`,
+      }}
     >
-      {/* Google Fonts */}
       <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Hanken+Grotesk:wght@600;700;900&display=swap"
         rel="stylesheet"
@@ -213,35 +279,63 @@ export default function SprintLayout({ children, title, currentPath, onNavigate 
         rel="stylesheet"
       />
 
-      <Sidebar currentPath={currentPath} onNavigate={onNavigate} />
+      <SprintTopBar
+        title={title}
+        onNavigate={onNavigate}
+        collapsed={sidebarCollapsed}
+        onToggleCollapsed={toggleSidebar}
+        brandWidth={brandWidth}
+      />
 
-      {/* Main Content Area */}
-      <main style={{ marginLeft: "256px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <div
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            width: "100%",
-            flexShrink: 0,
-          }}
-        >
-          <Header title={title} />
+      <SprintMobileHeader
+        collapsed={sidebarCollapsed}
+        onToggleCollapsed={toggleSidebar}
+        onNavigate={onNavigate}
+        headerRef={mobileHeaderRef}
+        isGuest={isGuest}
+      />
+
+      {!isGuest && (
+        <>
+          {!sidebarCollapsed && (
+            <div
+              className="sprint-sidebar__mobile-backdrop"
+              onClick={() => closeSidebarOnMobile()}
+              aria-hidden="true"
+            />
+          )}
+
+          <Sidebar
+            currentPath={currentPath}
+            onNavigate={onNavigate}
+            collapsed={sidebarCollapsed}
+            onToggleCollapsed={toggleSidebar}
+            closeSidebarOnMobile={closeSidebarOnMobile}
+            isAdmin={isAdmin}
+          />
+        </>
+      )}
+
+      <div className="sprint-portal__shell">
+        <main className="sprint-portal__main">
           {isSubmission && <SubmissionCountdownBar />}
-        </div>
-        <div
-          style={{
-            flex: 1,
-            width: "100%",
-            padding: isSubmission ? "24px 40px" : "32px",
-            maxWidth: isSubmission ? "1440px" : "1280px",
-            margin: "0 auto",
-            boxSizing: "border-box",
-          }}
-        >
-          {children}
-        </div>
-      </main>
+          <div
+            className={[
+              "sprint-portal__content",
+              isSubmission ? "sprint-portal__content--submission" : "",
+              isGuest ? "sprint-portal__content--guest" : "",
+            ].filter(Boolean).join(" ")}
+          >
+            {children}
+          </div>
+        </main>
+      </div>
+
+      <div className="sprint-portal__footer-full">
+        <Footer />
+      </div>
+
+      <WhatsAppButton />
     </div>
   );
 }

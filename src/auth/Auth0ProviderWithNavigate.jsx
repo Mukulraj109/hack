@@ -19,7 +19,7 @@ export function Auth0ProviderWithNavigate({ children }) {
       authorizationParams={{
         redirect_uri: redirectUri,
         audience: audience,
-        scope: "openid profile email",
+        scope: "openid profile email offline_access",
       }}
       useRefreshTokens={true}
       cacheLocation="localstorage"

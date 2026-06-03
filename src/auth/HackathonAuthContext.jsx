@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { apiFetch } from "../lib/api";
 import { getDisplayProfile } from "../lib/displayUser";
@@ -9,7 +9,7 @@ function authParams() {
   const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
   return {
     ...(audience ? { audience } : {}),
-    scope: "openid profile email",
+    scope: "openid profile email offline_access",
   };
 }
 
@@ -19,19 +19,50 @@ export function HackathonAuthProvider({ children }) {
     isLoading: auth0Loading,
     loginWithRedirect,
     logout,
+    getAccessTokenSilently,
     getIdTokenClaims,
     user: auth0User,
   } = useAuth0();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const tokenCacheRef = useRef({ token: null, expiresAt: 0 });
+  const tokenInflightRef = useRef(null);
 
   const getIdToken = useCallback(async () => {
-    const claims = await getIdTokenClaims();
-    return claims?.__raw ?? null;
-  }, [getIdTokenClaims]);
+    const now = Date.now();
+    const cached = tokenCacheRef.current;
+    if (cached.token && cached.expiresAt - now > 60_000) {
+      return cached.token;
+    }
 
-  const refreshSession = useCallback(async () => {
+    if (tokenInflightRef.current) {
+      return tokenInflightRef.current;
+    }
+
+    tokenInflightRef.current = (async () => {
+      try {
+        await getAccessTokenSilently({
+          authorizationParams: authParams(),
+        });
+        const claims = await getIdTokenClaims();
+        const token = claims?.__raw ?? null;
+        if (token) {
+          const expMs =
+            typeof claims?.exp === "number" ? claims.exp * 1000 : now + 3_600_000;
+          tokenCacheRef.current = { token, expiresAt: expMs };
+        }
+        return token;
+      } finally {
+        tokenInflightRef.current = null;
+      }
+    })();
+
+    return tokenInflightRef.current;
+  }, [getAccessTokenSilently, getIdTokenClaims]);
+
+  const refreshSession = useCallback(async (options = {}) => {
+    const silent = options.silent === true;
     if (!isAuthenticated) {
       setSession(null);
       setLoading(false);
@@ -39,7 +70,7 @@ export function HackathonAuthProvider({ children }) {
     }
 
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       setError(null);
       const token = await getIdToken();
       if (!token) {
@@ -53,7 +84,7 @@ export function HackathonAuthProvider({ children }) {
       setError(detail);
       setSession(null);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [isAuthenticated, getIdToken]);
 
@@ -61,6 +92,12 @@ export function HackathonAuthProvider({ children }) {
     if (auth0Loading) return;
     refreshSession();
   }, [auth0Loading, isAuthenticated, refreshSession]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      tokenCacheRef.current = { token: null, expiresAt: 0 };
+    }
+  }, [isAuthenticated]);
 
   const login = useCallback(
     (returnTo = "/sprint") => {
@@ -101,6 +138,7 @@ export function HackathonAuthProvider({ children }) {
       canWrite: session?.user?.canWrite ?? false,
       accountStatus: session?.user?.accountStatus ?? null,
       hasRegistration: session?.user?.hasRegistration ?? false,
+      isAdmin: session?.user?.isAdmin ?? false,
       login,
       signOut,
       refreshSession,

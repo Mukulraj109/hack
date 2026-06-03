@@ -1,8 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import { useHackathonAuth } from "../../auth/HackathonAuthContext";
 
-export default function SprintUserMenu() {
-  const { profile, signOut, loading } = useHackathonAuth();
+function useSprintMobileLayout() {
+  const [mobile, setMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  return mobile;
+}
+
+export default function SprintUserMenu({ variant = "default" }) {
+  const isHeader = variant === "header";
+  const isMobile = useSprintMobileLayout();
+  const isCompactHeader = isHeader && isMobile;
+  const avatarSize = isCompactHeader ? 32 : isHeader ? 44 : 32;
+  const nameFontSize = isHeader ? 18 : 14;
+  const initialsFontSize = isCompactHeader ? 13 : isHeader ? 17 : 12;
+  const { profile, signOut, loading, isAuthenticated, login } = useHackathonAuth();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
 
@@ -19,19 +41,40 @@ export default function SprintUserMenu() {
 
   const { displayName, initials, picture, email } = profile;
 
-  return (
-    <div ref={rootRef} style={{ position: "relative" }}>
+  if (!loading && !isAuthenticated) {
+    return (
       <button
         type="button"
+        className="sprint-user-menu__sign-in"
+        onClick={() => login(typeof window !== "undefined" ? window.location.pathname : "/sprint")}
+      >
+        Sign in
+      </button>
+    );
+  }
+
+  const rootClass = [
+    "sprint-user-menu",
+    isHeader ? "sprint-user-menu--header" : "",
+    isCompactHeader ? "sprint-user-menu--compact" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div ref={rootRef} className={rootClass} style={{ position: "relative" }}>
+      <button
+        type="button"
+        className="sprint-user-menu__trigger"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="menu"
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "12px",
-          padding: "4px 8px",
-          margin: "-4px -8px",
+          gap: isHeader ? 14 : 12,
+          padding: isHeader ? "4px 8px" : "4px 8px",
+          margin: isHeader ? "-4px -8px" : "-4px -8px",
           border: "none",
           borderRadius: "8px",
           background: open ? "rgba(0, 104, 95, 0.08)" : "transparent",
@@ -42,9 +85,10 @@ export default function SprintUserMenu() {
           <img
             src={picture}
             alt=""
+            className="sprint-user-menu__avatar"
             style={{
-              width: 32,
-              height: 32,
+              width: avatarSize,
+              height: avatarSize,
               borderRadius: "50%",
               objectFit: "cover",
               border: "2px solid #89f5e7",
@@ -52,9 +96,10 @@ export default function SprintUserMenu() {
           />
         ) : (
           <div
+            className="sprint-user-menu__avatar"
             style={{
-              width: 32,
-              height: 32,
+              width: avatarSize,
+              height: avatarSize,
               borderRadius: "50%",
               background: "#89f5e7",
               color: "#00685f",
@@ -63,18 +108,20 @@ export default function SprintUserMenu() {
               justifyContent: "center",
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontWeight: 700,
-              fontSize: 12,
+              fontSize: initialsFontSize,
             }}
           >
             {loading ? "…" : initials}
           </div>
         )}
         <span
+          className="sprint-user-menu__name"
           style={{
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 14,
+            fontSize: nameFontSize,
+            fontWeight: isHeader ? 600 : 400,
             color: "#191c1e",
-            maxWidth: 180,
+            maxWidth: isHeader ? 200 : 180,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -87,57 +134,34 @@ export default function SprintUserMenu() {
       {open && (
         <div
           role="menu"
+          className={`sprint-user-menu__panel${isCompactHeader ? " sprint-user-menu__panel--compact" : ""}`}
           style={{
             position: "absolute",
             right: 0,
-            top: "calc(100% + 8px)",
-            minWidth: 220,
+            top: isCompactHeader ? "calc(100% + 6px)" : "calc(100% + 8px)",
+            minWidth: isCompactHeader ? 0 : isHeader ? 280 : 220,
+            width: isCompactHeader ? "min(220px, calc(100vw - 24px))" : undefined,
+            maxWidth: isCompactHeader ? "calc(100vw - 24px)" : undefined,
             background: "#fff",
             border: "1px solid #eceef0",
-            borderRadius: 12,
+            borderRadius: isCompactHeader ? 10 : isHeader ? 14 : 12,
             boxShadow: "0 8px 24px rgba(2, 51, 69, 0.12)",
-            padding: "8px 0",
+            padding: isCompactHeader ? "4px 0" : isHeader ? "10px 0" : "8px 0",
             zIndex: 100,
           }}
         >
           {email && (
-            <p
-              style={{
-                margin: 0,
-                padding: "8px 16px 12px",
-                fontSize: 12,
-                color: "#6d7a77",
-                borderBottom: "1px solid #eceef0",
-                wordBreak: "break-all",
-              }}
-            >
+            <p className="sprint-user-menu__email">
               {email}
             </p>
           )}
           <button
             type="button"
             role="menuitem"
+            className="sprint-user-menu__logout"
             onClick={() => {
               setOpen(false);
               signOut();
-            }}
-            style={{
-              display: "block",
-              width: "100%",
-              textAlign: "left",
-              padding: "10px 16px",
-              border: "none",
-              background: "transparent",
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 14,
-              color: "#b42318",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(180, 35, 24, 0.06)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
             }}
           >
             Log out

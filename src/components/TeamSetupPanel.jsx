@@ -68,7 +68,12 @@ export default function TeamSetupPanel() {
       setMessage("Joined team!");
       await refreshSession();
     } catch (err) {
-      setError(err.message);
+      const msg = err?.data?.error || err?.message || "Could not join team.";
+      if (/already full|team is full/i.test(msg)) {
+        setError("This team is already full.");
+      } else {
+        setError(msg);
+      }
     } finally {
       setBusy(false);
     }
@@ -91,7 +96,7 @@ export default function TeamSetupPanel() {
         Team setup
       </h2>
       <p className="text-sm mb-4" style={{ color: "#6d7a77" }}>
-        Optional — you can use the sprint dashboard solo. Create a team or join with a Team ID (e.g. FST_100_348).
+        Optional — you can use the sprint dashboard solo. Teams are pairs (max 2 people). Create a team or join with a Team ID (e.g. FST-7KXM-9P2Q).
       </p>
 
       {!canWrite && user?.accountStatus === "pending" && (
@@ -158,7 +163,7 @@ export default function TeamSetupPanel() {
             type="text"
             value={inviteCode}
             onChange={(e) => setInviteCode(e.target.value)}
-            placeholder="FST_100_348"
+            placeholder="FST-7KXM-9P2Q"
             required
             className="rounded-lg p-3 font-mono"
             style={{ background: "#f1f5f9", border: "none" }}

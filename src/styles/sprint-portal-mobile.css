@@ -1,0 +1,690 @@
+/* Sprint portal — mobile-only overrides + desktop sidebar scrollbar fix.
+   Loaded after sprint-portal.css. Desktop base rules are not modified. */
+
+/* Desktop: hide erroneous horizontal scrollbar on sidebar nav hover */
+@media (min-width: 768px) {
+  .sprint-portal .sprint-sidebar,
+  .sprint-portal .sprint-sidebar__nav {
+    overflow-x: hidden;
+  }
+}
+
+/* Dedicated mobile header — hidden on desktop */
+.sprint-mobile-header {
+  display: none;
+}
+.sprint-sidebar__mobile-backdrop {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* ---- Shell (all sprint tabs) ---- */
+  .sprint-portal {
+    --sprint-top-bar-height: 78px;
+    --sprint-sidebar-gap: 0px;
+  }
+
+  /* Hide desktop top bar entirely; use the dedicated mobile header */
+  .sprint-portal .sprint-top-bar {
+    display: none !important;
+  }
+
+  /* Mobile header: menu | logo (top) + title (below) | profile — one row, vertically centered */
+  .sprint-mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 1200;
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    column-gap: 8px;
+    width: 100%;
+    min-height: var(--sprint-top-bar-height, 78px);
+    height: auto;
+    padding: 4px max(10px, env(safe-area-inset-right, 0px)) 8px
+      max(6px, env(safe-area-inset-left, 0px));
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(2, 51, 69, 0.08);
+    box-shadow: 0 2px 16px rgba(2, 51, 69, 0.08);
+  }
+
+  .sprint-mobile-header__menu {
+    grid-column: 1;
+    justify-self: start;
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+    border: 2px solid rgba(42, 142, 158, 0.35);
+    border-radius: 12px;
+    background: #ffffff;
+    color: #023345;
+    cursor: pointer;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sprint-mobile-header__menu:hover,
+  .sprint-mobile-header__menu:active {
+    background: rgba(42, 142, 158, 0.08);
+  }
+
+  .sprint-mobile-header__brand {
+    grid-column: 2;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .sprint-mobile-header__logo-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .sprint-mobile-header__logo {
+    display: block;
+    width: auto;
+    height: 62px;
+    max-width: min(240px, 80vw);
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  .sprint-mobile-header__hackathon {
+    margin: 0;
+    padding: 0 2px;
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #00685f;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .sprint-mobile-header__profile {
+    grid-column: 3;
+    justify-self: end;
+    align-self: center;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Compact profile avatar on mobile */
+  .sprint-mobile-header__profile .sprint-user-menu--header .sprint-user-menu__trigger {
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+
+  .sprint-mobile-header__profile .sprint-user-menu--header .sprint-user-menu__avatar {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 13px !important;
+  }
+
+  .sprint-mobile-header__profile .sprint-user-menu--header .sprint-user-menu__name {
+    display: none !important;
+  }
+
+  /* Compact profile dropdown on mobile header */
+  .sprint-mobile-header__profile .sprint-user-menu__panel {
+    min-width: 0 !important;
+    width: min(220px, calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    padding: 4px 0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 20px rgba(2, 51, 69, 0.14) !important;
+  }
+
+  .sprint-mobile-header__profile .sprint-user-menu__email {
+    padding: 8px 12px 8px !important;
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    font-weight: 500 !important;
+    word-break: break-word !important;
+  }
+
+  .sprint-mobile-header__profile .sprint-user-menu__logout {
+    padding: 9px 12px !important;
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    font-weight: 600 !important;
+  }
+
+  /* Sidebar drawer flush under the mobile header */
+  .sprint-portal .sprint-sidebar {
+    top: var(--sprint-top-bar-height, 78px);
+    height: calc(100% - var(--sprint-top-bar-height, 78px));
+    overflow-x: hidden;
+    padding-top: 0;
+    border-top-right-radius: 0;
+    box-shadow: 8px 0 32px rgba(2, 51, 69, 0.12) !important;
+  }
+
+  .sprint-portal:not(.sprint-portal--sidebar-collapsed) .sprint-sidebar {
+    transform: translateX(0);
+  }
+
+  .sprint-portal .sprint-sidebar__nav {
+    overflow-x: hidden;
+  }
+
+  .sprint-portal .sprint-sidebar__link:hover {
+    transform: none;
+  }
+
+  /* Drawer backdrop when sidebar is open */
+  .sprint-sidebar__mobile-backdrop {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--sprint-top-bar-height, 78px);
+    bottom: 0;
+    z-index: 55;
+    background: rgba(0, 43, 54, 0.4);
+    cursor: pointer;
+  }
+
+  .sprint-portal:not(.sprint-portal--sidebar-collapsed)::before {
+    display: none;
+  }
+
+  .sprint-portal .sprint-sidebar__toggle {
+    display: none !important;
+  }
+
+  .sprint-portal .sprint-portal__main {
+    min-height: calc(100vh - var(--sprint-top-bar-height, 78px));
+    padding-bottom: 88px;
+  }
+
+  .sprint-portal .sprint-portal__content {
+    padding: 16px !important;
+  }
+
+  .sprint-portal .sprint-portal__content--submission {
+    padding: 16px !important;
+  }
+
+  /* ---- Dashboard ---- */
+  .sprint-dashboard-hero {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .sprint-dashboard-hero > * {
+    grid-column: auto !important;
+  }
+
+  .sprint-dashboard-hero .submission-glass-card,
+  .sprint-dashboard-hero > div {
+    padding: 20px !important;
+  }
+
+  .sprint-dashboard-body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .sprint-dashboard-tracks {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .sprint-dashboard-aside {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    gap: 24px !important;
+  }
+
+  .points-tracker-card {
+    padding: 22px 20px !important;
+  }
+
+  .sprint-dashboard-countdown {
+    font-size: 22px !important;
+    line-height: 28px !important;
+  }
+
+  .sprint-portal .sprint-hero-greeting {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  /* "See it in motion" — horizontal snap carousel (matches main dashboard) */
+  .sprint-portal .sprint-reels-section .reels-showcase {
+    overflow-x: clip;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-masonry-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    grid-template-columns: unset !important;
+    max-width: none !important;
+    width: calc(100% + 32px) !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    padding: 4px 16px 8px !important;
+    gap: 14px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding-inline: 16px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-masonry-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint {
+    flex: 0 0 min(82vw, 320px) !important;
+    scroll-snap-align: center !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase__dots {
+    display: flex !important;
+    margin-top: 14px;
+  }
+
+  .sprint-dashboard-skeleton__hero {
+    height: 160px;
+    margin-bottom: 16px;
+  }
+
+  .sprint-dashboard-skeleton__grid {
+    height: 280px;
+  }
+
+  /* ---- Submission ---- */
+  .submission-layout {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .submission-form-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .submission-sidebar {
+    position: static !important;
+    top: auto !important;
+  }
+
+  .sprint-portal .submission-glass-card {
+    padding: 16px !important;
+  }
+
+  .submission-hiring-partners {
+    padding: 16px 18px;
+  }
+
+  /* ---- Roadmap ---- */
+  .roadmap-shell > .fixed.pointer-events-none {
+    display: none !important;
+  }
+
+  .roadmap-page {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .roadmap-page .text-5xl {
+    font-size: 1.625rem !important;
+    line-height: 1.15 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .roadmap-page .text-xl {
+    font-size: 0.9375rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .roadmap-page .mb-20 {
+    margin-bottom: 1.75rem !important;
+  }
+
+  .roadmap-page .mb-24 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .roadmap-page .space-y-20 > * + * {
+    margin-top: 1.25rem !important;
+  }
+
+  .roadmap-phase-header {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .roadmap-phase-header .px-8 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .roadmap-phase-header .text-3xl {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .roadmap-phase-header .absolute.top-1\/2.left-full,
+  .roadmap-phase-header .absolute.top-1\/2.right-full {
+    display: none !important;
+  }
+
+  /* Vertical timeline: status dot above card, no desktop stem */
+  .roadmap-timeline::before {
+    content: "";
+    position: absolute;
+    left: 23px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #bcc9c6 0%, #00685f 25%, #00685f 75%, #bcc9c6 100%);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .roadmap-milestone-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    margin-bottom: 1.25rem !important;
+    padding-left: 0 !important;
+  }
+
+  .roadmap-milestone-row > .flex-1.max-w-xl:last-child {
+    display: none !important;
+  }
+
+  .roadmap-milestone-row > .flex-shrink-0 {
+    order: -1;
+    align-self: flex-start;
+    margin-left: 0;
+    margin-bottom: 2px;
+  }
+
+  .roadmap-milestone-row > .flex-shrink-0 .w-16 {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .roadmap-milestone-row > .flex-shrink-0 .material-symbols-outlined {
+    font-size: 22px !important;
+  }
+
+  .roadmap-timeline-node__stem {
+    display: none !important;
+  }
+
+  .roadmap-page .rounded-2xl.p-8 {
+    padding: 1.125rem 1rem !important;
+  }
+
+  .roadmap-page h3.text-2xl {
+    font-size: 1.125rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .roadmap-page .flex.items-center.gap-4.mb-4 {
+    gap: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .roadmap-page .w-14.h-14 {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    flex-shrink: 0;
+  }
+
+  .roadmap-page .space-y-3 > .flex.items-center.justify-between {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.625rem;
+  }
+
+  .roadmap-page .space-y-3 > .flex.items-center.justify-between > span:last-child {
+    align-self: flex-start;
+  }
+
+  .roadmap-page .flex.gap-3 {
+    flex-wrap: wrap;
+    gap: 0.5rem !important;
+  }
+
+  .roadmap-page__footer-spacer,
+  .roadmap-page .h-32 {
+    height: 4.5rem !important;
+    min-height: 4.5rem !important;
+  }
+
+  /* Disable card lift / sticky hover on touch */
+  .roadmap-page .roadmap-glass-card {
+    transform: none !important;
+  }
+
+  @media (hover: none) {
+    .roadmap-page .roadmap-glass-card:hover {
+      transform: none !important;
+    }
+  }
+
+  /* Roadmap contact FAB — left side, mirrors WhatsApp FAB on the right */
+  .roadmap-contact-fab {
+    position: fixed;
+    bottom: 18px;
+    left: 14px;
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    pointer-events: none;
+  }
+
+  .roadmap-contact-fab > * {
+    pointer-events: auto;
+  }
+
+  .roadmap-contact-fab__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 1px solid rgba(0, 104, 95, 0.12);
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      0 4px 16px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .roadmap-contact-fab__trigger--open {
+    background: rgba(0, 104, 95, 0.08);
+    border-color: rgba(0, 104, 95, 0.25);
+  }
+
+  .roadmap-contact-fab__panel {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    width: min(220px, calc(100vw - 28px));
+    padding: 12px 14px 14px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 104, 95, 0.1);
+    box-shadow:
+      0 4px 20px rgba(2, 51, 69, 0.12),
+      0 8px 32px rgba(13, 148, 136, 0.1);
+  }
+
+  .roadmap-contact-fab__panel-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .roadmap-contact-fab__panel-close:active {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .roadmap-contact-fab__title {
+    margin: 0 28px 0 0;
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #00201d;
+  }
+
+  .roadmap-contact-fab__subtitle {
+    margin: 4px 0 10px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.35;
+    color: #6d7a77;
+  }
+
+  .roadmap-contact-fab__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none !important;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #00685f 0%, #007a6f 100%);
+    box-shadow: 0 4px 14px rgba(0, 104, 95, 0.28);
+  }
+
+  .roadmap-contact-fab__dismiss {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 11px;
+    color: #6d7a77;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* ---- Team ---- */
+  .team-page {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .team-page .text-4xl {
+    font-size: 1.5rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .team-page .text-lg {
+    font-size: 0.9375rem !important;
+  }
+
+  .team-poster-slot__frame--story,
+  .team-poster-modal__preview-frame--story {
+    max-width: 100% !important;
+  }
+
+  .team-poster-slot__frame--square,
+  .team-poster-modal__preview-frame--square {
+    max-width: 100% !important;
+  }
+
+  .team-posters-card .team-posters-glass {
+    padding: 16px !important;
+  }
+
+  .team-poster-modal__template-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .team-poster-modal__backdrop {
+    padding: 12px;
+  }
+
+  .team-poster-modal {
+    padding: 16px;
+  }
+
+  /* Modals */
+  .sprint-track-modal__backdrop {
+    padding: 16px;
+  }
+
+  .sprint-track-modal__panel {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .sprint-mobile-header__hackathon {
+    font-size: 13px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .sprint-mobile-header__logo {
+    height: 54px;
+    max-width: min(200px, 76vw);
+  }
+}
