@@ -1,5 +1,9 @@
 /* Floating WhatsApp — desktop pill; mobile icon-only (main site + sprint portal) */
 
+body.hackathon-form-modal-open .whatsapp-fab {
+  display: none !important;
+}
+
 .whatsapp-fab {
   position: fixed;
   bottom: 32px;

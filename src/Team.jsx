@@ -784,7 +784,7 @@ function TemplateGallerySection({ teamTitle, memberNames, members, onOpenModal }
 // Main Team Component
 export default function TeamContent() {
   const { team, refreshSession, getAccessToken, user, canWrite } = useHackathonAuth();
-  const { proofByPlatform, submitProof, reload: reloadProofs } = useTeamSocialProof(team?.id);
+  const { proofByPlatform, reload: reloadProofs } = useTeamSocialProof(team?.id);
   const [uploadState, setUploadState] = useState({ status: "idle", memberId: null, message: "" });
   const [removeBusy, setRemoveBusy] = useState({ status: "idle", memberId: null, message: "" });
   const [modalPlatform, setModalPlatform] = useState(null);
@@ -951,13 +951,9 @@ export default function TeamContent() {
         teamTitle={posterTeamTitle}
         memberNames={posterMemberNames}
         members={members}
-        teamId={team?.id}
         canWrite={canWrite}
         existingProof={modalPlatform ? proofByPlatform[modalPlatform] : null}
-        onSubmitProof={async (payload) => {
-          await submitProof(payload);
-          await reloadProofs();
-        }}
+        onProofSubmitted={reloadProofs}
       />
 
       <WhatsAppButton />

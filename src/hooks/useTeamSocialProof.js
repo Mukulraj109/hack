@@ -32,29 +32,6 @@ export function useTeamSocialProof(teamId) {
     load();
   }, [load]);
 
-  const submitProof = useCallback(
-    async ({ platform, postUrl, screenshot, templateId }) => {
-      if (!teamId) throw new Error("Join or create a team first");
-
-      const token = await getAccessToken();
-      const formData = new FormData();
-      formData.append("platform", platform);
-      formData.append("postUrl", postUrl);
-      formData.append("screenshot", screenshot);
-      if (templateId) formData.append("templateId", templateId);
-
-      const res = await apiFetch(`/api/teams/${teamId}/social-proof`, {
-        token,
-        method: "POST",
-        formData,
-      });
-
-      await load();
-      return res.data;
-    },
-    [teamId, getAccessToken, load]
-  );
-
   const proofByPlatform = {
     instagram: proofs.find((p) => p.platform === "instagram") ?? null,
     linkedin: proofs.find((p) => p.platform === "linkedin") ?? null,
@@ -66,6 +43,5 @@ export function useTeamSocialProof(teamId) {
     loading,
     error,
     reload: load,
-    submitProof,
   };
 }

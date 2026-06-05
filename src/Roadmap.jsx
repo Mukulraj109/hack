@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight } from "lucide-react";
+import InfoSessionFormModal from "./components/InfoSessionFormModal";
 import "./styles/sprint-portal.css";
 
 function useSprintMobileLayout() {
@@ -357,91 +359,96 @@ function FloatingBanner({ isMobile = false }) {
   );
 }
 
-/** Information sessions — Zoho signup per session (URLs from env when provided) */
+/** Information sessions — shared Zoho signup form via backend embed */
 const INFORMATION_SESSIONS = [
   {
     icon: "lightbulb",
     label: "Strategy & Briefs",
-    formUrl: import.meta.env.VITE_ZOHO_INFO_SESSION_STRATEGY,
+    description: "Challenge themes, timelines, and what judges expect",
   },
   {
     icon: "code",
     label: "Technical Overview",
-    formUrl: import.meta.env.VITE_ZOHO_INFO_SESSION_TECHNICAL,
+    description: "Stack guidance, APIs, and how to ship in 100 hours",
   },
   {
     icon: "videocam",
     label: "Pitch & Demo Prep",
-    formUrl: import.meta.env.VITE_ZOHO_INFO_SESSION_PITCH,
+    description: "Storytelling tips and demo-day presentation format",
   },
 ];
 
 function InformationSessionsMilestone({ isMobile = false }) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeSessionLabel, setActiveSessionLabel] = useState(INFORMATION_SESSIONS[0].label);
+
+  const openSessionModal = (label) => {
+    setActiveSessionLabel(label);
+    setModalOpen(true);
+  };
+
+  const closeSessionModal = () => {
+    setModalOpen(false);
+  };
+
   return (
-    <div>
-      <div className="flex items-center gap-4 mb-6">
-        <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center"
-          style={{ background: "linear-gradient(135deg, #00685f20 0%, #00685f10 100%)" }}
-        >
+    <div className="roadmap-info-sessions">
+      <header className="roadmap-info-sessions__header">
+        <div className="roadmap-info-sessions__header-icon" aria-hidden>
           <Icon name="auto_stories" size={28} style={{ color: "#00685f" }} />
         </div>
-        <div>
-          <h3
-            className="text-2xl font-bold"
-            style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}
-          >
-            Information sessions
-          </h3>
-          <p className="text-base" style={{ color: "#6d7a77" }}>
-            Want to learn more about the hackathon? Join our session.
+        <div className="roadmap-info-sessions__header-copy">
+          <div className="roadmap-info-sessions__header-top">
+            <h3 className="roadmap-info-sessions__title">Information sessions</h3>
+            <span className="roadmap-info-sessions__badge">Free · Live</span>
+          </div>
+          <p className="roadmap-info-sessions__subtitle">
+            Optional briefings before the sprint — pick any topic and reserve your spot.
           </p>
         </div>
-      </div>
-      <div className="space-y-3">
-        {INFORMATION_SESSIONS.map((session) => {
-          const hasForm = Boolean(session.formUrl);
-          const RowTag = hasForm ? motion.a : motion.div;
-          const rowProps = hasForm
-            ? {
-                href: session.formUrl,
-                target: "_blank",
-                rel: "noopener noreferrer",
-              }
-            : {};
+      </header>
 
-          return (
-            <RowTag
-              key={session.label}
-              className="flex items-center justify-between p-4 rounded-xl transition-all hover:scale-[1.02]"
-              style={{
-                background: "#f8fafc",
-                border: "1px solid rgba(0,0,0,0.05)",
-                textDecoration: "none",
-                cursor: hasForm ? "pointer" : "default",
-              }}
-              whileHover={isMobile ? undefined : { background: "#f0f4f4" }}
-              {...rowProps}
+      <ul className="roadmap-info-sessions__list">
+        {INFORMATION_SESSIONS.map((session, index) => (
+          <motion.li
+            key={session.label}
+            className="roadmap-info-sessions__item"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-20px" }}
+            transition={{ delay: index * 0.08, duration: 0.45, ease: "easeOut" }}
+          >
+            <motion.button
+              type="button"
+              className="roadmap-info-sessions__row"
+              onClick={() => openSessionModal(session.label)}
+              whileHover={isMobile ? undefined : { y: -2 }}
+              whileTap={{ scale: 0.995 }}
+              transition={CARD_SPRING}
             >
-              <div className="flex items-center gap-3">
-                <Icon name={session.icon} size={20} style={{ color: "#00685f" }} />
-                <span className="font-medium" style={{ color: "#002B36" }}>
-                  {session.label}
-                </span>
-              </div>
-              <span
-                className="text-sm font-semibold px-3 py-1 rounded-lg"
-                style={{
-                  background: hasForm ? "#00685f" : "#00685f15",
-                  color: hasForm ? "#f4fffc" : "#00685f",
-                }}
-              >
-                {hasForm ? "Sign up" : "Coming soon"}
+              <span className="roadmap-info-sessions__row-icon" aria-hidden>
+                <Icon name={session.icon} size={22} style={{ color: "#00685f" }} />
               </span>
-            </RowTag>
-          );
-        })}
-      </div>
+
+              <span className="roadmap-info-sessions__row-body">
+                <span className="roadmap-info-sessions__row-label">{session.label}</span>
+                <span className="roadmap-info-sessions__row-desc">{session.description}</span>
+              </span>
+
+              <span className="roadmap-info-sessions__row-action">
+                <span className="roadmap-info-sessions__cta">Sign up</span>
+                <ChevronRight className="roadmap-info-sessions__chevron" aria-hidden="true" size={18} strokeWidth={2.25} />
+              </span>
+            </motion.button>
+          </motion.li>
+        ))}
+      </ul>
+
+      <InfoSessionFormModal
+        open={modalOpen}
+        sessionLabel={activeSessionLabel}
+        onClose={closeSessionModal}
+      />
     </div>
   );
 }

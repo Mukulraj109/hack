@@ -4,27 +4,16 @@ import { X } from "lucide-react";
 import { apiFetch, getApiBaseUrl } from "../lib/api";
 import "../styles/hackathon-registration-form.css";
 
-export const HIRING_PARTNER_ARIA_LABEL = "Become a Hiring Partner";
-
-export function HiringPartnerButtonLabel() {
-  return (
-    <span className="nav-partner-button__label">
-      <span className="nav-partner-button__label-line">Become a</span>
-      <span className="nav-partner-button__label-line">Hiring Partner</span>
-    </span>
-  );
-}
-
 function LoadingState() {
   return (
     <div className="hackathon-reg-modal__loading" role="status" aria-live="polite">
       <span className="hackathon-reg-modal__spinner" aria-hidden />
-      <p>Loading hiring partner form…</p>
+      <p>Loading follow form…</p>
     </div>
   );
 }
 
-function HiringPartnerFormModal({ onClose, embedUrl, loading, error, onRetry, onIframeLoad, submitted }) {
+function FollowFormModal({ onClose, embedUrl, loading, error, onRetry, onIframeLoad, submitted }) {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -49,25 +38,25 @@ function HiringPartnerFormModal({ onClose, embedUrl, loading, error, onRetry, on
       className="hackathon-reg-modal__backdrop"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="hackathon-hiring-partner-modal-title"
+      aria-labelledby="hackathon-follow-modal-title"
       onClick={onClose}
     >
       <div
-        className="hackathon-reg-modal hackathon-reg-modal--hiring-partner"
+        className="hackathon-reg-modal hackathon-reg-modal--follow"
         onClick={(event) => event.stopPropagation()}
       >
         <header className="hackathon-reg-modal__header">
           <div className="hackathon-reg-modal__header-copy">
-            <p className="hackathon-reg-modal__eyebrow">Recruiter program</p>
-            <h2 id="hackathon-hiring-partner-modal-title" className="hackathon-reg-modal__title">
-              Become a Hiring Partner
+            <p className="hackathon-reg-modal__eyebrow">Stay in the loop</p>
+            <h2 id="hackathon-follow-modal-title" className="hackathon-reg-modal__title">
+              Follow this hackathon
             </h2>
           </div>
           <button
             type="button"
             className="hackathon-reg-modal__close"
             onClick={onClose}
-            aria-label="Close hiring partner form"
+            aria-label="Close follow form"
           >
             <X aria-hidden="true" />
           </button>
@@ -86,7 +75,7 @@ function HiringPartnerFormModal({ onClose, embedUrl, loading, error, onRetry, on
           {embedUrl && !error && (
             <iframe
               src={embedUrl}
-              title="Hiring partner form"
+              title="Hackathon follow form"
               className={`hackathon-reg-modal__iframe${loading ? " hackathon-reg-modal__iframe--hidden" : ""}`}
               loading="eager"
               onLoad={onIframeLoad}
@@ -102,7 +91,7 @@ function HiringPartnerFormModal({ onClose, embedUrl, loading, error, onRetry, on
             aria-live="polite"
           >
             {submitted
-              ? "Application received! We'll be in touch soon."
+              ? "You're subscribed! You'll receive hackathon updates by email."
               : "Fill in the form above. After submitting, you'll see a confirmation message."}
           </p>
           <div className="hackathon-reg-modal__footer-actions">
@@ -123,20 +112,12 @@ function HiringPartnerFormModal({ onClose, embedUrl, loading, error, onRetry, on
   );
 }
 
-export default function HiringPartnerButton({
-  className = "nav-partner-button",
-  children,
-  onOpen,
-  ariaLabel = HIRING_PARTNER_ARIA_LABEL,
-}) {
+export default function FollowFormButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const [embedUrl, setEmbedUrl] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  const content = children ?? <HiringPartnerButtonLabel />;
-  const useAriaLabel = !children || typeof children === "string";
 
   const closeModal = useCallback(() => {
     setModalOpen(false);
@@ -150,16 +131,16 @@ export default function HiringPartnerButton({
     setSubmitted(false);
 
     try {
-      const res = await apiFetch("/api/hackathon/hiring-partner-form/access");
+      const res = await apiFetch("/api/hackathon/follow-form/access");
       const path = res.data?.embedPath;
       if (!path) {
-        throw new Error("Could not start hiring partner form session");
+        throw new Error("Could not start follow form session");
       }
       setEmbedUrl(`${getApiBaseUrl()}${path}`);
     } catch (err) {
       setError(
         err.message ||
-          "Unable to load hiring partner form. Ensure the backend has ZOHO_HIRING_PARTNER_FORM_URL set."
+          "Unable to load follow form. Ensure the backend has ZOHO_FOLLOW_FORM_URL set."
       );
     } finally {
       setLoading(false);
@@ -167,10 +148,9 @@ export default function HiringPartnerButton({
   }, []);
 
   const openModal = useCallback(async () => {
-    onOpen?.();
     setModalOpen(true);
     await loadEmbed();
-  }, [loadEmbed, onOpen]);
+  }, [loadEmbed]);
 
   const handleIframeLoad = useCallback(() => {
     setLoading(false);
@@ -180,7 +160,7 @@ export default function HiringPartnerButton({
     if (!modalOpen) return undefined;
 
     function onMessage(event) {
-      if (event.data?.type === "firststep-hackathon-hiring-partner-submitted") {
+      if (event.data?.type === "firststep-hackathon-follow-submitted") {
         setSubmitted(true);
       }
     }
@@ -191,17 +171,17 @@ export default function HiringPartnerButton({
 
   return (
     <>
-      <button
-        type="button"
-        className={className}
-        aria-label={useAriaLabel ? ariaLabel : undefined}
-        onClick={openModal}
-      >
-        {content}
+      <button type="button" className="btn-follow" aria-label="Follow this hackathon" onClick={openModal}>
+        <svg className="btn-follow__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        <span className="btn-follow__label">Follow</span>
       </button>
 
       {modalOpen && (
-        <HiringPartnerFormModal
+        <FollowFormModal
           onClose={closeModal}
           embedUrl={embedUrl}
           loading={loading}

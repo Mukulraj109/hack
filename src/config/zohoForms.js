@@ -1,10 +1,6 @@
-/** Zoho form permalinks — set in .env (Vite bakes at build time). */
+/** Zoho form permalinks — server-side embed only (see backend env vars). */
 
 /** Hackathon registration is served via authenticated backend embed (see RegistrationFormEmbed). */
-
-export const ZOHO_HIRING_PARTNER_FORM_URL =
-  import.meta.env.VITE_ZOHO_HIRING_PARTNER_FORM_URL || "";
-
-/** Social share proof — Instagram & LinkedIn claim (Points Tracker). */
-export const ZOHO_SOCIAL_SHARE_CLAIM_FORM_URL =
-  import.meta.env.VITE_ZOHO_SOCIAL_SHARE_CLAIM_FORM_URL || "";
+/** Hackathon follow form is served via public backend embed (see FollowFormButton). */
+/** Hiring partner form is served via public backend embed (see HiringPartnerButton). */
+/** Social share verification form is served via backend embed (see SocialShareClaimModal). */

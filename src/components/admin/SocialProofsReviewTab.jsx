@@ -79,6 +79,7 @@ export default function SocialProofsReviewTab({ searchQuery = "" }) {
               <tr>
                 <th>Team</th>
                 <th>Platform</th>
+                <th>Source</th>
                 <th>Post URL</th>
                 <th>Screenshot</th>
                 <th>Submitted by</th>
@@ -93,6 +94,11 @@ export default function SocialProofsReviewTab({ searchQuery = "" }) {
                   <tr key={id}>
                     <td>{proof.team?.title || "—"}</td>
                     <td>{proof.platform}</td>
+                    <td>
+                      <span className="admin-badge admin-badge--neutral">
+                        {proof.source === "zoho" ? "zoho" : "app"}
+                      </span>
+                    </td>
                     <td>
                       <a href={proof.postUrl} target="_blank" rel="noreferrer">
                         View post

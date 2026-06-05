@@ -234,6 +234,11 @@
   letter-spacing: 0.01em;
   text-decoration: none;
   transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  font-family: inherit;
 }
 
 .career-cta--primary {

@@ -262,6 +262,41 @@
     padding: 22px 20px !important;
   }
 
+  /* Points row: title + pts on line 1; badge/claim on line 2 (avoids overlap e.g. Judge Evaluation) */
+  .points-tracker-item__head {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+    row-gap: 6px;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .points-tracker-item__label {
+    grid-column: 1;
+    grid-row: 1;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .points-tracker-item__points {
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 0 !important;
+    align-self: center;
+  }
+
+  .points-tracker-item__head-actions {
+    grid-column: 1;
+    grid-row: 2;
+    position: static !important;
+    top: auto !important;
+  }
+
+  .points-tracker-item:has(.points-tracker-item__hint) .points-tracker-item__head-actions {
+    top: auto !important;
+  }
+
   .sprint-dashboard-countdown {
     font-size: 22px !important;
     line-height: 28px !important;
@@ -465,6 +500,47 @@
     width: 2.75rem !important;
     height: 2.75rem !important;
     flex-shrink: 0;
+  }
+
+  .roadmap-info-sessions__header {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .roadmap-info-sessions__header-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .roadmap-info-sessions__title {
+    font-size: 1.125rem;
+  }
+
+  .roadmap-info-sessions__subtitle {
+    font-size: 0.875rem;
+  }
+
+  .roadmap-info-sessions__row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem;
+  }
+
+  .roadmap-info-sessions__row-body {
+    flex: 1 1 calc(100% - 3.5rem);
+    min-width: 0;
+  }
+
+  .roadmap-info-sessions__row-action {
+    width: 100%;
+    justify-content: space-between;
+    padding-left: 3.625rem;
+  }
+
+  .roadmap-info-sessions__chevron {
+    opacity: 0.7;
+    transform: none;
   }
 
   .roadmap-page .space-y-3 > .flex.items-center.justify-between {

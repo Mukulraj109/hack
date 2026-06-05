@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 import { useHackathonAuth } from "../auth/HackathonAuthContext";
 import { apiFetch, getApiBaseUrl } from "../lib/api";
 import "../styles/hackathon-registration-banner.css";
@@ -27,6 +28,7 @@ function RegistrationFormModal({
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.body.classList.add("hackathon-form-modal-open");
 
     const onKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -37,6 +39,7 @@ function RegistrationFormModal({
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.classList.remove("hackathon-form-modal-open");
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [onClose]);
@@ -49,7 +52,10 @@ function RegistrationFormModal({
       aria-labelledby="hackathon-reg-modal-title"
       onClick={onClose}
     >
-      <div className="hackathon-reg-modal" onClick={(event) => event.stopPropagation()}>
+      <div
+        className="hackathon-reg-modal hackathon-reg-modal--registration"
+        onClick={(event) => event.stopPropagation()}
+      >
         <header className="hackathon-reg-modal__header">
           <div className="hackathon-reg-modal__header-copy">
             <p className="hackathon-reg-modal__eyebrow">Hackathon registration</p>
@@ -68,9 +74,7 @@ function RegistrationFormModal({
             onClick={onClose}
             aria-label="Close registration form"
           >
-            <span className="material-symbols-outlined" aria-hidden>
-              close
-            </span>
+            <X aria-hidden="true" />
           </button>
         </header>
 

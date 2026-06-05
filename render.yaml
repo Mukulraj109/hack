@@ -22,9 +22,5 @@ services:
         sync: false
       - key: VITE_AUTH0_CALLBACK_URL
         sync: false
-      - key: VITE_ZOHO_HIRING_PARTNER_FORM_URL
-        sync: false
       - key: VITE_HACKATHON_SUBMISSION_ZIP_EMAIL
-        sync: false
-      - key: VITE_ZOHO_SOCIAL_SHARE_CLAIM_FORM_URL
         sync: false

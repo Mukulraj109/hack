@@ -1,4 +1,5 @@
-import { ZOHO_SOCIAL_SHARE_CLAIM_FORM_URL } from "../../config/zohoForms";
+import { useState } from "react";
+import SocialShareClaimModal from "../SocialShareClaimModal";
 
 const CLAIMABLE_IDS = new Set(["instagram", "linkedin"]);
 
@@ -17,36 +18,12 @@ function Icon({ name, filled = false, size = 16 }) {
   );
 }
 
-function ClaimButton({ disabled = false }) {
-  const content = (
-    <>
+function ClaimButton({ onClick }) {
+  return (
+    <button type="button" className="points-claim-btn" onClick={onClick}>
       <span>Claim</span>
       <Icon name="open_in_new" size={13} />
-    </>
-  );
-
-  if (disabled) {
-    return (
-      <button
-        type="button"
-        className="points-claim-btn points-claim-btn--placeholder"
-        disabled
-        title="Add VITE_ZOHO_SOCIAL_SHARE_CLAIM_FORM_URL to enable"
-      >
-        {content}
-      </button>
-    );
-  }
-
-  return (
-    <a
-      href={ZOHO_SOCIAL_SHARE_CLAIM_FORM_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="points-claim-btn"
-    >
-      {content}
-    </a>
+    </button>
   );
 }
 
@@ -62,11 +39,12 @@ export default function PointsTrackerItem({
   points,
   status,
   earned = 0,
+  onProofSubmitted,
 }) {
+  const [modalOpen, setModalOpen] = useState(false);
   const isSocial = CLAIMABLE_IDS.has(id);
   const showClaim =
     isSocial && !completed && status !== "locked" && status !== "submitted";
-  const hasFormUrl = Boolean(ZOHO_SOCIAL_SHARE_CLAIM_FORM_URL);
 
   let hint = null;
   let badge = null;
@@ -81,36 +59,59 @@ export default function PointsTrackerItem({
     badge = <StatusBadge tone="done" label="Scored" />;
   }
 
+  const openClaimModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeClaimModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleSubmitted = () => {
+    onProofSubmitted?.();
+  };
+
   return (
-    <div
-      className={`points-tracker-item${completed ? " points-tracker-item--done" : ""}${
-        status === "locked" ? " points-tracker-item--locked" : ""
-      }`}
-    >
+    <>
       <div
-        className={`points-tracker-item__icon${
-          completed ? " points-tracker-item__icon--done" : ""
+        className={`points-tracker-item${completed ? " points-tracker-item--done" : ""}${
+          status === "locked" ? " points-tracker-item--locked" : ""
         }`}
       >
-        <Icon name={icon} filled={completed} />
-      </div>
-
-      <div className="points-tracker-item__content">
-        <div className="points-tracker-item__head">
-          <span className="points-tracker-item__label">{label}</span>
-          {(showClaim || badge) && (
-            <div className="points-tracker-item__head-actions">
-              {showClaim && <ClaimButton disabled={!hasFormUrl} />}
-              {badge}
-            </div>
-          )}
-          <span className="points-tracker-item__points">{points}</span>
+        <div
+          className={`points-tracker-item__icon${
+            completed ? " points-tracker-item__icon--done" : ""
+          }`}
+        >
+          <Icon name={icon} filled={completed} />
         </div>
 
-        {hint && (
-          <p className="points-tracker-item__hint">{hint}</p>
-        )}
+        <div className="points-tracker-item__content">
+          <div className="points-tracker-item__head">
+            <span className="points-tracker-item__label">{label}</span>
+            {(showClaim || badge) && (
+              <div className="points-tracker-item__head-actions">
+                {showClaim && <ClaimButton onClick={openClaimModal} />}
+                {badge}
+              </div>
+            )}
+            <span className="points-tracker-item__points">{points}</span>
+          </div>
+
+          {hint && (
+            <p className="points-tracker-item__hint">{hint}</p>
+          )}
+        </div>
       </div>
-    </div>
+
+      {isSocial && (
+        <SocialShareClaimModal
+          open={modalOpen}
+          platform={id}
+          onClose={closeClaimModal}
+          onSubmitted={handleSubmitted}
+        />
+      )}
+    </>
   );
 }

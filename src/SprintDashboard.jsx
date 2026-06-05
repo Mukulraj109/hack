@@ -741,7 +741,7 @@ export default function SprintDashboard({ onNavigate }) {
                     }}
                   />
                   {pointsItems.map((item) => (
-                    <PointsTrackerItem key={item.id} {...item} />
+                    <PointsTrackerItem key={item.id} {...item} onProofSubmitted={dash.reload} />
                   ))}
                 </div>
                 <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid #eceef0" }}>
