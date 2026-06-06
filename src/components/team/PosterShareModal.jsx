@@ -241,9 +241,8 @@ export default function PosterShareModal({
                 ) : (
                   <>
                     <p className="team-poster-modal__hint">
-                      After posting on {platformLabel}, submit your public post URL and a screenshot using the
-                      verification form. Use the same email as your hackathon login and select{" "}
-                      <strong>{platformLabel}</strong> as the platform.
+                      After posting on {platformLabel}, submit your public post URL using the
+                      verification form (screenshot optional). Use the same email as your hackathon login.
                     </p>
                     {canSubmitProof ? (
                       <motion.button

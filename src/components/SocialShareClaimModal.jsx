@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { apiFetch, getApiBaseUrl } from "../lib/api";
@@ -27,6 +27,7 @@ function SocialShareClaimModalView({
   onIframeLoad,
   submitted,
   platformLabel,
+  iframeRef,
 }) {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -88,6 +89,7 @@ function SocialShareClaimModalView({
           )}
           {embedUrl && !error && (
             <iframe
+              ref={iframeRef}
               src={embedUrl}
               title={`${platformLabel} — submit proof`}
               className={`hackathon-reg-modal__iframe${loading ? " hackathon-reg-modal__iframe--hidden" : ""}`}
@@ -106,7 +108,7 @@ function SocialShareClaimModalView({
           >
             {submitted
               ? "Proof submitted! It will appear as In review on your Points Tracker shortly."
-              : "Use the same email as your hackathon login. Include your post URL and a screenshot of your share."}
+              : "Use the same email as your hackathon login. Paste your public post link — screenshot upload is optional."}
           </p>
           <div className="hackathon-reg-modal__footer-actions">
             {submitted ? (
@@ -131,6 +133,8 @@ export default function SocialShareClaimModal({ open, platform, onClose, onSubmi
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const iframeRef = useRef(null);
+  const iframeReadyAtRef = useRef(0);
 
   const platformLabel = PLATFORM_LABELS[platform] ?? "Social Share";
 
@@ -139,6 +143,7 @@ export default function SocialShareClaimModal({ open, platform, onClose, onSubmi
     setError(null);
     setEmbedUrl(null);
     setSubmitted(false);
+    iframeReadyAtRef.current = 0;
 
     try {
       const res = await apiFetch("/api/hackathon/social-share-form/access");
@@ -163,6 +168,7 @@ export default function SocialShareClaimModal({ open, platform, onClose, onSubmi
       setError(null);
       setLoading(false);
       setSubmitted(false);
+      iframeReadyAtRef.current = 0;
       return;
     }
 
@@ -171,12 +177,19 @@ export default function SocialShareClaimModal({ open, platform, onClose, onSubmi
 
   const handleIframeLoad = useCallback(() => {
     setLoading(false);
+    iframeReadyAtRef.current = Date.now();
   }, []);
 
   useEffect(() => {
     if (!open) return undefined;
 
     function onMessage(event) {
+      const iframeWindow = iframeRef.current?.contentWindow;
+      if (!iframeWindow || event.source !== iframeWindow) return;
+
+      // Ignore spurious thank-you detections during initial iframe boot.
+      if (Date.now() - iframeReadyAtRef.current < 1500) return;
+
       if (event.data?.type === "firststep-hackathon-social-share-submitted") {
         setSubmitted(true);
         onSubmitted?.();
@@ -201,6 +214,7 @@ export default function SocialShareClaimModal({ open, platform, onClose, onSubmi
       onIframeLoad={handleIframeLoad}
       submitted={submitted}
       platformLabel={platformLabel}
+      iframeRef={iframeRef}
     />
   );
 }

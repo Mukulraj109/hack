@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import InfoSessionFormModal from "./components/InfoSessionFormModal";
+import { useConfigCountdown } from "./hooks/useConfigCountdown";
+import { RoadmapSkeleton } from "./components/sprint/SprintPageSkeleton";
 import "./styles/sprint-portal.css";
 
 function useSprintMobileLayout() {
@@ -456,6 +458,7 @@ function InformationSessionsMilestone({ isMobile = false }) {
 // Main Roadmap Content
 export default function RoadmapContent() {
   const isMobile = useSprintMobileLayout();
+  const { loading: configLoading } = useConfigCountdown();
   const phases = [
     {
       phaseLabel: "Phase 1",
@@ -629,6 +632,16 @@ export default function RoadmapContent() {
       ],
     },
   ];
+
+  if (configLoading) {
+    return (
+      <div className="roadmap-shell relative min-h-screen" style={{ background: "linear-gradient(180deg, #f7f9fb 0%, #f0f4f4 50%, #f7f9fb 100%)" }}>
+        <div className="roadmap-page relative max-w-6xl mx-auto px-8 py-16">
+          <RoadmapSkeleton />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="roadmap-shell relative min-h-screen" style={{ background: "linear-gradient(180deg, #f7f9fb 0%, #f0f4f4 50%, #f7f9fb 100%)" }}>

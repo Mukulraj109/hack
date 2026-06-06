@@ -5,6 +5,10 @@ import { useCountdownTick } from "./hooks/useConfigCountdown";
 import SprintReelsSection from "./components/sprint/SprintReelsSection";
 import SprintTrackPickModal from "./components/sprint/SprintTrackPickModal";
 import PointsTrackerItem from "./components/sprint/PointsTrackerItem";
+import { DashboardSkeleton } from "./components/sprint/SprintPageSkeleton";
+import SprintLoadError from "./components/sprint/SprintLoadError";
+import SocialFollowLinks from "./components/SocialFollowLinks";
+import SocialShareClaimModal from "./components/SocialShareClaimModal";
 
 /** Placeholder panel until judge CMS; photos via env or defaults */
 const SPRINT_JUDGES = [
@@ -458,6 +462,7 @@ export default function SprintDashboard({ onNavigate }) {
     loading,
     error,
     reload,
+    refreshPointsBreakdown,
     refreshSession,
     canWrite,
     team,
@@ -480,6 +485,7 @@ export default function SprintDashboard({ onNavigate }) {
   const { getAccessToken } = useHackathonAuth();
   const [trackModalOpen, setTrackModalOpen] = useState(false);
   const [dismissedTrackPick, setDismissedTrackPick] = useState(false);
+  const [socialClaimPlatform, setSocialClaimPlatform] = useState(null);
 
   const showTrackPick =
     team &&
@@ -502,37 +508,36 @@ export default function SprintDashboard({ onNavigate }) {
     document.getElementById("points-tracker")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const socialShareModal = (
+    <SocialShareClaimModal
+      open={socialClaimPlatform != null}
+      platform={socialClaimPlatform ?? "instagram"}
+      onClose={() => setSocialClaimPlatform(null)}
+      onSubmitted={refreshPointsBreakdown}
+    />
+  );
+
   if (loading) {
     return (
-      <div className="sprint-dashboard-skeleton" aria-busy="true">
-        <div className="sprint-dashboard-skeleton__hero" />
-        <div className="sprint-dashboard-skeleton__grid" />
-      </div>
+      <>
+        <DashboardSkeleton />
+        {socialShareModal}
+      </>
     );
   }
 
   if (error) {
     return (
-      <GlassCard style={{ padding: "24px", marginBottom: "24px" }}>
-        <p style={{ color: "#ba1a1a", marginBottom: "12px" }}>{error}</p>
-        <button
-          type="button"
-          onClick={async () => {
+      <>
+        <SprintLoadError
+          message={error}
+          onRetry={async () => {
             await refreshSession({ silent: true });
             await reload();
           }}
-          style={{
-            padding: "8px 20px",
-            background: "#00685f",
-            color: "#fff",
-            border: "none",
-            borderRadius: "9999px",
-            cursor: "pointer",
-          }}
-        >
-          Retry
-        </button>
-      </GlassCard>
+        />
+        {socialShareModal}
+      </>
     );
   }
 
@@ -552,6 +557,8 @@ export default function SprintDashboard({ onNavigate }) {
           reload();
         }}
       />
+
+      {socialShareModal}
 
       {/* Hero Banner */}
       <section className="sprint-dashboard-hero" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", marginBottom: "32px" }}>
@@ -725,6 +732,7 @@ export default function SprintDashboard({ onNavigate }) {
               </div>
 
               <SprintReelsSection />
+              <SocialFollowLinks variant="inline-row" />
             </div>
 
             {/* Right Sidebar */}
@@ -741,7 +749,11 @@ export default function SprintDashboard({ onNavigate }) {
                     }}
                   />
                   {pointsItems.map((item) => (
-                    <PointsTrackerItem key={item.id} {...item} onProofSubmitted={dash.reload} />
+                    <PointsTrackerItem
+                      key={item.id}
+                      {...item}
+                      onClaimClick={setSocialClaimPlatform}
+                    />
                   ))}
                 </div>
                 <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid #eceef0" }}>

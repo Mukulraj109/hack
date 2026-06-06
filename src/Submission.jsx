@@ -7,6 +7,9 @@ import {
 } from "./lib/submissionReadiness";
 import ResumeUploadField from "./components/submission/ResumeUploadField";
 import SupplementaryZipEmailStep from "./components/submission/SupplementaryZipEmailStep";
+import { SubmissionSkeleton } from "./components/sprint/SprintPageSkeleton";
+import SprintLoadError from "./components/sprint/SprintLoadError";
+import SprintShimmerBlock from "./components/sprint/SprintShimmerBlock";
 import "./styles/sprint-portal.css";
 
 const CARD_SPRING = { type: "spring", stiffness: 380, damping: 28 };
@@ -156,33 +159,11 @@ export default function SubmissionContent() {
   const artifactsDisabled = isReadOnly || needsTeamTrack || submissionHydrating;
 
   if (loading) {
-    return (
-      <div style={{ padding: "48px", textAlign: "center", color: "#6d7a77" }}>
-        Loading submission…
-      </div>
-    );
+    return <SubmissionSkeleton />;
   }
 
   if (error) {
-    return (
-      <GlassCard style={{ padding: "24px" }}>
-        <p style={{ color: "#ba1a1a", marginBottom: "12px" }}>{error}</p>
-        <button
-          type="button"
-          onClick={reload}
-          style={{
-            padding: "8px 20px",
-            background: "#00685f",
-            color: "#fff",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
-          Retry
-        </button>
-      </GlassCard>
-    );
+    return <SprintLoadError message={error} onRetry={reload} />;
   }
 
   return (
@@ -288,7 +269,16 @@ export default function SubmissionContent() {
         </p>
       )}
 
-      <div className="submission-layout" style={{ display: "grid", gridTemplateColumns: "65fr 35fr", gap: "24px" }}>
+      <div
+        className={`submission-layout${submissionHydrating ? " sprint-submission-hydrating" : ""}`}
+        style={{ display: "grid", gridTemplateColumns: "65fr 35fr", gap: "24px" }}
+        aria-busy={submissionHydrating || undefined}
+      >
+        {submissionHydrating && (
+          <div className="sprint-submission-hydrating__overlay" aria-hidden="true">
+            <SprintShimmerBlock />
+          </div>
+        )}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <GlassCard style={{ padding: "24px" }}>
             <SectionIcon

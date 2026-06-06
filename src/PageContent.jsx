@@ -16,7 +16,9 @@ import { FloatingLabels } from "./components/FloatingLabels";
 import { HeroPromoCaption } from "./components/HeroPromoCaption";
 import { MobileNav } from "./components/MobileNav";
 import HiringPartnerButton from "./components/HiringPartnerButton";
+import RecruiterLineupButton from "./components/RecruiterLineupButton";
 import FollowFormButton from "./components/FollowFormButton";
+import SocialFollowLinks from "./components/SocialFollowLinks";
 import Footer from "./components/Footer";
 import { ShimmerCard } from "./components/ui/shimmer-card";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -25,7 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2, Medal, GraduationCap } from "lucide-react";
 
-const HACKATHON_START = new Date("2026-06-10T20:00:00-04:00");
+import { HACKATHON_START } from "./lib/hackathonDates";
 
 const NAV_LINKS = [
   { href: "https://firststepjob.com/", label: "Home", isActive: true, external: true },
@@ -202,17 +204,19 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
 
           {/* CTA buttons pinned to the bottom of the hero (per sketch placement) */}
           <div className="hero-bottom-cta">
-            <div className="hero-cta-group">
-              <FollowFormButton />
+            <div className="hero-bottom-cta__stack">
+              <div className="hero-cta-group">
+                <FollowFormButton />
 
-              {/* Claim Your Spot Button - Primary CTA with Gradient */}
-              <ClaimSpot className="btn-claim" onNavigate={onNavigate}>
-                <span className="btn-claim__label">Claim Your Spot</span>
-                <svg className="btn-claim__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </ClaimSpot>
+                {/* Claim Your Spot Button - Primary CTA with Gradient */}
+                <ClaimSpot className="btn-claim" onNavigate={onNavigate}>
+                  <span className="btn-claim__label">Claim Your Spot</span>
+                  <svg className="btn-claim__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </ClaimSpot>
+              </div>
             </div>
           </div>
 
@@ -266,16 +270,10 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
               </li>
             </ul>
             <div className="career-cta-row">
-              <a
-                href="#judges-section"
-                className="career-cta career-cta--primary"
-                onClick={(e) =>
-                  handleSectionLinkClick(e.nativeEvent, "judges-section")
-                }
-              >
+              <RecruiterLineupButton className="career-cta career-cta--primary">
                 Meet the Recruiter Lineup
                 <ArrowRight className="w-[18px] h-[18px]" />
-              </a>
+              </RecruiterLineupButton>
               <HiringPartnerButton className="career-cta career-cta--ghost">
                 <Briefcase className="w-[18px] h-[18px]" />
                 Become a Hiring Partner
@@ -428,6 +426,7 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
         </motion.div>
       </section>
       <ReelsShowcase />
+      <SocialFollowLinks variant="inline-row" />
       <HowItWorksSticky />
       <TracksStack />
       <JudgesStack />

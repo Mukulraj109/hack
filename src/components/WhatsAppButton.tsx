@@ -1,13 +1,18 @@
 import WhatsAppIcon from "./WhatsappIcon";
 import "../styles/whatsapp-fab.css";
 
+const WHATSAPP_NUMBER = "919494286653";
+const WHATSAPP_MESSAGE = "Hi FirstStep! I need help with the hackathon.";
+
 export default function WhatsAppButton() {
+  const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
   return (
     <a
-      href="https://wa.me/919494286653?text=Hi%20FirstStep%20I%27d%20like%20more%20information%20about%20your%20services"
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="WhatsApp Us"
+      aria-label="WhatsApp hackathon support"
       className="whatsapp-fab"
     >
       <span className="whatsapp-fab__icon whatsapp-fab__icon--desktop" aria-hidden="true">

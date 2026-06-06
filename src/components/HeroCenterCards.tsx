@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import CountdownTimer from "./CountdownTimer";
-
-const HACKATHON_START = new Date("2026-06-10T20:00:00-04:00");
+import { HACKATHON_START } from "../lib/hackathonDates";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },

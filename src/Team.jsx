@@ -14,6 +14,9 @@ import { fetchSocialConfig } from "./lib/configCache";
 import { useHackathonAuth } from "./auth/HackathonAuthContext";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { apiFetch } from "./lib/api";
+import { SocialProofSectionSkeleton } from "./components/sprint/SprintPageSkeleton";
+import SprintLoadError from "./components/sprint/SprintLoadError";
+import SprintShimmerBlock from "./components/sprint/SprintShimmerBlock";
 
 function memberDisplayName(m) {
   const name = [m.firstName, m.lastName].filter(Boolean).join(" ").trim();
@@ -334,25 +337,47 @@ function SocialProofStatusCard({ platform, proof }) {
         ? "Rejected"
         : "Under review";
 
+  const screenshotIsImageUrl =
+    proof.screenshotUrl && /^https?:\/\//i.test(proof.screenshotUrl);
+
   return (
     <div className="team-proof-card">
       <div className="team-proof-card__row">
         <strong style={{ color: "#002B36", fontSize: 14 }}>{label}</strong>
         <span className={`team-proof-card__badge ${badgeClass}`}>{badgeLabel}</span>
       </div>
-      <p className="team-proof-card__meta">
-        Submitted by {submitter}
-        {proof.postUrl && (
-          <>
-            {" · "}
-            <a href={proof.postUrl} target="_blank" rel="noreferrer" className="team-proof-card__link">
-              View post
-            </a>
-          </>
-        )}
-      </p>
-      {proof.screenshotUrl && (
-        <img src={proof.screenshotUrl} alt={`${label} proof screenshot`} className="team-proof-card__thumb" loading="lazy" />
+      {proof.status === "rejected" ? (
+        <p className="team-proof-card__meta team-proof-card__meta--rejected">
+          This submission was rejected by an admin. Open <strong>Sprint</strong> and tap{" "}
+          <strong>Claim</strong> on {label} to submit again.
+        </p>
+      ) : (
+        <>
+          <p className="team-proof-card__meta">
+            Submitted by {submitter}
+            {proof.postUrl && (
+              <>
+                {" · "}
+                <a href={proof.postUrl} target="_blank" rel="noreferrer" className="team-proof-card__link">
+                  View post
+                </a>
+              </>
+            )}
+          </p>
+          {screenshotIsImageUrl && (
+            <img
+              src={proof.screenshotUrl}
+              alt={`${label} proof screenshot`}
+              className="team-proof-card__thumb"
+              loading="lazy"
+            />
+          )}
+          {proof.screenshotUrl && !screenshotIsImageUrl && (
+            <p className="team-proof-card__meta team-proof-card__screenshot-note">
+              Screenshot note: {proof.screenshotUrl}
+            </p>
+          )}
+        </>
       )}
     </div>
   );
@@ -652,13 +677,53 @@ function TeamExplainerSection() {
   );
 }
 
+function SocialProofSection({ loading, error, proofByPlatform, onRetry }) {
+  return (
+    <div className="mt-16">
+      <div className="mb-6 flex items-center gap-3">
+        <Icon name="verified" size={28} style={{ color: "#00685f" }} />
+        <h2 className="text-2xl font-bold" style={{ fontFamily: "'Hanken Grotesk', sans-serif", color: "#002B36" }}>
+          Social Proof Status
+        </h2>
+      </div>
+      <p style={{ color: "#6d7a77", lineHeight: 1.7, marginBottom: "24px", maxWidth: "680px" }}>
+        Track verification status for your team&apos;s Instagram and LinkedIn posts.
+      </p>
+
+      {loading && <SocialProofSectionSkeleton />}
+
+      {error && !loading && (
+        <SprintLoadError message={error} onRetry={onRetry} style={{ marginBottom: "16px" }} />
+      )}
+
+      {!loading && !error && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SocialProofStatusCard platform="instagram" proof={proofByPlatform.instagram} />
+          <SocialProofStatusCard platform="linkedin" proof={proofByPlatform.linkedin} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TemplateGallerySection({ teamTitle, memberNames, members, onOpenModal }) {
   const [hashtag, setHashtag] = useState("#ShipIn100Hrs");
+  const [configLoading, setConfigLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+    setConfigLoading(true);
     fetchSocialConfig()
-      .then((res) => setHashtag(res.data?.hashtag || "#ShipIn100Hrs"))
-      .catch(() => {});
+      .then((res) => {
+        if (!cancelled) setHashtag(res.data?.hashtag || "#ShipIn100Hrs");
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setConfigLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const posterMembers = members.map((m) => ({
@@ -680,7 +745,17 @@ function TemplateGallerySection({ teamTitle, memberNames, members, onOpenModal }
         Select a template below to download your team poster. Share it on social media and submit the link to earn points.
       </p>
 
-      {/* Instagram Templates */}
+      {configLoading ? (
+        <div className="sprint-section-skeleton" aria-busy="true" aria-label="Loading poster templates">
+          <div className="sprint-team-skeleton__posters">
+            <SprintShimmerBlock className="sprint-team-skeleton__poster" />
+            <SprintShimmerBlock className="sprint-team-skeleton__poster" />
+            <SprintShimmerBlock className="sprint-team-skeleton__poster" />
+            <SprintShimmerBlock className="sprint-team-skeleton__poster" />
+          </div>
+        </div>
+      ) : (
+        <>
       <div className="mb-12">
         <h3 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: "#002B36" }}>
           <Icon name="photo_camera" size={20} style={{ color: "#E1306C" }} />
@@ -777,6 +852,8 @@ function TemplateGallerySection({ teamTitle, memberNames, members, onOpenModal }
           })}
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 }
@@ -784,7 +861,8 @@ function TemplateGallerySection({ teamTitle, memberNames, members, onOpenModal }
 // Main Team Component
 export default function TeamContent() {
   const { team, refreshSession, getAccessToken, user, canWrite } = useHackathonAuth();
-  const { proofByPlatform, reload: reloadProofs } = useTeamSocialProof(team?.id);
+  const { proofByPlatform, loading: proofLoading, error: proofError, reload: reloadProofs } =
+    useTeamSocialProof(team?.id);
   const [uploadState, setUploadState] = useState({ status: "idle", memberId: null, message: "" });
   const [removeBusy, setRemoveBusy] = useState({ status: "idle", memberId: null, message: "" });
   const [modalPlatform, setModalPlatform] = useState(null);
@@ -928,15 +1006,23 @@ export default function TeamContent() {
         </div>
 
         {team?.id && (
-          <TemplateGallerySection
-            teamTitle={posterTeamTitle}
-            memberNames={posterMemberNames}
-            members={members}
-            onOpenModal={(platform, templateId) => {
-              setModalPlatform(platform);
-              setModalTemplateId(templateId);
-            }}
-          />
+          <>
+            <SocialProofSection
+              loading={proofLoading}
+              error={proofError}
+              proofByPlatform={proofByPlatform}
+              onRetry={reloadProofs}
+            />
+            <TemplateGallerySection
+              teamTitle={posterTeamTitle}
+              memberNames={posterMemberNames}
+              members={members}
+              onOpenModal={(platform, templateId) => {
+                setModalPlatform(platform);
+                setModalTemplateId(templateId);
+              }}
+            />
+          </>
         )}
       </div>
 

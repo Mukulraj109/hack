@@ -1,5 +1,5 @@
 /** Same schedule as sprint portal / landing — used when API config is missing. */
-export const HACKATHON_START = new Date("2026-06-10T20:00:00-04:00");
+export const HACKATHON_START = new Date("2026-07-08T20:00:00-04:00");
 export const SPRINT_HOURS = 100;
 
 export function getDefaultSprintEndDate() {

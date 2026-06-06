@@ -7,10 +7,10 @@ import "./styles/sprint-portal.css";
 import "./styles/admin-verification.css";
 
 const TABS = [
-  { id: "accounts", label: "Account approval" },
-  { id: "submissions", label: "Submission review" },
-  { id: "social-proofs", label: "Social proofs" },
-  { id: "points", label: "Add points" },
+  { id: "accounts", label: "Account approval", shortLabel: "Accounts" },
+  { id: "submissions", label: "Submission review", shortLabel: "Submissions" },
+  { id: "social-proofs", label: "Social proofs", shortLabel: "Social" },
+  { id: "points", label: "Add points", shortLabel: "Points" },
 ];
 
 export default function AdminVerification() {
@@ -67,7 +67,12 @@ export default function AdminVerification() {
             className={`admin-verification__tab${activeTab === tab.id ? " admin-verification__tab--active" : ""}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            {tab.label}
+            <span className="admin-verification__tab-label admin-verification__tab-label--full">
+              {tab.label}
+            </span>
+            <span className="admin-verification__tab-label admin-verification__tab-label--short">
+              {tab.shortLabel}
+            </span>
           </button>
         ))}
       </div>

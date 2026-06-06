@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAdminVerification } from "../../hooks/useAdminVerification";
+import { AdminTableSkeleton } from "../sprint/SprintPageSkeleton";
+import SprintLoadError from "../sprint/SprintLoadError";
 import {
   AVAILABILITY_OPTIONS,
   HIRING_STATUS_OPTIONS,
@@ -154,17 +156,19 @@ export default function SubmissionsReviewTab({ searchQuery = "" }) {
         </button>
       </div>
 
-      {error && <p className="admin-tab__error">{error}</p>}
+      {error && !loading && (
+        <SprintLoadError message={error} onRetry={loadSubmissions} style={{ marginBottom: "16px" }} />
+      )}
       {success && <p className="admin-tab__success">{success}</p>}
 
       {loading ? (
-        <p className="admin-tab__loading">Loading submissions…</p>
+        <AdminTableSkeleton />
       ) : submissions.length === 0 ? (
         <p className="admin-tab__empty">No submissions match this filter.</p>
       ) : (
         <div className="admin-split">
-          <div className="admin-table-wrap">
-            <table className="admin-table">
+          <div className="admin-table-wrap admin-table-wrap--submissions">
+            <table className="admin-table admin-table--submissions">
               <thead>
                 <tr>
                   <th>Project</th>

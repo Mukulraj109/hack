@@ -3,6 +3,12 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 1.5rem 3rem;
+  box-sizing: border-box;
+  overflow-x: clip;
+}
+
+.admin-verification__tab-label--short {
+  display: none;
 }
 
 .admin-verification__header {
@@ -180,12 +186,32 @@
 
 .admin-table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  margin: 0 -0.15rem;
+  padding: 0 0.15rem 0.35rem;
+}
+
+.admin-table-wrap::after {
+  content: none;
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+}
+
+.admin-table--accounts {
+  min-width: 880px;
+}
+
+.admin-table--submissions {
+  min-width: 720px;
+}
+
+.admin-table--proofs {
+  min-width: 960px;
 }
 
 .admin-table th,
@@ -215,6 +241,34 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+  min-width: 140px;
+}
+
+.admin-proof-screenshot {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  max-width: 140px;
+  text-decoration: none;
+  color: #0d9488;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-proof-screenshot img {
+  display: block;
+  width: 100%;
+  max-width: 120px;
+  max-height: 80px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.admin-proof-screenshot span {
+  line-height: 1.2;
 }
 
 .admin-btn {
@@ -224,6 +278,8 @@
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
+  min-height: 36px;
+  touch-action: manipulation;
 }
 
 .admin-btn:disabled {
@@ -302,6 +358,11 @@
 .admin-badge--suspended {
   background: #fee2e2;
   color: #b91c1c;
+}
+
+.admin-badge--neutral {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .admin-split {
@@ -461,16 +522,6 @@
   cursor: pointer;
 }
 
-@media (max-width: 900px) {
-  .admin-split {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-points {
-    grid-template-columns: 1fr;
-  }
-}
-
 .admin-points {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
@@ -504,6 +555,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  touch-action: manipulation;
 }
 
 .admin-points__user--selected {
@@ -538,6 +590,7 @@
 
 .admin-points__presets {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -563,4 +616,211 @@
 .admin-points__submit {
   padding: 0.55rem 1rem;
   font-size: 0.875rem;
+}
+
+@media (max-width: 900px) {
+  .admin-split {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-points {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-detail {
+    max-height: none;
+  }
+}
+
+/* Small tablets */
+@media (max-width: 767px) {
+  .admin-verification {
+    padding: 0.5rem 0 2rem;
+  }
+
+  .admin-verification__header {
+    margin-bottom: 1.25rem;
+    text-align: left;
+  }
+
+  .admin-verification__title {
+    font-size: 1.65rem;
+  }
+
+  .admin-verification__subtitle {
+    max-width: none;
+    font-size: 0.925rem;
+  }
+
+  .admin-verification__search {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.55rem 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .admin-verification__search-input {
+    flex: 1 1 100%;
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .admin-verification__search-clear {
+    min-height: 44px;
+    padding: 0.5rem 0.85rem;
+    margin-left: auto;
+  }
+
+  .admin-verification__tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    gap: 0.4rem;
+    margin: 0 -0.25rem 1rem;
+    padding: 0 0.25rem 0.35rem;
+  }
+
+  .admin-verification__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-verification__tab {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .admin-verification__tab-label--full {
+    display: none;
+  }
+
+  .admin-verification__tab-label--short {
+    display: inline;
+  }
+
+  .admin-verification__panel {
+    padding: 0.85rem;
+    border-radius: 0.75rem;
+  }
+
+  .admin-tab__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .admin-tab__filter {
+    width: 100%;
+  }
+
+  .admin-tab__filter select {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .admin-tab__refresh {
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.9375rem;
+  }
+
+  .admin-table-wrap::after {
+    content: "Swipe sideways for more columns →";
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #94a3b8;
+    text-align: center;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .admin-table--submissions tbody tr {
+    cursor: pointer;
+  }
+
+  .admin-table__actions {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 120px;
+  }
+
+  .admin-btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.8125rem;
+  }
+
+  .admin-detail {
+    padding: 0.85rem;
+    border-radius: 0.65rem;
+  }
+
+  .admin-detail__field select,
+  .admin-judge-panel__field input,
+  .admin-judge-panel__field textarea,
+  .admin-points__field input {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .admin-judge-panel__field textarea {
+    min-height: 88px;
+  }
+
+  .admin-judge-panel__submit,
+  .admin-points__submit {
+    min-height: 48px;
+    font-size: 0.9375rem;
+  }
+
+  .admin-points__user {
+    min-height: 44px;
+    padding: 0.85rem 0.9rem;
+  }
+
+  .admin-points__presets .admin-btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    width: auto;
+  }
+
+  .admin-proof-screenshot {
+    max-width: 100px;
+  }
+
+  .admin-proof-screenshot img {
+    max-width: 100px;
+    max-height: 72px;
+  }
+}
+
+/* Narrow phones */
+@media (max-width: 480px) {
+  .admin-verification__title {
+    font-size: 1.45rem;
+  }
+
+  .admin-verification__panel {
+    padding: 0.65rem;
+  }
+
+  .admin-table--accounts {
+    min-width: 760px;
+  }
+
+  .admin-table--proofs {
+    min-width: 860px;
+  }
 }

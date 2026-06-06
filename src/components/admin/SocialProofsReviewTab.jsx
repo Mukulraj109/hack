@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAdminVerification } from "../../hooks/useAdminVerification";
+import { AdminTableSkeleton } from "../sprint/SprintPageSkeleton";
+import SprintLoadError from "../sprint/SprintLoadError";
 
 const PROOF_STATUSES = ["pending", "verified", "rejected"];
 
@@ -66,15 +68,17 @@ export default function SocialProofsReviewTab({ searchQuery = "" }) {
         </button>
       </div>
 
-      {error && <p className="admin-tab__error">{error}</p>}
+      {error && !loading && (
+        <SprintLoadError message={error} onRetry={loadProofs} style={{ marginBottom: "16px" }} />
+      )}
 
       {loading ? (
-        <p className="admin-tab__loading">Loading social proofs…</p>
+        <AdminTableSkeleton />
       ) : proofs.length === 0 ? (
         <p className="admin-tab__empty">No social proofs match this filter.</p>
       ) : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
+        <div className="admin-table-wrap admin-table-wrap--proofs">
+          <table className="admin-table admin-table--proofs">
             <thead>
               <tr>
                 <th>Team</th>
@@ -106,11 +110,27 @@ export default function SocialProofsReviewTab({ searchQuery = "" }) {
                     </td>
                     <td>
                       {proof.screenshotUrl ? (
-                        <a href={proof.screenshotUrl} target="_blank" rel="noreferrer">
-                          View screenshot
-                        </a>
+                        /^https?:\/\//i.test(proof.screenshotUrl) ? (
+                          <a
+                            href={proof.screenshotUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="admin-proof-screenshot"
+                          >
+                            <img
+                              src={proof.screenshotUrl}
+                              alt={`${proof.platform} share screenshot`}
+                              loading="lazy"
+                            />
+                            <span>View full</span>
+                          </a>
+                        ) : (
+                          <span className="admin-proof-screenshot-text" title={proof.screenshotUrl}>
+                            {proof.screenshotUrl}
+                          </span>
+                        )
                       ) : (
-                        "—"
+                        <span className="admin-proof-screenshot-missing">Post link only</span>
                       )}
                     </td>
                     <td>{formatName(proof.submittedBy)}</td>

@@ -2278,6 +2278,17 @@
   color: #6d7a77;
 }
 
+.team-proof-card__meta--rejected {
+  color: #93000a;
+  line-height: 1.5;
+}
+
+.team-proof-card__screenshot-note {
+  word-break: break-all;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+}
+
 .team-proof-card__link {
   color: #00685f;
   font-weight: 600;
@@ -2507,18 +2518,8 @@
   border-top: 1px solid #eceef0;
 }
 
-/* Sprint dashboard loading skeleton */
-.sprint-dashboard-skeleton__hero {
-  height: 220px;
-  border-radius: 16px;
-  background: linear-gradient(90deg, #eceef0 25%, #f5f6f7 50%, #eceef0 75%);
-  background-size: 200% 100%;
-  animation: sprint-shimmer 1.2s ease-in-out infinite;
-  margin-bottom: 24px;
-}
-
-.sprint-dashboard-skeleton__grid {
-  height: 400px;
+/* Sprint portal loading skeletons */
+.sprint-shimmer-block {
   border-radius: 16px;
   background: linear-gradient(90deg, #eceef0 25%, #f5f6f7 50%, #eceef0 75%);
   background-size: 200% 100%;
@@ -2532,6 +2533,177 @@
   100% {
     background-position: -200% 0;
   }
+}
+
+.sprint-section-skeleton {
+  margin-bottom: 24px;
+}
+
+/* Dashboard */
+.sprint-dashboard-skeleton__hero {
+  height: 220px;
+  margin-bottom: 24px;
+}
+
+.sprint-dashboard-skeleton__grid {
+  height: 400px;
+}
+
+/* Submission */
+.sprint-submission-skeleton__header {
+  height: 48px;
+  max-width: 420px;
+  margin-bottom: 32px;
+  border-radius: 12px;
+}
+
+.sprint-submission-skeleton__layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+.sprint-submission-skeleton__main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sprint-submission-skeleton__card {
+  height: 220px;
+}
+
+.sprint-submission-skeleton__card--short {
+  height: 140px;
+}
+
+.sprint-submission-skeleton__sidebar {
+  height: 280px;
+  border-radius: 16px;
+}
+
+/* Roadmap */
+.sprint-roadmap-skeleton__header {
+  height: 120px;
+  max-width: 640px;
+  margin: 0 auto 48px;
+  border-radius: 12px;
+}
+
+.sprint-roadmap-skeleton__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.sprint-roadmap-skeleton__milestone {
+  height: 160px;
+  width: 48%;
+}
+
+.sprint-roadmap-skeleton__milestone--left {
+  align-self: flex-start;
+}
+
+.sprint-roadmap-skeleton__milestone--right {
+  align-self: flex-end;
+}
+
+/* Team */
+.sprint-team-skeleton__header {
+  height: 56px;
+  max-width: 480px;
+  margin-bottom: 32px;
+  border-radius: 12px;
+}
+
+.sprint-team-skeleton__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.sprint-team-skeleton__members {
+  height: 360px;
+}
+
+.sprint-team-skeleton__video {
+  height: 360px;
+}
+
+.sprint-team-skeleton__posters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.sprint-team-skeleton__poster {
+  height: 280px;
+}
+
+/* Social proof section */
+.sprint-social-proof-skeleton__title {
+  height: 28px;
+  max-width: 240px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+
+.sprint-social-proof-skeleton__cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.sprint-social-proof-skeleton__card {
+  height: 120px;
+  border-radius: 12px;
+}
+
+/* Admin table */
+.sprint-admin-skeleton__toolbar {
+  height: 44px;
+  max-width: 480px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.sprint-admin-skeleton__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sprint-admin-skeleton__row {
+  height: 48px;
+  border-radius: 8px;
+}
+
+/* Submission hydrating overlay */
+.sprint-submission-hydrating {
+  position: relative;
+}
+
+.sprint-submission-hydrating__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.sprint-submission-hydrating__overlay .sprint-shimmer-block {
+  width: min(280px, 80%);
+  height: 12px;
+  border-radius: 9999px;
 }
 
 /* Track pick modal */
@@ -2963,6 +3135,12 @@
   background: rgba(0, 104, 95, 0.1);
   color: #00685f;
   border: 1px solid rgba(0, 104, 95, 0.18);
+}
+
+.points-tracker-badge--rejected {
+  background: rgba(186, 26, 26, 0.1);
+  color: #ba1a1a;
+  border: 1px solid rgba(186, 26, 26, 0.2);
 }
 
 .points-claim-btn {

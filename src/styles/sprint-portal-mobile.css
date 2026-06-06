@@ -354,6 +354,30 @@
     height: 280px;
   }
 
+  .sprint-submission-skeleton__layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sprint-submission-skeleton__sidebar {
+    height: 180px;
+  }
+
+  .sprint-roadmap-skeleton__milestone {
+    width: 100% !important;
+  }
+
+  .sprint-team-skeleton__grid,
+  .sprint-team-skeleton__posters,
+  .sprint-social-proof-skeleton__cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sprint-team-skeleton__members,
+  .sprint-team-skeleton__video,
+  .sprint-team-skeleton__poster {
+    height: 220px;
+  }
+
   /* ---- Submission ---- */
   .submission-layout {
     display: grid !important;

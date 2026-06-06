@@ -50,6 +50,16 @@ export function useSprintDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchPointsData = useCallback(async () => {
+    const token = await getAccessToken();
+    const [breakdownRes, rankRes] = await Promise.all([
+      apiFetch("/api/hackathon/me/points-breakdown", { token }),
+      apiFetch("/api/leaderboard/me", { token }).catch(() => ({ data: null })),
+    ]);
+    setBreakdown(breakdownRes.data ?? null);
+    setRank(rankRes.data ?? null);
+  }, [getAccessToken]);
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -61,21 +71,23 @@ export function useSprintDashboard() {
 
       setCountdown(countdownRes.data ?? null);
       setTracks(tracksRes.data ?? []);
+
+      await fetchPointsData();
       setLoading(false);
-
-      const token = await getAccessToken();
-      const [breakdownRes, rankRes] = await Promise.all([
-        apiFetch("/api/hackathon/me/points-breakdown", { token }),
-        apiFetch("/api/leaderboard/me", { token }).catch(() => ({ data: null })),
-      ]);
-
-      setBreakdown(breakdownRes.data ?? null);
-      setRank(rankRes.data ?? null);
     } catch (err) {
       setError(err?.message || "Failed to load dashboard");
       setLoading(false);
     }
-  }, [getAccessToken]);
+  }, [fetchPointsData]);
+
+  /** Refresh points tracker without unmounting the dashboard (keeps modals open). */
+  const refreshPointsBreakdown = useCallback(async () => {
+    try {
+      await fetchPointsData();
+    } catch (err) {
+      console.error("[sprint] points refresh failed:", err);
+    }
+  }, [fetchPointsData]);
 
   useEffect(() => {
     if (auth0Loading || !isAuthenticated) return;
@@ -142,6 +154,7 @@ export function useSprintDashboard() {
     loading,
     error,
     reload: load,
+    refreshPointsBreakdown,
     refreshSession,
     canWrite,
     user,

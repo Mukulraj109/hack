@@ -1,46 +1,8 @@
 import type { ReactNode } from "react";
+import { INSTAGRAM_URL, LINKEDIN_URL } from "../config/socialLinks";
+import { InstagramIcon, LinkedinIcon, YoutubeIcon } from "./SocialIcons";
 
 const BASE = "https://firststepjob.com";
-
-const iconProps = {
-  width: 22,
-  height: 22,
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 1.5,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-};
-
-function InstagramIcon() {
-  return (
-    <svg {...iconProps} aria-hidden>
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-    </svg>
-  );
-}
-
-function LinkedinIcon() {
-  return (
-    <svg {...iconProps} aria-hidden>
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-13h4v2" />
-      <rect x="2" y="9" width="4" height="12" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
-
-function YoutubeIcon() {
-  return (
-    <svg {...iconProps} aria-hidden>
-      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-2C18.88 4 12 4 12 4s-6.88 0-8.59.42a2.78 2.78 0 0 0-1.95 2 29 29 0 0 0-.46 5.58 29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 2C5.12 20 12 20 12 20s6.88 0 8.59-.42a2.78 2.78 0 0 0 1.95-2 29 29 0 0 0 .46-5.58 29 29 0 0 0-.46-5.58z" />
-      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
-    </svg>
-  );
-}
 
 const linkClass =
   "text-white/70 hover:text-white text-sm font-['Geologica'] transition-colors";
@@ -91,18 +53,20 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://www.instagram.com/firststepjob/"
+                href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition-colors duration-200"
+                aria-label="Follow FirstStep on Instagram (opens in new tab)"
               >
                 <InstagramIcon />
               </a>
               <a
-                href="https://www.linkedin.com/company/firststepjob/"
+                href={LINKEDIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition-colors duration-200"
+                aria-label="Follow FirstStep on LinkedIn (opens in new tab)"
               >
                 <LinkedinIcon />
               </a>
@@ -111,6 +75,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition-colors duration-200"
+                aria-label="Follow FirstStep on YouTube (opens in new tab)"
               >
                 <YoutubeIcon />
               </a>

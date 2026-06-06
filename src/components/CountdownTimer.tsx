@@ -134,7 +134,7 @@ function FlipCountdown({
 export function CountdownTimer({
   targetDate,
   variant = "glass",
-  dateLabel = "June 10 · 8:00 PM EST",
+  dateLabel = "July 8 · 8:00 PM ET",
 }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
 

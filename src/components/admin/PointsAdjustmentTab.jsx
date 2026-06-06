@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAdminVerification } from "../../hooks/useAdminVerification";
 import { formatAdminName } from "../../lib/adminSearch";
+import { AdminTableSkeleton } from "../sprint/SprintPageSkeleton";
+import SprintLoadError from "../sprint/SprintLoadError";
 
 const POINT_PRESETS = [25, 50];
 
@@ -26,6 +28,7 @@ export default function PointsAdjustmentTab({ searchQuery = "" }) {
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [searchError, setSearchError] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
@@ -38,7 +41,7 @@ export default function PointsAdjustmentTab({ searchQuery = "" }) {
     }
 
     setLoading(true);
-    setError(null);
+    setSearchError(null);
     try {
       const res = await searchUsers(q);
       const users = res.data ?? [];
@@ -52,7 +55,7 @@ export default function PointsAdjustmentTab({ searchQuery = "" }) {
         });
       }
     } catch (err) {
-      setError(err.message || "Failed to search users");
+      setSearchError(err.message || "Failed to search users");
       setResults([]);
     } finally {
       setLoading(false);
@@ -96,14 +99,17 @@ export default function PointsAdjustmentTab({ searchQuery = "" }) {
         were missed.
       </p>
 
+      {searchError && !loading && searchQuery.trim().length >= 2 && (
+        <SprintLoadError message={searchError} onRetry={runSearch} style={{ marginBottom: "16px" }} />
+      )}
       {error && <p className="admin-tab__error">{error}</p>}
       {success && <p className="admin-tab__success">{success}</p>}
 
       {searchQuery.trim().length < 2 ? (
         <p className="admin-tab__empty">Type at least 2 characters in the search bar to find a user.</p>
       ) : loading ? (
-        <p className="admin-tab__loading">Searching users…</p>
-      ) : results.length === 0 ? (
+        <AdminTableSkeleton rows={4} />
+      ) : searchError ? null : results.length === 0 ? (
         <p className="admin-tab__empty">No users found for &ldquo;{searchQuery}&rdquo;.</p>
       ) : (
         <div className="admin-points">

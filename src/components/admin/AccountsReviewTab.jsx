@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAdminVerification } from "../../hooks/useAdminVerification";
+import { AdminTableSkeleton } from "../sprint/SprintPageSkeleton";
+import SprintLoadError from "../sprint/SprintLoadError";
 
 const ACCOUNT_STATUSES = ["pending", "active", "rejected", "suspended"];
 
@@ -91,15 +93,17 @@ export default function AccountsReviewTab({ searchQuery = "" }) {
         </button>
       </div>
 
-      {error && <p className="admin-tab__error">{error}</p>}
+      {error && !loading && (
+        <SprintLoadError message={error} onRetry={loadUsers} style={{ marginBottom: "16px" }} />
+      )}
 
       {loading ? (
-        <p className="admin-tab__loading">Loading accounts…</p>
+        <AdminTableSkeleton />
       ) : users.length === 0 ? (
         <p className="admin-tab__empty">No registered users match this filter.</p>
       ) : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
+        <div className="admin-table-wrap admin-table-wrap--accounts">
+          <table className="admin-table admin-table--accounts">
             <thead>
               <tr>
                 <th>Name</th>

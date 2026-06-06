@@ -1,6 +1,3 @@
-import { useState } from "react";
-import SocialShareClaimModal from "../SocialShareClaimModal";
-
 const CLAIMABLE_IDS = new Set(["instagram", "linkedin"]);
 
 function Icon({ name, filled = false, size = 16 }) {
@@ -19,8 +16,14 @@ function Icon({ name, filled = false, size = 16 }) {
 }
 
 function ClaimButton({ onClick }) {
+  const handleClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onClick?.();
+  };
+
   return (
-    <button type="button" className="points-claim-btn" onClick={onClick}>
+    <button type="button" className="points-claim-btn" onClick={handleClick}>
       <span>Claim</span>
       <Icon name="open_in_new" size={13} />
     </button>
@@ -39,9 +42,8 @@ export default function PointsTrackerItem({
   points,
   status,
   earned = 0,
-  onProofSubmitted,
+  onClaimClick,
 }) {
-  const [modalOpen, setModalOpen] = useState(false);
   const isSocial = CLAIMABLE_IDS.has(id);
   const showClaim =
     isSocial && !completed && status !== "locked" && status !== "submitted";
@@ -52,7 +54,10 @@ export default function PointsTrackerItem({
   if (isSocial) {
     if (completed) badge = <StatusBadge tone="done" label="Verified" />;
     else if (status === "submitted") badge = <StatusBadge tone="review" label="In review" />;
-    else if (status === "rejected") hint = "Resubmit your share proof";
+    else if (status === "rejected") {
+      hint = "Resubmit your share proof";
+      badge = <StatusBadge tone="rejected" label="Rejected" />;
+    }
     else if (status === "locked") hint = "Join a team to unlock";
     else if (showClaim) hint = "Share + submit proof";
   } else if (id === "judge" && completed && earned > 0) {
@@ -60,58 +65,39 @@ export default function PointsTrackerItem({
   }
 
   const openClaimModal = () => {
-    setModalOpen(true);
-  };
-
-  const closeClaimModal = () => {
-    setModalOpen(false);
-  };
-
-  const handleSubmitted = () => {
-    onProofSubmitted?.();
+    onClaimClick?.(id);
   };
 
   return (
-    <>
+    <div
+      className={`points-tracker-item${completed ? " points-tracker-item--done" : ""}${
+        status === "locked" ? " points-tracker-item--locked" : ""
+      }`}
+    >
       <div
-        className={`points-tracker-item${completed ? " points-tracker-item--done" : ""}${
-          status === "locked" ? " points-tracker-item--locked" : ""
+        className={`points-tracker-item__icon${
+          completed ? " points-tracker-item__icon--done" : ""
         }`}
       >
-        <div
-          className={`points-tracker-item__icon${
-            completed ? " points-tracker-item__icon--done" : ""
-          }`}
-        >
-          <Icon name={icon} filled={completed} />
-        </div>
-
-        <div className="points-tracker-item__content">
-          <div className="points-tracker-item__head">
-            <span className="points-tracker-item__label">{label}</span>
-            {(showClaim || badge) && (
-              <div className="points-tracker-item__head-actions">
-                {showClaim && <ClaimButton onClick={openClaimModal} />}
-                {badge}
-              </div>
-            )}
-            <span className="points-tracker-item__points">{points}</span>
-          </div>
-
-          {hint && (
-            <p className="points-tracker-item__hint">{hint}</p>
-          )}
-        </div>
+        <Icon name={icon} filled={completed} />
       </div>
 
-      {isSocial && (
-        <SocialShareClaimModal
-          open={modalOpen}
-          platform={id}
-          onClose={closeClaimModal}
-          onSubmitted={handleSubmitted}
-        />
-      )}
-    </>
+      <div className="points-tracker-item__content">
+        <div className="points-tracker-item__head">
+          <span className="points-tracker-item__label">{label}</span>
+          {(showClaim || badge) && (
+            <div className="points-tracker-item__head-actions">
+              {showClaim && <ClaimButton onClick={openClaimModal} />}
+              {badge}
+            </div>
+          )}
+          <span className="points-tracker-item__points">{points}</span>
+        </div>
+
+        {hint && (
+          <p className="points-tracker-item__hint">{hint}</p>
+        )}
+      </div>
+    </div>
   );
 }
