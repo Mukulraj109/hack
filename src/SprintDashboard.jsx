@@ -561,10 +561,9 @@ export default function SprintDashboard({ onNavigate }) {
       {socialShareModal}
 
       {/* Hero Banner */}
-      <section className="sprint-dashboard-hero" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", marginBottom: "32px" }}>
+      <section className="sprint-dashboard-hero">
         {/* Main Hero */}
         <GlassCard style={{
-          gridColumn: "span 2",
           padding: "32px",
           display: "flex",
           flexDirection: "column",

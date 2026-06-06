@@ -68,10 +68,15 @@ export default function PointsTrackerItem({
     onClaimClick?.(id);
   };
 
+  const isRejected = isSocial && status === "rejected";
+  const hasMeta = Boolean(hint || badge || showClaim);
+
   return (
     <div
       className={`points-tracker-item${completed ? " points-tracker-item--done" : ""}${
         status === "locked" ? " points-tracker-item--locked" : ""
+      }${isRejected ? " points-tracker-item--rejected" : ""}${
+        hasMeta && !isRejected ? " points-tracker-item--expanded" : ""
       }`}
     >
       <div
@@ -83,19 +88,37 @@ export default function PointsTrackerItem({
       </div>
 
       <div className="points-tracker-item__content">
-        <div className="points-tracker-item__head">
-          <span className="points-tracker-item__label">{label}</span>
-          {(showClaim || badge) && (
-            <div className="points-tracker-item__head-actions">
-              {showClaim && <ClaimButton onClick={openClaimModal} />}
-              {badge}
+        {isRejected ? (
+          <div className="points-tracker-item__head points-tracker-item__head--rejected">
+            <span className="points-tracker-item__label">{label}</span>
+            {showClaim && <ClaimButton onClick={openClaimModal} />}
+            {badge}
+            <span className="points-tracker-item__points">{points}</span>
+            {hint && <span className="points-tracker-item__hint">{hint}</span>}
+          </div>
+        ) : (
+          <>
+            <div className="points-tracker-item__head">
+              <span className="points-tracker-item__label">{label}</span>
+              <span className="points-tracker-item__points">{points}</span>
             </div>
-          )}
-          <span className="points-tracker-item__points">{points}</span>
-        </div>
 
-        {hint && (
-          <p className="points-tracker-item__hint">{hint}</p>
+            {hasMeta && (
+              <div className="points-tracker-item__meta">
+                {(badge || hint) && (
+                  <div className="points-tracker-item__status">
+                    {badge}
+                    {hint && <span className="points-tracker-item__hint">{hint}</span>}
+                  </div>
+                )}
+                {showClaim && (
+                  <div className="points-tracker-item__actions">
+                    <ClaimButton onClick={openClaimModal} />
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -139,7 +139,7 @@ export function useSubmissionForm() {
       let sub = myRes.data;
 
       if (!sub && canWrite) {
-        const track = currentTeam?.track || "open-build";
+        const track = currentTeam.track;
         const title = currentTeam?.title
           ? `${currentTeam.title} Submission`
           : "Solo Submission";

@@ -2,8 +2,6 @@ import { useEffect, useRef, useCallback, type MouseEvent } from "react";
 import { X, Menu } from "lucide-react";
 import { handleSectionLinkClick } from "../lib/scrollToSection";
 import { useHackathonAuth } from "../auth/HackathonAuthContext";
-import HiringPartnerButton from "./HiringPartnerButton";
-
 export type NavLinkItem = {
   href: string;
   label: string;
@@ -140,10 +138,6 @@ export function MobileNav({
             >
               Claim Your Spot
             </a>
-            <HiringPartnerButton
-              className="mobile-nav-panel__cta mobile-nav-panel__cta--partner nav-partner-button w-button"
-              onOpen={onClose}
-            />
           </div>
         </nav>
       </div>

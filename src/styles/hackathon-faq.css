@@ -1,0 +1,971 @@
+html.hackathon-form-modal-open,
+html.hackathon-form-modal-open body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+.hackathon-reg-modal__backdrop--faq,
+.hackathon-reg-modal__backdrop:has(.hackathon-reg-modal--faq) {
+  padding: clamp(0.35rem, 1.5vw, 0.75rem);
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+.hackathon-reg-modal.hackathon-reg-modal--faq {
+  width: min(1140px, calc(100vw - 1rem));
+  height: min(92vh, 940px);
+  min-height: min(82vh, 780px);
+  max-height: min(94vh, 960px);
+  touch-action: auto;
+}
+
+/* Custom scrollbars — wider, rounded, on-brand */
+.hackathon-faq__nav,
+.hackathon-faq__content {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(0, 104, 95, 0.55) rgba(0, 104, 95, 0.08);
+}
+
+.hackathon-faq__nav::-webkit-scrollbar,
+.hackathon-faq__content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.hackathon-faq__nav::-webkit-scrollbar-track,
+.hackathon-faq__content::-webkit-scrollbar-track {
+  margin: 6px 0;
+  border-radius: 9999px;
+  background: rgba(0, 104, 95, 0.06);
+}
+
+.hackathon-faq__nav::-webkit-scrollbar-thumb,
+.hackathon-faq__content::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background: rgba(0, 104, 95, 0.45);
+  background-clip: padding-box;
+  min-height: 48px;
+  transition: background 0.15s ease;
+}
+
+.hackathon-faq__nav::-webkit-scrollbar-thumb:hover,
+.hackathon-faq__content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 104, 95, 0.65);
+  background-clip: padding-box;
+}
+
+.hackathon-faq__nav::-webkit-scrollbar-thumb:active,
+.hackathon-faq__content::-webkit-scrollbar-thumb:active {
+  background: #00685f;
+  background-clip: padding-box;
+}
+
+.hackathon-faq-modal__subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #3d4947 !important;
+}
+
+.hackathon-faq-modal__search-wrap {
+  flex-shrink: 0;
+  padding: 0.85rem 1.25rem 0.9rem;
+  border-bottom: 1px solid rgba(0, 104, 95, 0.1);
+  background: linear-gradient(180deg, #f7f9fb 0%, #f0f5f4 100%);
+}
+
+.hackathon-faq__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hackathon-faq__search-icon {
+  position: absolute;
+  left: 0.85rem;
+  width: 1rem;
+  height: 1rem;
+  color: #6d7a77;
+  pointer-events: none;
+}
+
+.hackathon-faq__search-input {
+  width: 100%;
+  padding: 0.7rem 2.5rem 0.7rem 2.35rem;
+  border: 1px solid rgba(0, 104, 95, 0.2);
+  border-radius: 9999px;
+  background: #ffffff;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: #191c1e;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 43, 54, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hackathon-faq__search-input::placeholder {
+  color: #6d7a77;
+}
+
+.hackathon-faq__search-input:focus {
+  border-color: #00685f;
+  box-shadow: 0 0 0 3px rgba(0, 104, 95, 0.12);
+}
+
+.hackathon-faq__search-clear {
+  position: absolute;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: #6d7a77;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hackathon-faq__search-clear:hover {
+  background: #eceef0;
+  color: #002b36;
+}
+
+.hackathon-faq-modal__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+  background: linear-gradient(160deg, #f4f8f7 0%, #eef4f3 100%);
+}
+
+.hackathon-faq__layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.hackathon-faq__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 0.55rem 0.9rem 0.75rem;
+  border-right: 1px solid rgba(0, 104, 95, 0.12);
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+.hackathon-faq__nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid transparent;
+  border-left: 3px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.hackathon-faq__nav-btn:hover {
+  background: rgba(0, 104, 95, 0.05);
+  border-color: rgba(0, 104, 95, 0.08);
+}
+
+.hackathon-faq__nav-btn--active {
+  background: linear-gradient(135deg, rgba(0, 104, 95, 0.1) 0%, rgba(137, 245, 231, 0.18) 100%);
+  border-color: rgba(0, 104, 95, 0.14);
+  border-left-color: #00685f;
+  box-shadow: 0 4px 14px rgba(0, 104, 95, 0.1);
+}
+
+.hackathon-faq__nav-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  background: rgba(0, 104, 95, 0.08);
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.hackathon-faq__nav-btn--active .hackathon-faq__nav-icon-wrap {
+  background: rgba(0, 104, 95, 0.16);
+}
+
+.hackathon-faq__nav-icon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 1.15rem;
+  color: #00685f;
+}
+
+.hackathon-faq__nav-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.hackathon-faq__nav-label {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #002b36;
+}
+
+.hackathon-faq__nav-btn--active .hackathon-faq__nav-label {
+  color: #004d47;
+}
+
+.hackathon-faq__nav-count {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #6d7a77;
+}
+
+.hackathon-faq__chips-wrap {
+  display: none;
+  position: relative;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(0, 104, 95, 0.1);
+  background: #ffffff;
+}
+
+.hackathon-faq__chips-wrap::before,
+.hackathon-faq__chips-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.25rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hackathon-faq__chips-wrap::before {
+  left: 0;
+  background: linear-gradient(90deg, #ffffff 0%, transparent 100%);
+}
+
+.hackathon-faq__chips-wrap::after {
+  right: 0;
+  background: linear-gradient(270deg, #ffffff 0%, transparent 100%);
+}
+
+.hackathon-faq__chips {
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
+
+.hackathon-faq__chips::-webkit-scrollbar {
+  display: none;
+}
+
+.hackathon-faq__chip {
+  flex-shrink: 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(0, 104, 95, 0.2);
+  border-radius: 9999px;
+  background: #ffffff;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #3d4947;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 43, 54, 0.04);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hackathon-faq__chip--active {
+  background: #00685f;
+  border-color: #00685f;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 104, 95, 0.25);
+}
+
+.hackathon-faq__content {
+  overflow-y: auto;
+  padding: 1.1rem 1rem 1.35rem 1.15rem;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+.hackathon-faq__content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 104, 95, 0.1);
+}
+
+.hackathon-faq__content-title {
+  margin: 0;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #002b36;
+}
+
+.hackathon-faq__content-badge {
+  flex-shrink: 0;
+  padding: 0.3rem 0.65rem;
+  border-radius: 9999px;
+  background: rgba(0, 104, 95, 0.1);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #00685f;
+}
+
+.hackathon-faq__search-results-heading {
+  margin: 0 0 0.75rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6d7a77;
+}
+
+.hackathon-faq__group {
+  margin-bottom: 1.25rem;
+}
+
+.hackathon-faq__group:last-child {
+  margin-bottom: 0;
+}
+
+.hackathon-faq__group-title {
+  margin: 0 0 0.55rem;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #002b36;
+}
+
+.hackathon-faq__accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.hackathon-faq__item {
+  border: 1px solid rgba(0, 104, 95, 0.12);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 43, 54, 0.04);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hackathon-faq__item:hover {
+  border-color: rgba(0, 104, 95, 0.22);
+  box-shadow: 0 6px 20px rgba(0, 43, 54, 0.07);
+}
+
+.hackathon-faq__item:has(.hackathon-faq__trigger--open) {
+  border-color: rgba(0, 104, 95, 0.28);
+  box-shadow: 0 8px 24px rgba(0, 104, 95, 0.1);
+}
+
+.hackathon-faq__trigger {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.hackathon-faq__trigger:hover {
+  background: rgba(0, 104, 95, 0.04);
+}
+
+.hackathon-faq__trigger--open {
+  background: linear-gradient(180deg, rgba(0, 104, 95, 0.05) 0%, rgba(137, 245, 231, 0.08) 100%);
+}
+
+.hackathon-faq__question {
+  margin: 0;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #002b36;
+}
+
+.hackathon-faq__chevron-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 0;
+  border-radius: 9999px;
+  background: rgba(0, 104, 95, 0.08);
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.hackathon-faq__trigger--open .hackathon-faq__chevron-wrap {
+  background: rgba(0, 104, 95, 0.16);
+}
+
+.hackathon-faq__chevron {
+  width: 1rem;
+  height: 1rem;
+  color: #00685f;
+  transition: transform 0.2s ease;
+}
+
+.hackathon-faq__trigger--open .hackathon-faq__chevron {
+  transform: rotate(180deg);
+}
+
+.hackathon-faq__panel {
+  padding: 0 1rem 1.05rem;
+  border-top: 1px solid rgba(0, 104, 95, 0.08);
+  animation: hackathon-faq-panel-in 0.2s ease;
+}
+
+@keyframes hackathon-faq-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hackathon-faq__answer {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #3d4947;
+}
+
+.hackathon-faq__answer a {
+  color: #00685f;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.hackathon-faq__submission-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.hackathon-faq__submission-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(0, 104, 95, 0.05);
+  border: 1px solid rgba(0, 104, 95, 0.1);
+}
+
+.hackathon-faq__submission-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: #00685f;
+  color: #ffffff;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.hackathon-faq__submission-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.hackathon-faq__submission-title {
+  margin: 0;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #002b36;
+}
+
+.hackathon-faq__submission-desc {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #3d4947;
+}
+
+.hackathon-faq__points-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 104, 95, 0.08) 0%, rgba(137, 245, 231, 0.15) 100%);
+  border: 1px solid rgba(0, 104, 95, 0.14);
+}
+
+.hackathon-faq__points-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.hackathon-faq__points-label {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  color: #3d4947;
+}
+
+.hackathon-faq__points-value {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #00685f;
+}
+
+.hackathon-faq__points-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.15rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: #00685f;
+}
+
+.hackathon-faq__points-total-label {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.hackathon-faq__points-total-value {
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.hackathon-faq__empty {
+  margin: 0;
+  padding: 2rem 1rem;
+  text-align: center;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: #6d7a77;
+}
+
+.hackathon-faq-modal__footer-link {
+  color: #00685f !important;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Large laptop — slightly tighter shell */
+@media (max-width: 1280px) {
+  .hackathon-reg-modal.hackathon-reg-modal--faq {
+    width: min(1040px, calc(100vw - 1rem));
+    height: min(90vh, 900px);
+    min-height: min(78vh, 720px);
+    max-height: min(92vh, 920px);
+  }
+
+  .hackathon-faq__layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+}
+
+/* Small laptop / large tablet landscape */
+@media (max-width: 1024px) {
+  .hackathon-reg-modal.hackathon-reg-modal--faq {
+    width: min(960px, calc(100vw - 0.85rem));
+    height: min(88vh, 860px);
+    min-height: min(74vh, 640px);
+    max-height: min(90vh, 880px);
+  }
+
+  .hackathon-faq__layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+
+  .hackathon-faq__nav-label {
+    font-size: 0.75rem;
+  }
+
+  .hackathon-faq__nav-btn {
+    padding: 0.6rem 0.65rem;
+  }
+}
+
+/* Tablet — category chips, single-column content */
+@media (max-width: 900px) {
+  .hackathon-reg-modal.hackathon-reg-modal--faq {
+    width: calc(100vw - 0.75rem);
+    height: min(92vh, 900px);
+    min-height: min(80vh, 680px);
+    max-height: min(94vh, 920px);
+    border-radius: 16px;
+  }
+
+  .hackathon-reg-modal__backdrop--faq,
+  .hackathon-reg-modal__backdrop:has(.hackathon-reg-modal--faq) {
+    padding: 0.4rem;
+    align-items: center;
+  }
+
+  .hackathon-faq__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hackathon-faq__nav {
+    display: none;
+  }
+
+  .hackathon-faq__chips-wrap {
+    display: block;
+  }
+
+  .hackathon-faq__chips {
+    padding: 0.65rem 0.85rem;
+    scroll-snap-type: x proximity;
+  }
+
+  .hackathon-faq__chip {
+    scroll-snap-align: start;
+  }
+
+  .hackathon-faq-modal__subtitle {
+    font-size: 0.8125rem;
+  }
+
+  .hackathon-faq__content-header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .hackathon-faq__content-title {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile — full-screen sheet (overrides shared modal rules) */
+@media (max-width: 768px) {
+  .hackathon-reg-modal__backdrop--faq,
+  .hackathon-reg-modal__backdrop:has(.hackathon-reg-modal--faq) {
+    padding: 0 !important;
+    align-items: stretch !important;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100dvh !important;
+    height: 100svh !important;
+    min-height: 100dvh !important;
+    min-height: 100svh !important;
+    max-height: 100dvh !important;
+    max-height: 100svh !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__header {
+    flex-shrink: 0;
+    padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.75rem;
+    border-bottom: 1px solid rgba(0, 104, 95, 0.1);
+    background: #ffffff;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__title {
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__close {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 12px;
+    background: #f0f5f4;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__footer {
+    flex-shrink: 0;
+    margin-top: auto;
+    padding: 0.75rem 1rem max(0.85rem, env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(0, 104, 95, 0.12);
+    background: #ffffff;
+    box-shadow: 0 -8px 24px rgba(0, 43, 54, 0.06);
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__hint {
+    text-align: center;
+    margin-bottom: 0.15rem;
+  }
+
+  .hackathon-faq-modal__search-wrap {
+    flex-shrink: 0;
+    padding: 0.7rem 1rem;
+    background: #f7f9fb;
+  }
+
+  .hackathon-faq-modal__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hackathon-faq__search-input {
+    font-size: 16px; /* prevents iOS zoom on focus */
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .hackathon-faq__layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .hackathon-faq__content {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  .hackathon-faq__content-header {
+    display: none;
+  }
+
+  .hackathon-faq__accordion {
+    gap: 0.45rem;
+  }
+
+  .hackathon-faq__item {
+    border-radius: 12px;
+    box-shadow: none;
+    border-color: rgba(0, 104, 95, 0.16);
+  }
+
+  .hackathon-faq__trigger {
+    padding: 0.9rem 0.9rem;
+    min-height: 48px;
+    align-items: center;
+  }
+
+  .hackathon-faq__question {
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .hackathon-faq__chevron-wrap {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .hackathon-faq__chip {
+    padding: 0.55rem 0.9rem;
+    min-height: 38px;
+    font-size: 0.6875rem;
+  }
+
+  .hackathon-faq-modal__subtitle {
+    display: none;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-form__btn--primary {
+    min-height: 48px;
+    font-size: 0.9375rem;
+    border-radius: 12px;
+  }
+
+  .hackathon-faq__nav::-webkit-scrollbar,
+  .hackathon-faq__content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .hackathon-faq__content::-webkit-scrollbar-thumb {
+    background: rgba(0, 104, 95, 0.35);
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__header {
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__title {
+    font-size: 0.975rem;
+  }
+
+  .hackathon-faq-modal__search-wrap {
+    padding: 0.6rem 0.85rem;
+  }
+
+  .hackathon-faq__chips {
+    padding: 0.55rem 0.85rem;
+    gap: 0.35rem;
+  }
+
+  .hackathon-faq__chip {
+    font-size: 0.625rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .hackathon-faq__content {
+    padding: 0.65rem 0.85rem 0.85rem;
+  }
+
+  .hackathon-faq__trigger {
+    gap: 0.5rem;
+    padding: 0.8rem 0.8rem;
+  }
+
+  .hackathon-faq__panel {
+    padding: 0 0.8rem 0.9rem;
+  }
+
+  .hackathon-faq__answer {
+    font-size: 0.8125rem;
+  }
+
+  .hackathon-faq__submission-item {
+    padding: 0.65rem 0.7rem;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__footer {
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
+
+  .hackathon-reg-modal.hackathon-reg-modal--faq .hackathon-reg-modal__hint {
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+}
+
+/* Very narrow phones */
+@media (max-width: 360px) {
+  .hackathon-faq__chip {
+    font-size: 0.5625rem;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .hackathon-faq__question {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Short viewports (landscape phones, small laptops) */
+@media (max-height: 640px) {
+  .hackathon-reg-modal.hackathon-reg-modal--faq {
+    height: 100dvh !important;
+    height: 100svh !important;
+    min-height: 100dvh !important;
+    min-height: 100svh !important;
+    max-height: 100dvh !important;
+    max-height: 100svh !important;
+  }
+
+  .hackathon-faq-modal__subtitle {
+    display: none;
+  }
+
+  .hackathon-faq-modal__search-wrap {
+    padding-top: 0.5rem;
+    padding-bottom: 0.55rem;
+  }
+
+  .hackathon-faq__chips {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+
+  .hackathon-faq__trigger {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
+}
+
+/* Large desktops — cap width, keep centered */
+@media (min-width: 1440px) {
+  .hackathon-reg-modal.hackathon-reg-modal--faq {
+    width: 1140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hackathon-faq__panel {
+    animation: none;
+  }
+
+  .hackathon-faq__nav-btn,
+  .hackathon-faq__item,
+  .hackathon-faq__chip {
+    transition: none;
+  }
+}

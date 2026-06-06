@@ -263,7 +263,7 @@
   }
 
   /* Points row: title + pts on line 1; badge/claim on line 2 (avoids overlap e.g. Judge Evaluation) */
-  .points-tracker-item__head {
+  .points-tracker-item__head:not(.points-tracker-item__head--rejected) {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 10px;
@@ -272,14 +272,65 @@
     min-height: 0;
   }
 
-  .points-tracker-item__label {
+  .points-tracker-item__head--rejected {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    row-gap: 6px;
+    align-items: center;
+    padding: 2px 0 4px;
+  }
+
+  .points-tracker-item__head--rejected .points-tracker-item__label {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    white-space: normal;
+    line-height: 1.35;
+    font-size: 14px;
+  }
+
+  .points-tracker-item__head--rejected .points-claim-btn {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 26px;
+    height: 26px;
+    font-size: 10px;
+  }
+
+  .points-tracker-item__head--rejected .points-tracker-badge {
+    grid-column: 2;
+    grid-row: 2;
+    height: 26px;
+    width: fit-content;
+    padding: 0 8px;
+    font-size: 10px;
+  }
+
+  .points-tracker-item__head--rejected .points-tracker-item__points {
+    grid-column: 4;
+    grid-row: 2;
+    justify-self: end;
+    line-height: 26px;
+    font-size: 12px;
+  }
+
+  .points-tracker-item__head--rejected .points-tracker-item__hint {
+    grid-column: 2;
+    grid-row: 3;
+    white-space: normal;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .points-tracker-item__head:not(.points-tracker-item__head--rejected) .points-tracker-item__label {
     grid-column: 1;
     grid-row: 1;
     white-space: normal;
     overflow-wrap: break-word;
   }
 
-  .points-tracker-item__points {
+  .points-tracker-item__head:not(.points-tracker-item__head--rejected) .points-tracker-item__points {
     grid-column: 2;
     grid-row: 1;
     margin-left: 0 !important;
@@ -401,10 +452,138 @@
   }
 
   .submission-hiring-partners {
-    padding: 16px 18px;
+    padding: 20px 18px;
   }
 
-  /* ---- Roadmap ---- */
+  .submission-hiring-partners__avatar,
+  .submission-hiring-partners__more {
+    width: 48px;
+    height: 48px;
+  }
+
+  .submission-hiring-partners__copy {
+    font-size: 14px;
+  }
+
+  /* ---- Roadmap v2 ---- */
+  .roadmap-v2__inner {
+    padding-inline: 16px !important;
+  }
+
+  .roadmap-v2__hero {
+    padding: 24px 0 0 !important;
+  }
+
+  .roadmap-v2__title {
+    font-size: 1.625rem !important;
+    letter-spacing: -0.5px !important;
+  }
+
+  .roadmap-v2__subtitle {
+    font-size: 0.9375rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .roadmap-v2__points {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px !important;
+    margin-top: 20px !important;
+  }
+
+  .roadmap-v2__points-card,
+  .roadmap-v2__points-total {
+    width: 100%;
+    max-width: none;
+    justify-content: flex-start;
+  }
+
+  .roadmap-v2__points-total {
+    grid-column: 1 / -1;
+  }
+
+  .roadmap-v2__timeline {
+    position: relative;
+    padding: 0 0 48px !important;
+  }
+
+  .roadmap-v2__section-header {
+    margin: 32px 0 8px !important;
+  }
+
+  .roadmap-v2__section-title {
+    font-size: 1.25rem !important;
+  }
+
+  .roadmap-v2__section-icon {
+    font-size: 28px !important;
+  }
+
+  .roadmap-v2__milestone-row--mobile {
+    position: relative;
+    flex-direction: column !important;
+    padding-left: 36px;
+    margin-bottom: 1.25rem;
+  }
+
+  .roadmap-v2__phase {
+    position: relative;
+  }
+
+  .roadmap-v2__phase::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #bcc9c6 0%, #006875 25%, #006875 75%, #bcc9c6 100%);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .roadmap-v2__milestone-mobile-dot-wrap {
+    position: absolute;
+    left: 0;
+    top: 18px;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__milestone-dot {
+    margin-top: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card {
+    max-width: none;
+  }
+
+  .roadmap-v2__cta {
+    margin-top: 40px !important;
+    padding: 28px 20px !important;
+  }
+
+  .roadmap-v2__cta-title {
+    font-size: 1.125rem !important;
+  }
+
+  .roadmap-v2__cta-btn {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .roadmap-v2__signup-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .roadmap-v2__bg {
+    display: none !important;
+  }
+
+  /* ---- Legacy roadmap (deprecated) ---- */
   .roadmap-shell > .fixed.pointer-events-none {
     display: none !important;
   }

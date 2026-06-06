@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=DM+Sans:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -1232,14 +1233,14 @@ html {
 .hiw-copy__head {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .hiw-copy__icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 18px;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1247,12 +1248,12 @@ html {
 }
 
 .hiw-copy__icon svg {
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
 }
 
 .hiw-copy__num {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 900;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -1265,17 +1266,17 @@ html {
 }
 
 .hiw-copy__title {
-  margin: 0 0 24px;
-  font-size: clamp(42px, 5.8vw, 84px);
+  margin: 0 0 20px;
+  font-size: clamp(36px, 5vw, 70px);
   font-weight: 800;
   letter-spacing: -0.04em;
-  line-height: 1.02;
+  line-height: 1.05;
   color: #023345;
 }
 
 .hiw-copy__body {
-  margin: 0 0 32px;
-  font-size: clamp(19px, 1.7vw, 26px);
+  margin: 0 0 28px;
+  font-size: clamp(17px, 1.55vw, 23px);
   line-height: 1.55;
   font-weight: 500;
   color: #475569;
@@ -1286,14 +1287,14 @@ html {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .hiw-copy__bullets li {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: clamp(17px, 1.35vw, 21px);
+  gap: 12px;
+  font-size: clamp(15px, 1.22vw, 19px);
   font-weight: 700;
   color: #023345;
   line-height: 1.4;
@@ -1375,7 +1376,7 @@ html {
 }
 
 .hiw-media__caption-num {
-  font-size: 42px;
+  font-size: 36px;
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 1;
@@ -1383,7 +1384,7 @@ html {
 }
 
 .hiw-media__caption-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
   color: #023345;
   letter-spacing: -0.01em;
@@ -2136,6 +2137,200 @@ html {
   display: block;
 }
 
+/* =========================================================
+   Five Tracks — v2 card design (API-driven, reference UI)
+   ========================================================= */
+#tracks-section.trackstack--v2 {
+  --trackstack-step: 24px;
+  font-family: "DM Sans", system-ui, sans-serif;
+  background: linear-gradient(165deg, #f0fdfa 0%, #f8fafc 40%, #f0f9ff 100%);
+}
+
+#tracks-section.trackstack--v2 .trackstack__eyebrow {
+  background: #006875;
+  border-color: #006875;
+  color: #ffffff;
+}
+
+#tracks-section.trackstack--v2 .trackstack__eyebrow-dot {
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25);
+}
+
+#tracks-section.trackstack--v2 .trackstack__title {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  color: #0f172a;
+}
+
+#tracks-section.trackstack--v2 .trackstack__title-accent {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: #006875;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card {
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card:hover {
+  border-color: var(--track-accent);
+  box-shadow:
+    0 12px 40px color-mix(in srgb, var(--track-accent) 8%, transparent),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-4px);
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-rail {
+  display: none;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-accent-bar {
+  height: 4px;
+  background: var(--track-gradient);
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-inner {
+  display: block;
+  padding: 28px 32px 30px;
+  min-height: auto;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-meta {
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-num {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--track-accent);
+  opacity: 0.25;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-chip {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--track-accent-ring);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-emoji {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--track-accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-category {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-title {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-size: clamp(24px, 2.4vw, 28px);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-desc {
+  font-size: clamp(15px, 1.2vw, 16px);
+  line-height: 1.65;
+  color: #64748b;
+  margin-bottom: 20px;
+  max-width: none;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-tags {
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-tag {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 5px 12px;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-foot {
+  padding-top: 14px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-cta {
+  font-size: 14px;
+  font-weight: 700;
+  gap: 6px;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-cta--link {
+  text-decoration: none;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-cta--link:hover {
+  text-decoration: underline;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card-time {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  background: #f8fafc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+#tracks-section.trackstack--v2 .trackstack__loading {
+  text-align: center;
+  padding: 48px 24px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+#tracks-section.trackstack--v2 .trackstack__card--lead .trackstack__card-accent-bar {
+  border-radius: 16px 16px 0 0;
+}
+
 /* Judges section — same stack UI, slate panel background */
 .judgestack {
   border-top: 1px solid rgba(226, 232, 240, 0.6);
@@ -2316,6 +2511,11 @@ html {
     --trackstack-head-in-card: clamp(108px, 15vh, 132px);
     --trackstack-step: 34px;
     padding: 32px 0 28px;
+  }
+
+  #tracks-section.trackstack--v2 {
+    --trackstack-step: 20px;
+    --trackstack-head-in-card: clamp(120px, 16vh, 148px);
   }
 
   #tracks-section .trackstack__head--in-card {

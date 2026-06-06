@@ -87,8 +87,8 @@ function HiringPartnersCard() {
         <span className="submission-hiring-partners__more">+27</span>
       </div>
       <p className="submission-hiring-partners__copy">
-        Your profile is currently visible to companies looking for{" "}
-        <strong>Frontend</strong> and <strong>Full-Stack</strong> talent.
+        Your profile is currently visible to companies{" "}
+        <strong>hiring for tech roles</strong>.
       </p>
     </motion.div>
   );

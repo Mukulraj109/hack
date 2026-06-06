@@ -752,6 +752,8 @@ function TemplateGallerySection({ teamTitle, memberNames, members, onOpenModal }
             <SprintShimmerBlock className="sprint-team-skeleton__poster" />
             <SprintShimmerBlock className="sprint-team-skeleton__poster" />
             <SprintShimmerBlock className="sprint-team-skeleton__poster" />
+            <SprintShimmerBlock className="sprint-team-skeleton__poster" />
+            <SprintShimmerBlock className="sprint-team-skeleton__poster" />
           </div>
         </div>
       ) : (

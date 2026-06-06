@@ -49,6 +49,11 @@ body.hackathon-form-modal-open .whatsapp-fab {
 }
 
 @media (max-width: 767px) {
+  body.nav-menu-open .whatsapp-fab {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .whatsapp-fab {
     bottom: 20px;
     right: 16px;

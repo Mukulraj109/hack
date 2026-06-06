@@ -423,6 +423,42 @@
   background: #fff;
 }
 
+.admin-detail__section-title {
+  margin: 1.1rem 0 0.65rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0f766e;
+}
+
+.admin-detail__section-title:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.admin-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.admin-proof-screenshot-missing,
+.admin-proof-screenshot-text {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.admin-proof-screenshot-text {
+  word-break: break-all;
+}
+
 .admin-judge-panel {
   margin: 0 0 1rem;
   padding: 1rem;

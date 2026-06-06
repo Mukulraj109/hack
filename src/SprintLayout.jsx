@@ -193,6 +193,7 @@ export default function SprintLayout({ children, title, currentPath, onNavigate 
   const { isAuthenticated, loading: authLoading, isAdmin } = useHackathonAuth();
   const isGuest = !authLoading && !isAuthenticated;
   const isSubmission = currentPath === "/submission";
+  const isRoadmap = currentPath === "/roadmap";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(readSidebarCollapsed);
   const mobileHeaderRef = useRef(null);
   const [mobileTopBarHeight, setMobileTopBarHeight] = useState(null);
@@ -323,6 +324,7 @@ export default function SprintLayout({ children, title, currentPath, onNavigate 
             className={[
               "sprint-portal__content",
               isSubmission ? "sprint-portal__content--submission" : "",
+              isRoadmap ? "sprint-portal__content--roadmap" : "",
               isGuest ? "sprint-portal__content--guest" : "",
             ].filter(Boolean).join(" ")}
           >

@@ -362,7 +362,7 @@ export function ReelsShowcase({
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <Sparkles className="w-4 h-4 inline mr-2" />
-            Highlights
+            FROM THE ARENA
           </motion.p>
         )}
         <motion.h2
@@ -372,7 +372,7 @@ export function ReelsShowcase({
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: isSprint ? 0.1 : 0.2 }}
         >
-          See it in motion
+          Everything You Need to Know in Under 60 Seconds
         </motion.h2>
         {!isSprint && (
           <motion.p
@@ -382,7 +382,7 @@ export function ReelsShowcase({
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            Short clips from past sprints and the community — placeholders for now; swap in your reels when they&apos;re ready.
+            Quick videos breaking down how the hackathon works — from registration to recruiter access. Watch, learn, build.
           </motion.p>
         )}
       </motion.header>

@@ -1,93 +1,103 @@
-import { useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   motion,
   useScroll,
   useTransform,
   type MotionStyle,
 } from "framer-motion";
-import {
-  Bot,
-  Network,
-  Sparkles,
-  ChevronRight,
-  Lock,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ChevronRight, Lock } from "lucide-react";
+import { fetchCountdownConfig, fetchTracksConfig } from "../lib/configCache";
+import { resolveHackathonStartDate } from "../lib/hackathonDates";
 
-type Track = {
-  num: string;
+type ApiTrack = {
+  id: string;
+  number: string;
   title: string;
-  desc: string;
-  img: string;
-  Icon: LucideIcon;
+  category: string;
+  description: string;
+  tags: string[];
   accent: string;
+  icon: string;
+  briefUrl?: string | null;
+};
+
+type TrackCard = ApiTrack & {
   accentSoft: string;
   accentRing: string;
   gradient: string;
-  tags: string[];
 };
 
-const TRACKS: Track[] = [
-  {
-    num: "01",
-    title: "AI Career Agent",
-    desc: "Build an AI workflow that moves candidates faster from job search to recruiter conversations — drafting outreach, ranking roles, prepping interviews, the lot.",
-    img: "/p5.png",
-    Icon: Bot,
-    accent: "#2a8e9e",
-    accentSoft: "rgba(42, 142, 158, 0.14)",
-    accentRing: "rgba(42, 142, 158, 0.35)",
-    gradient: "linear-gradient(135deg, #2a8e9e 0%, #0891b2 100%)",
-    tags: ["AI", "Automation", "LLMs"],
-  },
-  {
-    num: "02",
-    title: "Recruiter Bridge",
-    desc: "Design a way to put great teams, proof of work, and hiring context in front of recruiters — a portfolio, a matching engine, a feed, your call.",
-    img: "/p6.png",
-    Icon: Network,
-    accent: "#0891b2",
-    accentSoft: "rgba(8, 145, 178, 0.14)",
-    accentRing: "rgba(8, 145, 178, 0.35)",
-    gradient: "linear-gradient(135deg, #0891b2 0%, #6366f1 100%)",
-    tags: ["UX", "Hiring", "Web"],
-  },
-  {
-    num: "03",
-    title: "Open Build",
-    desc: "Use any stack and any tools to build something useful for international hiring. The wildcard track — surprise us with a product recruiters will love.",
-    img: "/p7.png",
-    Icon: Sparkles,
-    accent: "#6366f1",
-    accentSoft: "rgba(99, 102, 241, 0.14)",
-    accentRing: "rgba(99, 102, 241, 0.35)",
-    gradient: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
-    tags: ["Any Stack", "Open"],
-  },
-];
+function hexToRgba(hex: string, alpha: number) {
+  const normalized = hex.replace("#", "");
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function toTrackCard(track: ApiTrack): TrackCard {
+  return {
+    ...track,
+    accentSoft: hexToRgba(track.accent, 0.12),
+    accentRing: hexToRgba(track.accent, 0.25),
+    gradient: `linear-gradient(90deg, ${track.accent}, ${hexToRgba(track.accent, 0.55)})`,
+  };
+}
+
+/** Format in America/New_York so "July 8th 8 PM EST" stays July 8th globally. */
+function formatBriefDropLabel(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    month: "long",
+    day: "numeric",
+  }).formatToParts(date);
+  const month = parts.find((p) => p.type === "month")?.value ?? "";
+  const day = Number(parts.find((p) => p.type === "day")?.value ?? 0);
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th";
+  return `${month} ${day}${suffix}`;
+}
 
 function SectionHeader() {
   return (
     <header className="trackstack__head trackstack__head--in-card">
       <p className="trackstack__eyebrow">
         <span className="trackstack__eyebrow-dot" aria-hidden="true" />
-        Pick your path
+        Choose Your Arena
       </p>
       <h2 className="trackstack__title">
         <span className="trackstack__title-line">
-          Three tracks.{" "}
-          <span className="trackstack__title-accent">One winning build.</span>
+          5 Tracks.{" "}
+          <span className="trackstack__title-accent">One Mission.</span>
         </span>
       </h2>
       <p className="trackstack__intro">
-        Scroll to flip through the briefs. Pick the one that best shows recruiters what
-        you can ship in <strong>100 remote hours.</strong>
+        Pick the track that matches your skills. Use any tech stack, any tools, any APIs.
+        Full challenge briefs and starter assets drop on July 8th at 8 PM EST.
       </p>
     </header>
   );
 }
 
-function StackCard({ track, index }: { track: Track; index: number }) {
+function StackCard({
+  track,
+  index,
+  briefUnlocked,
+  briefDropLabel,
+  releaseTimeLabel,
+}: {
+  track: TrackCard;
+  index: number;
+  briefUnlocked: boolean;
+  briefDropLabel: string;
+  releaseTimeLabel: string;
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isFirstCard = index === 0;
 
@@ -114,6 +124,9 @@ function StackCard({ track, index }: { track: Track; index: number }) {
     opacity,
   } as MotionStyle;
 
+  const showBriefLink = briefUnlocked && track.briefUrl;
+  const showBriefAvailable = briefUnlocked && !track.briefUrl;
+
   return (
     <motion.article
       ref={cardRef}
@@ -122,17 +135,25 @@ function StackCard({ track, index }: { track: Track; index: number }) {
     >
       {isFirstCard && <SectionHeader />}
 
-      <div className="trackstack__card-rail" />
+      <div className="trackstack__card-accent-bar" aria-hidden="true" />
       <div className="trackstack__card-inner">
-        <div className="trackstack__card-left">
-          <div className="trackstack__card-meta">
-            <span className="trackstack__card-num" aria-hidden="true">
-              {track.num}
+        <div className="trackstack__card-body">
+          <div className="trackstack__card-header">
+            <div className="trackstack__card-meta">
+              <span className="trackstack__card-num" aria-hidden="true">
+                {track.number}
+              </span>
+              <span className="trackstack__card-chip">TRACK {track.number}</span>
+            </div>
+            <span className="trackstack__card-emoji" aria-hidden="true">
+              {track.icon}
             </span>
-            <span className="trackstack__card-chip">TRACK {track.num}</span>
           </div>
+
+          <p className="trackstack__card-category">{track.category}</p>
           <h3 className="trackstack__card-title">{track.title}</h3>
-          <p className="trackstack__card-desc">{track.desc}</p>
+          <p className="trackstack__card-desc">{track.description}</p>
+
           <div className="trackstack__card-tags">
             {track.tags.map((t) => (
               <span key={t} className="trackstack__card-tag">
@@ -140,29 +161,27 @@ function StackCard({ track, index }: { track: Track; index: number }) {
               </span>
             ))}
           </div>
-          <div className="trackstack__card-foot">
-            <span className="trackstack__card-cta">
-              Full brief coming soon
-              <ChevronRight className="w-4 h-4 trackstack__card-cta-arrow" />
-            </span>
-            <span className="trackstack__card-lock" aria-hidden="true">
-              <Lock className="w-3.5 h-3.5" />
-            </span>
-          </div>
-        </div>
 
-        <div className="trackstack__card-right">
-          <span className="trackstack__card-iconwrap" aria-hidden="true">
-            <track.Icon className="w-7 h-7" strokeWidth={2.2} />
-          </span>
-          <div className="trackstack__card-media">
-            <div className="trackstack__card-glow" aria-hidden="true" />
-            <img
-              src={track.img}
-              alt={track.title}
-              className="trackstack__card-img"
-              loading="lazy"
-            />
+          <div className="trackstack__card-foot">
+            {showBriefLink ? (
+              <a
+                href={track.briefUrl!}
+                className="trackstack__card-cta trackstack__card-cta--link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Brief
+                <ChevronRight className="w-4 h-4 trackstack__card-cta-arrow" />
+              </a>
+            ) : showBriefAvailable ? (
+              <span className="trackstack__card-cta">Brief available</span>
+            ) : (
+              <span className="trackstack__card-cta">
+                <Lock className="w-3.5 h-3.5" aria-hidden="true" />
+                Full brief drops {briefDropLabel}
+              </span>
+            )}
+            <span className="trackstack__card-time">{releaseTimeLabel}</span>
           </div>
         </div>
       </div>
@@ -171,8 +190,48 @@ function StackCard({ track, index }: { track: Track; index: number }) {
 }
 
 export function TracksStack() {
+  const [tracks, setTracks] = useState<TrackCard[]>([]);
+  const [countdown, setCountdown] = useState<{
+    started?: boolean;
+    startDate?: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const [tracksRes, countdownRes] = await Promise.all([
+          fetchTracksConfig(),
+          fetchCountdownConfig(),
+        ]);
+        if (cancelled) return;
+        const apiTracks = (tracksRes.data ?? []) as ApiTrack[];
+        setTracks(apiTracks.map(toTrackCard));
+        setCountdown(countdownRes.data ?? null);
+      } catch (err) {
+        console.error("[tracks] failed to load config:", err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const briefUnlocked = countdown?.started === true;
+  const briefDropLabel = useMemo(
+    () => formatBriefDropLabel(resolveHackathonStartDate(countdown)),
+    [countdown]
+  );
+  const releaseTimeLabel = "8 PM EST";
+
   return (
-    <section id="tracks-section" className="trackstack">
+    <section id="tracks-section" className="trackstack trackstack--v2">
       <div className="trackstack__decor" aria-hidden="true">
         <div className="trackstack__grid" />
         <div className="trackstack__blob trackstack__blob--a" />
@@ -187,17 +246,30 @@ export function TracksStack() {
           transition={{ duration: 0.55 }}
           className="trackstack__stage"
         >
-          <motion.div
-            className="trackstack__cards"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            {TRACKS.map((track, i) => (
-              <StackCard key={track.num} track={track} index={i} />
-            ))}
-          </motion.div>
+          {loading && tracks.length === 0 ? (
+            <div className="trackstack__loading" aria-busy="true">
+              Loading tracks…
+            </div>
+          ) : (
+            <motion.div
+              className="trackstack__cards"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              {tracks.map((track, i) => (
+                <StackCard
+                  key={track.id}
+                  track={track}
+                  index={i}
+                  briefUnlocked={briefUnlocked}
+                  briefDropLabel={briefDropLabel}
+                  releaseTimeLabel={releaseTimeLabel}
+                />
+              ))}
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </section>

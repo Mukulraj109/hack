@@ -37,6 +37,12 @@ export function RoadmapSkeleton() {
   return (
     <SkeletonRoot className="sprint-roadmap-skeleton" label="Loading roadmap">
       <SprintShimmerBlock className="sprint-roadmap-skeleton__header" />
+      <div className="sprint-roadmap-skeleton__points">
+        <SprintShimmerBlock className="sprint-roadmap-skeleton__points-card" />
+        <SprintShimmerBlock className="sprint-roadmap-skeleton__points-card" />
+        <SprintShimmerBlock className="sprint-roadmap-skeleton__points-card" />
+        <SprintShimmerBlock className="sprint-roadmap-skeleton__points-card" />
+      </div>
       <div className="sprint-roadmap-skeleton__timeline">
         <SprintShimmerBlock className="sprint-roadmap-skeleton__milestone sprint-roadmap-skeleton__milestone--left" />
         <SprintShimmerBlock className="sprint-roadmap-skeleton__milestone sprint-roadmap-skeleton__milestone--right" />

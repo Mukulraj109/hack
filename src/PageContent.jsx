@@ -17,6 +17,7 @@ import { HeroPromoCaption } from "./components/HeroPromoCaption";
 import { MobileNav } from "./components/MobileNav";
 import HiringPartnerButton from "./components/HiringPartnerButton";
 import RecruiterLineupButton from "./components/RecruiterLineupButton";
+import HackathonFaqButton from "./components/HackathonFaqButton";
 import FollowFormButton from "./components/FollowFormButton";
 import SocialFollowLinks from "./components/SocialFollowLinks";
 import Footer from "./components/Footer";
@@ -25,7 +26,7 @@ import WhatsAppButton from "./components/WhatsAppButton";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2, Medal, GraduationCap } from "lucide-react";
+import { Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2, Medal, GraduationCap, DollarSign, Key } from "lucide-react";
 
 import { HACKATHON_START } from "./lib/hackathonDates";
 
@@ -206,7 +207,10 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
           <div className="hero-bottom-cta">
             <div className="hero-bottom-cta__stack">
               <div className="hero-cta-group">
-                <FollowFormButton />
+                <div className="hero-cta-split-row">
+                  <FollowFormButton />
+                  <HiringPartnerButton className="hero-cta-partner btn-hiring-partner-mobile" />
+                </div>
 
                 {/* Claim Your Spot Button - Primary CTA with Gradient */}
                 <ClaimSpot className="btn-claim" onNavigate={onNavigate}>
@@ -245,9 +249,9 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
               <span className="career-title__accent">people who hire.</span>
             </h2>
             <p className="career-copy">
-              We don&apos;t just bury your project in a portal. The top 10 teams are packaged as a premium
-              talent bundle—including your live demo, GitHub repo, and resumes—and sent directly to{" "}
-              <strong>30+ elite recruiters</strong>.
+              We don&apos;t bury your project in a portal. The top 10 teams get packaged as a premium talent
+              bundle — live demo, GitHub repo, and resumes — sent directly to 30+ hiring partners who are
+              actively looking to hire.
             </p>
             <ul className="career-points">
               <li className="career-point">
@@ -304,10 +308,19 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
                     </span>
                   </div>
                 </div>
-                <ul className="career-prize-card__list">
-                  <li>$1,000 Cash to fund your build.</li>
-                  <li>2 Premium Plus accounts.</li>
-                  <li>Developer API Credits to scale.</li>
+                <ul className="career-prize-card__list career-prize-card__list--icon">
+                  <li className="career-prize-card__item">
+                    <DollarSign className="career-prize-card__list-icon" aria-hidden />
+                    $1,000 Cash to fuel your next build
+                  </li>
+                  <li className="career-prize-card__item">
+                    <Star className="career-prize-card__list-icon" aria-hidden />
+                    2 Premium Plus accounts
+                  </li>
+                  <li className="career-prize-card__item">
+                    <Key className="career-prize-card__list-icon" aria-hidden />
+                    Developer API Credits to scale your project
+                  </li>
                 </ul>
               </ShimmerCard>
 
@@ -326,10 +339,19 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
                     </span>
                   </div>
                 </div>
-                <ul className="career-prize-card__list">
-                  <li>$500 Cash for the team.</li>
-                  <li>2 Premium Plan accounts.</li>
-                  <li>$100 API Credits to keep building.</li>
+                <ul className="career-prize-card__list career-prize-card__list--icon">
+                  <li className="career-prize-card__item">
+                    <DollarSign className="career-prize-card__list-icon" aria-hidden />
+                    $500 Cash for the team
+                  </li>
+                  <li className="career-prize-card__item">
+                    <Star className="career-prize-card__list-icon" aria-hidden />
+                    2 Premium Plan accounts
+                  </li>
+                  <li className="career-prize-card__item">
+                    <Key className="career-prize-card__list-icon" aria-hidden />
+                    $100 API Credits to keep building
+                  </li>
                 </ul>
               </ShimmerCard>
               <ShimmerCard highlightColor="rgba(8, 145, 178, 0.3)" className="career-prize-card">
@@ -524,15 +546,9 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
              
               <br />
             </p>
-            <a
-              href="#faq-section"
-              className="yellow-button w-button"
-              onClick={(e) =>
-                handleSectionLinkClick(e.nativeEvent, "faq-section")
-              }
-            >
+            <HackathonFaqButton className="yellow-button w-button">
               READ FAQ
-            </a>
+            </HackathonFaqButton>
           </motion.div>
         </div>
       </header>

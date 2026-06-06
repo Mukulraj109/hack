@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import InfoSessionFormModal from "./components/InfoSessionFormModal";
 import { useConfigCountdown } from "./hooks/useConfigCountdown";
 import { RoadmapSkeleton } from "./components/sprint/SprintPageSkeleton";
+import { navigateTo } from "./lib/appNavigation";
 import "./styles/sprint-portal.css";
 
 function useSprintMobileLayout() {
@@ -22,621 +21,424 @@ function useSprintMobileLayout() {
   return mobile;
 }
 
-// Material Icon Component
-function Icon({ name, filled = false, size = 24, style = {} }) {
-  return (
-    <span className="material-symbols-outlined" style={{
-      fontVariationSettings: filled ? "'FILL' 1" : "'FILL' 0",
-      fontSize: size,
-      ...style
-    }}>
-      {name}
-    </span>
-  );
+function getStatus(startStr, endStr) {
+  const now = new Date();
+  const start = new Date(startStr);
+  const end = endStr ? new Date(endStr) : new Date(startStr);
+  if (now > end) return "completed";
+  if (now >= start && now <= end) return "active";
+  return "upcoming";
 }
 
-// Enhanced Glass Card with 3D effect
-function GlassCard({ children, style = {}, className = "", isActive = false, isMobile = false }) {
-  const [isHovered, setIsHovered] = useState(false);
-  const hoverLift = !isMobile && isHovered;
+const pointsSummary = [
+  { action: "Registration", points: 25, icon: "📝" },
+  { action: "Social Sharing", points: 50, icon: "📣" },
+  { action: "Judge Evaluation", points: 175, icon: "⚖️" },
+];
 
-  return (
-    <motion.div
-      className={`roadmap-glass-card rounded-2xl p-8 ${className}`}
-      style={{
-        background: "rgba(255, 255, 255, 0.95)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: `1px solid rgba(255, 255, 255, ${isActive ? "0.8" : "0.5"})`,
-        boxShadow: isActive
-          ? `0 25px 50px -12px rgba(0, 106, 97, 0.25), 0 0 40px rgba(0, 106, 97, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)`
-          : hoverLift
-          ? `0 20px 40px rgba(13, 148, 136, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)`
-          : `0 4px 20px rgba(13, 148, 136, 0.08), inset 0 1px 0 rgba(255,255,255,0.6)`,
-        transform: hoverLift ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
-        transition: isMobile ? "box-shadow 0.25s ease" : "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-        ...style
-      }}
-      onMouseEnter={isMobile ? undefined : () => setIsHovered(true)}
-      onMouseLeave={isMobile ? undefined : () => setIsHovered(false)}
-      whileHover={isMobile ? undefined : { y: -8 }}
-    >
-      {/* Top highlight */}
-      <div
-        className="absolute inset-x-8 top-0 h-px"
-        style={{
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)",
-          opacity: isActive ? 1 : 0.5
-        }}
-      />
-      {children}
-    </motion.div>
-  );
-}
-
-// Timeline Node Marker with 3D effect
-function TimelineNode({ status = "completed", isActive = false, isMobile = false }) {
-  const config = {
-    completed: { bg: "linear-gradient(135deg, #00685f 0%, #008378 100%)", icon: "check", glow: "#00685f" },
-    active: { bg: "linear-gradient(135deg, #00685f 0%, #00a08a 100%)", icon: "play_arrow", glow: "#00685f" },
-    locked: { bg: "linear-gradient(135deg, #6b7775 0%, #8a9290 100%)", icon: "lock", glow: "#6b7775" },
-    upcoming: { bg: "linear-gradient(135deg, #006591 0%, #0087b8 100%)", icon: "star", glow: "#006591" },
-  };
-  const c = config[status] || config.completed;
-
-  return (
-    <motion.div
-      className="relative"
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-    >
-      {/* Outer glow */}
-      {isActive && (
-        <div
-          className="absolute inset-0 rounded-full animate-pulse"
-          style={{
-            background: c.glow,
-            opacity: 0.3,
-            filter: "blur(12px)",
-            transform: "scale(1.5)"
-          }}
-        />
-      )}
-      {/* Main circle */}
-      <motion.div
-        className="w-16 h-16 rounded-full flex items-center justify-center shadow-xl"
-        style={{
-          background: c.bg,
-          boxShadow: `0 8px 32px ${c.glow}40, inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.1)`,
-        }}
-        whileHover={isMobile ? undefined : { scale: 1.15 }}
-        transition={{ type: "spring", stiffness: 400, damping: 10 }}
-      >
-        {/* Inner highlight */}
-        <div
-          className="absolute inset-2 rounded-full opacity-30"
-          style={{
-            background: "linear-gradient(135deg, rgba(255,255,255,0.5) 0%, transparent 50%)"
-          }}
-        />
-        <Icon name={c.icon} size={28} style={{ color: "#ffffff", position: "relative", zIndex: 1 }} />
-      </motion.div>
-      {/* Bottom connector */}
-      <div
-        className="roadmap-timeline-node__stem absolute left-1/2 top-full w-1 -translate-x-1/2"
-        style={{
-          height: "80px",
-          background: status === "completed" || status === "active"
-            ? "linear-gradient(180deg, #00685f 0%, #bcc9c6 100%)"
-            : "linear-gradient(180deg, #bcc9c6 0%, #bcc9c6 100%)"
-        }}
-      />
-    </motion.div>
-  );
-}
-
-// Phase Header - positioned above timeline
-function PhaseHeader({ phase, index }) {
-  return (
-    <motion.div
-      className="roadmap-phase-header relative flex justify-center mb-12"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.15, duration: 0.6 }}
-    >
-      {/* Centered content card */}
-      <div className="relative">
-        {/* Decorative line extending from card */}
-        <div
-          className="absolute top-1/2 left-full w-24 h-px -translate-y-1/2"
-          style={{
-            background: `linear-gradient(90deg, ${phase.phaseColor}40, transparent)`
-          }}
-        />
-        <div
-          className="absolute top-1/2 right-full w-24 h-px -translate-y-1/2"
-          style={{
-            background: `linear-gradient(270deg, ${phase.phaseColor}40, transparent)`
-          }}
-        />
-
-        <div className="text-center px-8 py-6 rounded-2xl" style={{
-          background: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255, 255, 255, 0.6)",
-          boxShadow: "0 8px 32px rgba(13, 148, 136, 0.12)"
-        }}>
-          <div className="inline-flex items-center gap-3 mb-3">
-            <span
-              className="px-5 py-1.5 text-xs font-bold uppercase tracking-widest rounded-full"
-              style={{
-                background: phase.phaseBg,
-                color: phase.phaseColor,
-                boxShadow: `0 4px 16px ${phase.phaseColor}25`
-              }}
-            >
-              {phase.phaseLabel}
-            </span>
-          </div>
-          <h2
-            className="text-3xl font-bold mb-2"
-            style={{
-              fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#002B36",
-              letterSpacing: "-0.02em"
-            }}
-          >
-            {phase.title}
-          </h2>
-          <p className="text-base" style={{ color: "#6d7a77", fontFamily: "'Inter', sans-serif" }}>
-            {phase.dateRange}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Milestone Card with enhanced styling
-function MilestoneCard({ milestone, index, isLeft, isMobile = false }) {
-  const isGlowing = milestone.isGlowing;
-
-  return (
-    <motion.div
-      className={`roadmap-milestone-row flex items-center gap-8 mb-16 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
-      initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ delay: index * 0.1, duration: 0.7, ease: "easeOut" }}
-    >
-      {/* Card */}
-      <div className="flex-1 max-w-xl">
-        <GlassCard isActive={isGlowing} isMobile={isMobile}>
-          {milestone.content}
-        </GlassCard>
-      </div>
-
-      {/* Timeline Node */}
-      <div className="flex-shrink-0">
-        <TimelineNode status={milestone.status} isActive={isGlowing} isMobile={isMobile} />
-      </div>
-
-      {/* Spacer for symmetry */}
-      <div className="flex-1 max-w-xl" />
-    </motion.div>
-  );
-}
-
-const CARD_SPRING = { type: "spring", stiffness: 380, damping: 28 };
-
-const CONTACT_EMAIL = "Hackathon@firststepjob.com";
-
-/** Mobile-only: left FAB (like WhatsApp) with expandable contact panel */
-function RoadmapContactFab({ onDismiss }) {
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef(null);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDocClick = (e) => {
-      if (rootRef.current && !rootRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, [open]);
-
-  return (
-    <div ref={rootRef} className="roadmap-contact-fab">
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="roadmap-contact-fab__panel"
-            role="dialog"
-            aria-label="Contact support"
-            initial={{ opacity: 0, y: 10, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 380, damping: 28 }}
-          >
-            <button
-              type="button"
-              className="roadmap-contact-fab__panel-close"
-              onClick={() => setOpen(false)}
-              aria-label="Close contact menu"
-            >
-              <Icon name="close" size={18} style={{ color: "#6d7a77" }} />
-            </button>
-            <p className="roadmap-contact-fab__title">Have questions?</p>
-            <p className="roadmap-contact-fab__subtitle">Contact the team</p>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="roadmap-contact-fab__cta"
-            >
-              Contact Us
-            </a>
-            <button
-              type="button"
-              className="roadmap-contact-fab__dismiss"
-              onClick={() => onDismiss?.()}
-            >
-              Don&apos;t show again
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <button
-        type="button"
-        className={`roadmap-contact-fab__trigger${open ? " roadmap-contact-fab__trigger--open" : ""}`}
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-label={open ? "Close contact menu" : "Open contact menu"}
-      >
-        <Icon name="support_agent" size={26} style={{ color: "#00685f" }} />
-      </button>
-    </div>
-  );
-}
-
-// Desktop: floating contact bar in main column. Mobile: left FAB only.
-function FloatingBanner({ isMobile = false }) {
-  const [isVisible, setIsVisible] = useState(true);
-
-  if (isMobile) {
-    return isVisible ? <RoadmapContactFab onDismiss={() => setIsVisible(false)} /> : null;
-  }
-
-  return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          className="roadmap-contact-dock"
-          initial={{ opacity: 0, y: 48 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 32 }}
-          transition={{ type: "spring", stiffness: 320, damping: 30 }}
-        >
-          <motion.div
-            className="roadmap-contact-bar"
-            whileHover={{ y: -4, boxShadow: "0 20px 50px rgba(0, 104, 95, 0.16)" }}
-            transition={CARD_SPRING}
-          >
-            <div className="roadmap-contact-bar__head">
-              <div className="roadmap-contact-bar__icon-wrap" aria-hidden>
-                <Icon name="support_agent" size={22} style={{ color: "#00685f" }} />
-              </div>
-
-              <div className="roadmap-contact-bar__copy">
-                <p className="roadmap-contact-bar__title">Have questions?</p>
-                <p className="roadmap-contact-bar__subtitle">Contact the team</p>
-              </div>
-
-              <button
-                type="button"
-                className="roadmap-contact-bar__close"
-                onClick={() => setIsVisible(false)}
-                aria-label="Dismiss contact banner"
-              >
-                <Icon name="close" size={20} style={{ color: "#6d7a77" }} />
-              </button>
-            </div>
-
-            <motion.a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="roadmap-contact-bar__cta"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 500, damping: 24 }}
-            >
-              Contact Us
-            </motion.a>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-/** Information sessions — shared Zoho signup form via backend embed */
-const INFORMATION_SESSIONS = [
+const phases = [
   {
-    icon: "lightbulb",
-    label: "Strategy & Briefs",
-    description: "Challenge themes, timelines, and what judges expect",
+    id: 1,
+    icon: "🏁",
+    title: "Pre-Sprint Setup",
+    dates: "July 1 – July 7",
+    color: "#00c5a3",
+    milestones: [
+      {
+        title: "Registration Launch",
+        date: "July 1st, 12:00 PM EST",
+        start: "2026-07-01T12:00:00",
+        end: "2026-07-07T23:59:59",
+        description: "Sign up and secure your spot. Applications reviewed within 24 hours.",
+        badge: "⚡ SPOTS CAPPED AT 100 TEAMS",
+        badgeColor: "#ef4444",
+        icon: "🚀",
+        side: "left",
+      },
+      {
+        title: "Team Formation Opens",
+        date: "July 1st",
+        start: "2026-07-01T00:00:00",
+        end: "2026-07-07T23:59:59",
+        description:
+          "Create your 2-member team or join one with a team code. Solo builders must create a team to participate. Bank 25 points instantly.",
+        icon: "👥",
+        side: "right",
+      },
+      {
+        title: "Share & Earn 50 Points",
+        date: "July 1 – July 7",
+        start: "2026-07-01T00:00:00",
+        end: "2026-07-07T23:59:59",
+        description:
+          "Download pre-built templates from the Teams tab, post on LinkedIn and Instagram, submit screenshots on your dashboard. 50 easy points before the sprint begins.",
+        icon: "📣",
+        side: "left",
+      },
+      {
+        title: "Information Sessions",
+        date: "Before July 8th",
+        start: "2026-07-01T00:00:00",
+        end: "2026-07-07T23:59:59",
+        description:
+          "Free live sessions to get you sprint-ready. Join, ask questions, and get clarity before the build begins.",
+        icon: "🎓",
+        side: "right",
+        hasSignup: true,
+      },
+    ],
   },
   {
-    icon: "code",
-    label: "Technical Overview",
-    description: "Stack guidance, APIs, and how to ship in 100 hours",
+    id: 2,
+    icon: "⚡",
+    title: "The 100-Hour Arena",
+    dates: "July 8 – July 12",
+    color: "#006875",
+    milestones: [
+      {
+        title: "Kickoff & Track Reveal",
+        date: "July 8th, 8:00 PM EST",
+        start: "2026-07-08T20:00:00",
+        end: "2026-07-08T23:59:59",
+        description:
+          "Track briefs go live and the 100-hour build clock starts ticking. Pick your tools, pick your approach — no restrictions.",
+        icon: "⚡",
+        side: "left",
+      },
+      {
+        title: "Starter Assets Released",
+        date: "July 8th, 8:00 PM EST",
+        start: "2026-07-08T20:00:00",
+        end: "2026-07-08T23:59:59",
+        description:
+          "Track-specific Git repos and starter assets drop at kickoff. Each track comes with its own starting kit to hit the ground running.",
+        icon: "📦",
+        side: "right",
+      },
+      {
+        title: "Hard Stop Deadline",
+        date: "July 12th, 11:59 PM EST",
+        start: "2026-07-12T00:00:00",
+        end: "2026-07-12T23:59:59",
+        description: "Final call — lock in all 3 deliverables. No extensions, no exceptions.",
+        icon: "🔒",
+        side: "left",
+        subItems: [
+          { title: "Video Demo", desc: "Google Drive link (public access) with your approach and live demo" },
+          { title: "Git Repo URL", desc: "Your complete project codebase" },
+          { title: "Written Document", desc: "Completed FirstStep questionnaire" },
+        ],
+      },
+    ],
   },
   {
-    icon: "videocam",
-    label: "Pitch & Demo Prep",
-    description: "Storytelling tips and demo-day presentation format",
+    id: 3,
+    icon: "🏆",
+    title: "The Finish Line",
+    dates: "July 13 – July 20",
+    color: "#e8a0bf",
+    milestones: [
+      {
+        title: "Final Evaluations",
+        date: "July 17th, 8:00 PM EST",
+        start: "2026-07-17T20:00:00",
+        end: "2026-07-17T23:59:59",
+        description:
+          "Official scorecards go live. Projects judged on creativity, execution, problem understanding, and uniqueness of solution.",
+        icon: "📊",
+        side: "right",
+      },
+      {
+        title: "Winners Announced",
+        date: "July 20th",
+        start: "2026-07-20T00:00:00",
+        end: "2026-07-20T23:59:59",
+        description: "Final rankings published and winners notified directly by email.",
+        icon: "🏆",
+        side: "left",
+      },
+      {
+        title: "Top 10 → Recruiter Spotlight",
+        date: "After July 20th",
+        start: "2026-07-21T00:00:00",
+        end: "2026-07-31T23:59:59",
+        description:
+          "Top 10 teams automatically packaged as a premium talent bundle — live demo, GitHub repo, and resumes sent directly to 30+ elite recruiters.",
+        badge: "🔥 YOUR WORK MEETS PEOPLE WHO HIRE",
+        badgeColor: "#006875",
+        icon: "🤝",
+        side: "right",
+      },
+      {
+        title: "Credentials Issued",
+        date: "After July 20th",
+        start: "2026-07-21T00:00:00",
+        end: "2026-07-31T23:59:59",
+        description:
+          "Every participant who completed the challenge receives a verified digital badge and certificate of participation.",
+        icon: "🎖️",
+        side: "left",
+      },
+    ],
   },
 ];
 
-function InformationSessionsMilestone({ isMobile = false }) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [activeSessionLabel, setActiveSessionLabel] = useState(INFORMATION_SESSIONS[0].label);
+const statusConfig = {
+  completed: { dot: "#22c55e", label: "Done" },
+  active: { dot: "#f59e0b", label: "Live Now" },
+  upcoming: { dot: "#94a3b8", label: "Upcoming" },
+};
 
-  const openSessionModal = (label) => {
-    setActiveSessionLabel(label);
-    setModalOpen(true);
-  };
-
-  const closeSessionModal = () => {
-    setModalOpen(false);
-  };
+function CardContent({ milestone, phaseColor, status, onSignupClick }) {
+  const [hovered, setHovered] = useState(false);
+  const s = statusConfig[status];
 
   return (
-    <div className="roadmap-info-sessions">
-      <header className="roadmap-info-sessions__header">
-        <div className="roadmap-info-sessions__header-icon" aria-hidden>
-          <Icon name="auto_stories" size={28} style={{ color: "#00685f" }} />
-        </div>
-        <div className="roadmap-info-sessions__header-copy">
-          <div className="roadmap-info-sessions__header-top">
-            <h3 className="roadmap-info-sessions__title">Information sessions</h3>
-            <span className="roadmap-info-sessions__badge">Free · Live</span>
-          </div>
-          <p className="roadmap-info-sessions__subtitle">
-            Optional briefings before the sprint — pick any topic and reserve your spot.
-          </p>
-        </div>
-      </header>
+    <div
+      className="roadmap-v2__card"
+      style={{
+        borderColor: hovered ? phaseColor : "#e2e8f0",
+        boxShadow: hovered
+          ? `0 8px 32px ${phaseColor}18, 0 2px 8px rgba(0,0,0,0.06)`
+          : "0 1px 4px rgba(0,0,0,0.04)",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="roadmap-v2__status">
+        <span
+          className={`roadmap-v2__status-dot${status === "active" ? " roadmap-v2__status-dot--pulse" : ""}`}
+          style={{ background: s.dot }}
+        />
+        <span className="roadmap-v2__status-label" style={{ color: s.dot }}>
+          {s.label}
+        </span>
+      </div>
 
-      <ul className="roadmap-info-sessions__list">
-        {INFORMATION_SESSIONS.map((session, index) => (
-          <motion.li
-            key={session.label}
-            className="roadmap-info-sessions__item"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-20px" }}
-            transition={{ delay: index * 0.08, duration: 0.45, ease: "easeOut" }}
-          >
-            <motion.button
-              type="button"
-              className="roadmap-info-sessions__row"
-              onClick={() => openSessionModal(session.label)}
-              whileHover={isMobile ? undefined : { y: -2 }}
-              whileTap={{ scale: 0.995 }}
-              transition={CARD_SPRING}
+      <div className="roadmap-v2__card-icon">{milestone.icon}</div>
+
+      <h3 className="roadmap-v2__card-title">{milestone.title}</h3>
+
+      <div className="roadmap-v2__card-date" style={{ color: phaseColor }}>
+        {milestone.date}
+      </div>
+
+      {milestone.badge && (
+        <div
+          className="roadmap-v2__badge"
+          style={{
+            background: `${milestone.badgeColor}14`,
+            color: milestone.badgeColor,
+            borderColor: `${milestone.badgeColor}33`,
+          }}
+        >
+          {milestone.badge}
+        </div>
+      )}
+
+      <p className="roadmap-v2__card-desc">{milestone.description}</p>
+
+      {milestone.hasSignup && (
+        <button
+          type="button"
+          className="roadmap-v2__signup-btn"
+          style={{ background: phaseColor }}
+          onClick={onSignupClick}
+          aria-label="Sign up for an information session"
+        >
+          Sign Up for a Session
+          <span aria-hidden="true">→</span>
+        </button>
+      )}
+
+      {milestone.subItems && (
+        <div className="roadmap-v2__sub-items">
+          {milestone.subItems.map((item, i) => (
+            <div
+              key={item.title}
+              className="roadmap-v2__sub-item"
+              style={{ borderLeftColor: phaseColor }}
             >
-              <span className="roadmap-info-sessions__row-icon" aria-hidden>
-                <Icon name={session.icon} size={22} style={{ color: "#00685f" }} />
-              </span>
-
-              <span className="roadmap-info-sessions__row-body">
-                <span className="roadmap-info-sessions__row-label">{session.label}</span>
-                <span className="roadmap-info-sessions__row-desc">{session.description}</span>
-              </span>
-
-              <span className="roadmap-info-sessions__row-action">
-                <span className="roadmap-info-sessions__cta">Sign up</span>
-                <ChevronRight className="roadmap-info-sessions__chevron" aria-hidden="true" size={18} strokeWidth={2.25} />
-              </span>
-            </motion.button>
-          </motion.li>
-        ))}
-      </ul>
-
-      <InfoSessionFormModal
-        open={modalOpen}
-        sessionLabel={activeSessionLabel}
-        onClose={closeSessionModal}
-      />
+              <div className="roadmap-v2__sub-item-title">{item.title}</div>
+              <div className="roadmap-v2__sub-item-desc">{item.desc}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-// Main Roadmap Content
+function milestoneDotClass(status) {
+  return `roadmap-v2__milestone-dot roadmap-v2__milestone-dot--${status}`;
+}
+
+function milestoneDotStyle(status, phaseColor) {
+  const s = statusConfig[status];
+  return {
+    background: status === "completed" ? s.dot : "#fff",
+    borderColor: status === "active" ? phaseColor : s.dot,
+    boxShadow:
+      status === "active"
+        ? `0 0 0 6px ${phaseColor}22`
+        : status === "completed"
+          ? `0 0 0 4px ${s.dot}28`
+          : undefined,
+  };
+}
+
+function MilestoneCard({ milestone, phaseColor, index, onSignupClick, isMobile }) {
+  const [visible, setVisible] = useState(false);
+  const status = getStatus(milestone.start, milestone.end);
+  const s = statusConfig[status];
+  const isLeft = milestone.side === "left";
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 120 * index + 200);
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  if (isMobile) {
+    return (
+      <div
+        className={`roadmap-v2__milestone-row roadmap-v2__milestone-row--mobile${visible ? " roadmap-v2__milestone-row--visible" : ""}`}
+      >
+        <div className="roadmap-v2__milestone-mobile-dot-wrap">
+          <div
+            className={milestoneDotClass(status)}
+            style={milestoneDotStyle(status, phaseColor)}
+          />
+        </div>
+        <CardContent
+          milestone={milestone}
+          phaseColor={phaseColor}
+          status={status}
+          onSignupClick={onSignupClick}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`roadmap-v2__milestone-row${visible ? " roadmap-v2__milestone-row--visible" : ""}`}
+    >
+      <div className="roadmap-v2__milestone-side roadmap-v2__milestone-side--left">
+        {isLeft && (
+          <CardContent
+            milestone={milestone}
+            phaseColor={phaseColor}
+            status={status}
+            onSignupClick={onSignupClick}
+          />
+        )}
+      </div>
+
+      <div className="roadmap-v2__milestone-center">
+        <div
+          className={milestoneDotClass(status)}
+          style={milestoneDotStyle(status, phaseColor)}
+        />
+        <div
+          className="roadmap-v2__milestone-line"
+          style={{ background: `linear-gradient(to bottom, ${s.dot}44, ${s.dot}11)` }}
+        />
+      </div>
+
+      <div className="roadmap-v2__milestone-side roadmap-v2__milestone-side--right">
+        {!isLeft && (
+          <CardContent
+            milestone={milestone}
+            phaseColor={phaseColor}
+            status={status}
+            onSignupClick={onSignupClick}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({ phase }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div className={`roadmap-v2__section-header${visible ? " roadmap-v2__section-header--visible" : ""}`}>
+      <div className="roadmap-v2__section-icon">{phase.icon}</div>
+      <h2 className="roadmap-v2__section-title">{phase.title}</h2>
+      <p className="roadmap-v2__section-dates">{phase.dates}</p>
+    </div>
+  );
+}
+
+function PointsSummaryRow() {
+  return (
+    <div className="roadmap-v2__points">
+      {pointsSummary.map((p) => (
+        <div key={p.action} className="roadmap-v2__points-card">
+          <span className="roadmap-v2__points-icon">{p.icon}</span>
+          <div className="roadmap-v2__points-copy">
+            <div className="roadmap-v2__points-label">{p.action}</div>
+            <div className="roadmap-v2__points-value">{p.points} pts</div>
+          </div>
+        </div>
+      ))}
+      <div className="roadmap-v2__points-total">
+        <span className="roadmap-v2__points-icon">🎯</span>
+        <div className="roadmap-v2__points-copy">
+          <div className="roadmap-v2__points-label roadmap-v2__points-label--light">Total Possible</div>
+          <div className="roadmap-v2__points-value roadmap-v2__points-value--light">250 pts</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FinalCTA() {
+  return (
+    <div className="roadmap-v2__cta">
+      <div className="roadmap-v2__cta-icon">🚀</div>
+      <h2 className="roadmap-v2__cta-title">Ready to Build Something Extraordinary?</h2>
+      <p className="roadmap-v2__cta-desc">
+        100 teams. 100 hours. 30+ recruiters watching. Your next opportunity starts here.
+      </p>
+      <button
+        type="button"
+        className="roadmap-v2__cta-btn"
+        onClick={() => navigateTo("/sprint")}
+        aria-label="Go to dashboard home"
+      >
+        Dashboard Home →
+      </button>
+      <p className="roadmap-v2__cta-footer">
+        Questions? Reach us at{" "}
+        <a href="mailto:hackathon@firststepjob.com" className="roadmap-v2__cta-email">
+          hackathon@firststepjob.com
+        </a>
+      </p>
+    </div>
+  );
+}
+
 export default function RoadmapContent() {
   const isMobile = useSprintMobileLayout();
   const { loading: configLoading } = useConfigCountdown();
-  const phases = [
-    {
-      phaseLabel: "Phase 1",
-      phaseBg: "linear-gradient(135deg, #e0e3e5 0%, #f0f2f3 100%)",
-      phaseColor: "#6d7a77",
-      title: "Pre-Sprint Setup",
-      dateRange: "July 1 - July 7",
-      milestones: [
-        {
-          status: "completed",
-          content: (
-            <div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #00685f20 0%, #00685f10 100%)" }}>
-                  <Icon name="celebration" size={28} style={{ color: "#00685f" }} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold" style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}>Registration Launch</h3>
-                  <p className="text-base" style={{ color: "#6d7a77" }}>July 1st, 12:00 PM EST</p>
-                </div>
-              </div>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"
-                style={{
-                  background: "linear-gradient(135deg, #ffdad6 0%, #ffe5e3 100%)",
-                  color: "#93000a",
-                  boxShadow: "0 2px 12px rgba(185, 26, 26, 0.15)"
-                }}
-              >
-                <Icon name="warning" size={16} />
-                LIMITED TO THE FIRST 100 TEAMS
-              </div>
-            </div>
-          ),
-        },
-        {
-          status: "completed",
-          content: <InformationSessionsMilestone isMobile={isMobile} />,
-        },
-      ],
-    },
-    {
-      phaseLabel: "Phase 2",
-      phaseBg: "linear-gradient(135deg, rgba(0,104,95,0.15) 0%, rgba(0,104,95,0.08) 100%)",
-      phaseColor: "#00685f",
-      title: "The 100-Hour Arena",
-      dateRange: "July 8 - July 12",
-      milestones: [
-        {
-          status: "active",
-          isGlowing: true,
-          content: (
-            <div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{
-                  background: "linear-gradient(135deg, #00685f 0%, #00a08a 100%)",
-                  boxShadow: "0 8px 24px rgba(0, 104, 95, 0.4)"
-                }}>
-                  <Icon name="rocket_launch" size={28} style={{ color: "#ffffff" }} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold" style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}>Kickoff & Track Reveal</h3>
-                  <p className="text-base font-semibold" style={{ color: "#00685f" }}>July 8th, 8:00 PM EST</p>
-                </div>
-              </div>
-              <p className="text-base leading-relaxed" style={{ color: "#3d4947" }}>
-                Track briefs unlock and live build clock starts now. Tool-agnostic sprint begins.
-              </p>
-              <div className="mt-4 flex items-center gap-2">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#00685f" }}></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: "#00685f" }}></span>
-                </span>
-                <span className="text-sm font-semibold" style={{ color: "#00685f" }}>LIVE NOW</span>
-              </div>
-            </div>
-          ),
-        },
-        {
-          status: "locked",
-          content: (
-            <div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #6b7775 0%, #8a9290 100%)" }}>
-                  <Icon name="timer_off" size={28} style={{ color: "#ffffff" }} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold" style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}>Hard Stop Deadline</h3>
-                  <p className="text-base font-semibold" style={{ color: "#ba1a1a" }}>July 12th, 11:59 PM EST</p>
-                </div>
-              </div>
-              <p className="text-base leading-relaxed" style={{ color: "#3d4947" }}>
-                All links, codebases, and shareable Google Drive videos must be locked in.
-              </p>
-              <div className="mt-4 flex items-center gap-2">
-                <Icon name="lock_clock" size={18} style={{ color: "#6d7a77" }} />
-                <span className="text-sm" style={{ color: "#6d7a77" }}>Upcoming</span>
-              </div>
-            </div>
-          ),
-        },
-      ],
-    },
-    {
-      phaseLabel: "Phase 3",
-      phaseBg: "linear-gradient(135deg, rgba(0,101,145,0.15) 0%, rgba(0,101,145,0.08) 100%)",
-      phaseColor: "#006591",
-      title: "The Matchmaking Results",
-      dateRange: "July 13 - July 20",
-      milestones: [
-        {
-          status: "upcoming",
-          content: (
-            <div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #006591 0%, #0087b8 100%)" }}>
-                  <Icon name="workspace_premium" size={28} style={{ color: "#ffffff" }} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold" style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}>Final Evaluations</h3>
-                  <p className="text-base font-semibold" style={{ color: "#006591" }}>July 17th, 8:00 PM EST</p>
-                </div>
-              </div>
-              <p className="text-base leading-relaxed" style={{ color: "#3d4947" }}>
-                Official scorecards published. Total point metrics finalized and winners notified directly via email.
-              </p>
-            </div>
-          ),
-        },
-        {
-          status: "upcoming",
-          content: (
-            <div className="relative">
-              {/* Decorative gradient */}
-              <div
-                className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-20"
-                style={{ background: "linear-gradient(135deg, #00685f 0%, #006591 100%)", filter: "blur(40px)" }}
-              />
-              <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #00685f 0%, #008378 100%)" }}>
-                    <Icon name="handshake" size={28} style={{ color: "#ffffff" }} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold" style={{ color: "#002B36", fontFamily: "'Hanken Grotesk', sans-serif" }}>Recruiter Pipeline</h3>
-                    <p className="text-base font-semibold" style={{ color: "#00685f" }}>July 20th, 9:00 AM EST</p>
-                  </div>
-                </div>
-                <p className="text-base leading-relaxed mb-6" style={{ color: "#3d4947" }}>
-                  <strong style={{ color: "#002B36" }}>The Grand Finale:</strong> Matchmaking profile data, verified resumes, and the top 10 portfolio packages are formally submitted to our 30+ enterprise recruiting partners.
-                </p>
-                <div className="flex gap-3">
-                  {["MATCHMAKING", "PLACEMENT", "RECRUITING"].map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-4 py-2 rounded-xl text-xs font-bold"
-                      style={{
-                        background: "linear-gradient(135deg, rgba(0, 104, 95, 0.1) 0%, rgba(0, 104, 95, 0.05) 100%)",
-                        color: "#00685f",
-                        border: "1px solid rgba(0, 104, 95, 0.2)"
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ),
-        },
-      ],
-    },
-  ];
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openSignupModal = () => setModalOpen(true);
+  const closeSignupModal = () => setModalOpen(false);
+
+  let globalIndex = 0;
 
   if (configLoading) {
     return (
-      <div className="roadmap-shell relative min-h-screen" style={{ background: "linear-gradient(180deg, #f7f9fb 0%, #f0f4f4 50%, #f7f9fb 100%)" }}>
-        <div className="roadmap-page relative max-w-6xl mx-auto px-8 py-16">
+      <div className="roadmap-v2">
+        <div className="roadmap-v2__inner">
           <RoadmapSkeleton />
         </div>
       </div>
@@ -644,104 +446,60 @@ export default function RoadmapContent() {
   }
 
   return (
-    <div className="roadmap-shell relative min-h-screen" style={{ background: "linear-gradient(180deg, #f7f9fb 0%, #f0f4f4 50%, #f7f9fb 100%)" }}>
-      {/* Background decorations */}
-      <div
-        className="fixed top-0 right-0 w-[600px] h-[600px] rounded-full opacity-30 pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(0, 104, 95, 0.15) 0%, transparent 70%)", filter: "blur(60px)" }}
-      />
-      <div
-        className="fixed bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-20 pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(0, 101, 145, 0.15) 0%, transparent 70%)", filter: "blur(60px)" }}
-      />
+    <div className="roadmap-v2">
+      <div className="roadmap-v2__bg roadmap-v2__bg--top" aria-hidden="true" />
+      <div className="roadmap-v2__bg roadmap-v2__bg--bottom" aria-hidden="true" />
 
-      <div className="roadmap-page relative max-w-6xl mx-auto px-8 py-16">
-        {/* Hero Header */}
-        <motion.header
-          className="text-center mb-20"
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <motion.div
-            className="inline-flex items-center gap-3 px-5 py-2 rounded-full mb-6"
-            style={{
-              background: "linear-gradient(135deg, rgba(0, 104, 95, 0.1) 0%, rgba(0, 101, 145, 0.1) 100%)",
-              border: "1px solid rgba(0, 104, 95, 0.2)"
-            }}
-          >
-            <Icon name="timeline" size={18} style={{ color: "#00685f" }} />
-            <span className="text-sm font-semibold" style={{ color: "#00685f" }}>Event Roadmap</span>
-          </motion.div>
+      <div className="roadmap-v2__inner">
+        <header className="roadmap-v2__hero">
+          <div className="roadmap-v2__badge">✦ Event Roadmap</div>
 
-          <h1
-            className="text-5xl md:text-6xl font-bold mb-6"
-            style={{
-              fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#002B36",
-              letterSpacing: "-0.03em",
-              lineHeight: 1.1
-            }}
-          >
-            Event Timeline &{" "}
-            <span style={{
-              background: "linear-gradient(135deg, #00685f 0%, #006591 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text"
-            }}>
-              Roadmap
-            </span>
+          <h1 className="roadmap-v2__title">
+            Event Timeline & <span className="roadmap-v2__title-accent">Roadmap</span>
           </h1>
 
-          <p
-            className="text-xl max-w-3xl mx-auto"
-            style={{
-              color: "#6d7a77",
-              fontFamily: "'Inter', sans-serif",
-              lineHeight: 1.7
-            }}
-          >
-            Track your journey through the Spring Hackathon. Stay ahead of deadlines and unlock milestones as we build the future together.
+          <p className="roadmap-v2__subtitle">
+            Your complete journey through the hackathon — from registration to results. Stay ahead of
+            every deadline and know exactly what&apos;s coming next.
           </p>
-        </motion.header>
 
-        {/* Timeline Container */}
-        <div className="roadmap-timeline relative">
-          {/* Central Timeline Line */}
-          <div
-            className="absolute left-1/2 top-0 bottom-0 w-2 -translate-x-1/2 rounded-full hidden md:block"
-            style={{
-              background: "linear-gradient(180deg, #bcc9c6 0%, #00685f 20%, #00685f 80%, #bcc9c6 100%)",
-              boxShadow: "0 0 30px rgba(0, 104, 95, 0.3)"
-            }}
-          />
+          <PointsSummaryRow />
 
-          {/* Phases */}
-          {phases.map((phase, phaseIndex) => (
-            <div key={phaseIndex} className="mb-24">
-              <PhaseHeader phase={phase} index={phaseIndex} />
+          <p className="roadmap-v2__points-footnote">
+            📊 Your live score and leaderboard rank are always visible on your dashboard
+          </p>
+        </header>
 
-              {/* Milestones */}
-              <div className="space-y-20">
-                {phase.milestones.map((milestone, milestoneIndex) => (
+        <div className="roadmap-v2__timeline">
+          {phases.map((phase) => (
+            <div key={phase.id} className="roadmap-v2__phase">
+              <SectionHeader phase={phase} />
+              {phase.milestones.map((m) => {
+                const card = (
                   <MilestoneCard
-                    key={milestoneIndex}
-                    milestone={milestone}
-                    index={milestoneIndex}
-                    isLeft={milestoneIndex % 2 === 0}
+                    key={m.title}
+                    milestone={m}
+                    phaseColor={phase.color}
+                    index={globalIndex}
+                    onSignupClick={openSignupModal}
                     isMobile={isMobile}
                   />
-                ))}
-              </div>
+                );
+                globalIndex += 1;
+                return card;
+              })}
             </div>
           ))}
-        </div>
 
-        <div className="roadmap-page__footer-spacer h-32" aria-hidden="true" />
+          <FinalCTA />
+        </div>
       </div>
 
-      <FloatingBanner isMobile={isMobile} />
+      <InfoSessionFormModal
+        open={modalOpen}
+        sessionLabel="Information Session"
+        onClose={closeSignupModal}
+      />
     </div>
   );
 }
