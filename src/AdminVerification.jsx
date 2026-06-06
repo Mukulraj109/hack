@@ -40,10 +40,18 @@ export default function AdminVerification() {
         <input
           type="search"
           className="admin-verification__search-input"
-          placeholder="Search by name or email…"
+          placeholder={
+            activeTab === "social-proofs"
+              ? "Search by name, email, team, or platform…"
+              : "Search by name or email…"
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          aria-label="Search by name or email"
+          aria-label={
+            activeTab === "social-proofs"
+              ? "Search social proofs by name, email, team, or platform"
+              : "Search by name or email"
+          }
         />
         {searchQuery && (
           <button

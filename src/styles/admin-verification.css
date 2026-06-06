@@ -211,7 +211,7 @@
 }
 
 .admin-table--proofs {
-  min-width: 960px;
+  min-width: 0;
 }
 
 .admin-table th,
@@ -369,6 +369,212 @@
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: 1rem;
+}
+
+.admin-split--proofs {
+  grid-template-columns: minmax(260px, 380px) minmax(0, 1fr);
+  align-items: start;
+}
+
+.admin-tab__toolbar--proofs {
+  flex-wrap: wrap;
+}
+
+.admin-proof-hint {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.6rem;
+  background: rgba(240, 253, 250, 0.9);
+  border: 1px solid rgba(13, 148, 136, 0.2);
+  color: #0f766e;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.admin-proof-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 72vh;
+  overflow-y: auto;
+  padding-right: 0.15rem;
+}
+
+.admin-proof-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 0.85rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  text-align: left;
+}
+
+.admin-proof-card:hover {
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.08);
+}
+
+.admin-proof-card:focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 2px;
+}
+
+.admin-proof-card--selected {
+  border-color: #0d9488;
+  background: rgba(240, 253, 250, 0.95);
+  box-shadow: 0 0 0 1px rgba(13, 148, 136, 0.25);
+}
+
+.admin-proof-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-proof-card__platform {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.admin-proof-card__platform--linkedin {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.admin-proof-card__platform--instagram {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+.admin-proof-card__name {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.admin-proof-card__meta {
+  margin: 0 0 0.15rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.admin-proof-card__proof-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: start;
+  margin: 0.65rem 0 0.45rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.admin-proof-card__label {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+}
+
+.admin-proof-card__link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #0d9488;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.admin-proof-card__link:hover {
+  text-decoration: underline;
+}
+
+.admin-proof-card__thumb {
+  flex-shrink: 0;
+}
+
+.admin-proof-card__date {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.admin-proof-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.admin-proof-card__actions .admin-btn {
+  flex: 1 1 auto;
+  min-width: 5.5rem;
+}
+
+.admin-proof-screenshot--compact img {
+  max-width: 72px;
+  max-height: 52px;
+}
+
+.admin-proof-screenshot-text__hint {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.admin-proof-notice {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.55rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.admin-proof-notice--warn {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.admin-detail--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+  color: #64748b;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.admin-detail__field--warn dd {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.admin-detail--proof .admin-detail__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .admin-detail {
@@ -655,8 +861,13 @@
 }
 
 @media (max-width: 900px) {
-  .admin-split {
+  .admin-split,
+  .admin-split--proofs {
     grid-template-columns: 1fr;
+  }
+
+  .admin-proof-list {
+    max-height: none;
   }
 
   .admin-points {
@@ -856,7 +1067,4 @@
     min-width: 760px;
   }
 
-  .admin-table--proofs {
-    min-width: 860px;
-  }
 }
