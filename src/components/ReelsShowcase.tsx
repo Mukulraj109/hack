@@ -79,6 +79,7 @@ function GlassCard({
   const [isPlaying, setIsPlaying] = useState(false);
 
   const isSprint = variant === "sprint";
+  const isSprintMobile = isSprint && isMobile;
   const enableTilt = !isMobile && !isSprint;
 
   const mouseX = useMotionValue(0);
@@ -172,12 +173,16 @@ function GlassCard({
             }
           : undefined
       }
-      initial={{ opacity: 0, y: isMobile || isSprint ? 24 : 60, scale: isMobile || isSprint ? 1 : 0.8 }}
+      initial={{
+        opacity: isSprintMobile ? 1 : 0,
+        y: isSprintMobile ? 0 : isMobile || isSprint ? 24 : 60,
+        scale: isMobile || isSprint ? 1 : 0.8,
+      }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: isSprintMobile ? "0px" : "-80px" }}
       transition={{
-        duration: isMobile || isSprint ? 0.5 : 0.7,
-        delay: isMobile || isSprint ? index * 0.06 : index * 0.15,
+        duration: isSprintMobile ? 0 : isMobile || isSprint ? 0.5 : 0.7,
+        delay: isSprintMobile ? 0 : isMobile || isSprint ? index * 0.06 : index * 0.15,
         ease: [0.22, 1, 0.36, 1],
       }}
     >
@@ -277,6 +282,9 @@ function GlassCard({
   );
 }
 
+const AUTO_SCROLL_DWELL_MS = 60_000;
+const AUTO_SCROLL_INTERVAL_MS = 60_000;
+
 export function ReelsShowcase({
   reels = REEL_PLACEHOLDERS,
   variant = "default",
@@ -285,8 +293,22 @@ export function ReelsShowcase({
   variant?: "default" | "sprint";
 }) {
   const isMobile = useMobileReelsLayout();
+  const isSprint = variant === "sprint";
+  const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const isAutoScrollingRef = useRef(false);
+  const userInteractedRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   const syncActiveIndex = useCallback(() => {
     const grid = gridRef.current;
@@ -315,33 +337,106 @@ export function ReelsShowcase({
     setActiveIndex(closest);
   }, []);
 
+  const scrollToReel = useCallback((index: number, behavior: ScrollBehavior = "smooth") => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const card = grid.querySelector<HTMLElement>(`[data-reel-index="${index}"]`);
+    if (!card) return;
+
+    isAutoScrollingRef.current = true;
+    card.scrollIntoView({ behavior, inline: "center", block: "nearest" });
+    setActiveIndex(index);
+    window.setTimeout(() => {
+      isAutoScrollingRef.current = false;
+    }, 600);
+  }, []);
+
   useEffect(() => {
     if (!isMobile) return;
 
     const grid = gridRef.current;
     if (!grid) return;
 
+    const onScroll = () => {
+      syncActiveIndex();
+      if (!isAutoScrollingRef.current) {
+        userInteractedRef.current = true;
+        setAutoScrollEnabled(false);
+      }
+    };
+
     syncActiveIndex();
-    grid.addEventListener("scroll", syncActiveIndex, { passive: true });
+    grid.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", syncActiveIndex);
 
     return () => {
-      grid.removeEventListener("scroll", syncActiveIndex);
+      grid.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", syncActiveIndex);
     };
   }, [isMobile, syncActiveIndex, reels.length]);
 
-  const scrollToReel = (index: number) => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    const card = grid.querySelector<HTMLElement>(`[data-reel-index="${index}"]`);
-    card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-  };
+  useEffect(() => {
+    if (!isMobile || !isSprint || reducedMotion) return;
 
-  const isSprint = variant === "sprint";
+    const section = sectionRef.current;
+    if (!section) return;
+
+    let dwellTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
+          if (!dwellTimer && !userInteractedRef.current) {
+            dwellTimer = window.setTimeout(() => {
+              if (!userInteractedRef.current) {
+                setAutoScrollEnabled(true);
+              }
+            }, AUTO_SCROLL_DWELL_MS);
+          }
+        } else {
+          if (dwellTimer) {
+            clearTimeout(dwellTimer);
+            dwellTimer = null;
+          }
+          setAutoScrollEnabled(false);
+        }
+      },
+      { threshold: [0, 0.35, 0.6] }
+    );
+
+    io.observe(section);
+    return () => {
+      io.disconnect();
+      if (dwellTimer) clearTimeout(dwellTimer);
+    };
+  }, [isMobile, isSprint, reducedMotion, reels.length]);
+
+  useEffect(() => {
+    if (!isMobile || !isSprint || !autoScrollEnabled || reducedMotion || reels.length < 2) {
+      return undefined;
+    }
+
+    const tick = () => {
+      setActiveIndex((prev) => {
+        const next = (prev + 1) % reels.length;
+        scrollToReel(next);
+        return next;
+      });
+    };
+
+    const interval = window.setInterval(tick, AUTO_SCROLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [isMobile, isSprint, autoScrollEnabled, reducedMotion, reels.length, scrollToReel]);
+
+  const handleDotClick = (index: number) => {
+    userInteractedRef.current = true;
+    setAutoScrollEnabled(false);
+    scrollToReel(index);
+  };
 
   return (
     <section
+      ref={sectionRef}
       id="reels-section"
       className={`reels-showcase scroll-mt-28${isSprint ? " reels-showcase--sprint" : ""}`}
       aria-label="Event reels"
@@ -416,7 +511,7 @@ export function ReelsShowcase({
               className={`reels-showcase__dot${i === activeIndex ? " is-active" : ""}`}
               aria-label={`Show reel ${i + 1} of ${reels.length}`}
               aria-current={i === activeIndex ? "true" : undefined}
-              onClick={() => scrollToReel(i)}
+              onClick={() => handleDotClick(i)}
             />
           ))}
         </motion.div>
