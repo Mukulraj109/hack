@@ -17,7 +17,7 @@
   display: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1279px) {
   /* ---- Shell (all sprint tabs) ---- */
   .sprint-portal {
     --sprint-top-bar-height: 78px;
@@ -41,8 +41,8 @@
     width: 100%;
     min-height: var(--sprint-top-bar-height, 78px);
     height: auto;
-    padding: 4px max(10px, env(safe-area-inset-right, 0px)) 8px
-      max(6px, env(safe-area-inset-left, 0px));
+    padding: 8px max(var(--sprint-content-gutter, 16px), env(safe-area-inset-right, 0px)) 10px
+      max(var(--sprint-content-gutter, 16px), env(safe-area-inset-left, 0px));
     box-sizing: border-box;
     background-color: #ffffff;
     border-bottom: 1px solid rgba(2, 51, 69, 0.08);
@@ -215,11 +215,11 @@
   }
 
   .sprint-portal .sprint-portal__content {
-    padding: 16px !important;
+    padding: var(--sprint-content-gutter, 20px) !important;
   }
 
   .sprint-portal .sprint-portal__content--submission {
-    padding: 16px !important;
+    padding: var(--sprint-content-gutter, 20px) !important;
   }
 
   /* ---- Dashboard ---- */
@@ -234,11 +234,6 @@
     grid-column: auto !important;
   }
 
-  .sprint-dashboard-hero .submission-glass-card,
-  .sprint-dashboard-hero > div {
-    padding: 20px !important;
-  }
-
   .sprint-dashboard-body {
     display: flex !important;
     flex-direction: column !important;
@@ -247,7 +242,7 @@
 
   .sprint-dashboard-tracks {
     display: grid !important;
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 16px !important;
   }
 
@@ -358,42 +353,9 @@
     line-height: 32px;
   }
 
-  /* "See it in motion" — horizontal snap carousel (matches main dashboard) */
+  /* Tablet: horizontal snap carousel for reels */
   .sprint-portal .sprint-reels-section .reels-showcase {
     overflow-x: clip;
-  }
-
-  .sprint-portal .sprint-reels-section .reels-masonry-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: stretch !important;
-    grid-template-columns: unset !important;
-    max-width: none !important;
-    width: calc(100% + 32px) !important;
-    margin-left: -16px !important;
-    margin-right: -16px !important;
-    padding: 4px 16px 8px !important;
-    gap: 14px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    scroll-padding-inline: 16px !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .sprint-portal .sprint-reels-section .reels-masonry-grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  .sprint-portal .sprint-reels-section .reel-glass-card--sprint {
-    flex: 0 0 min(82vw, 320px) !important;
-    scroll-snap-align: center !important;
-  }
-
-  .sprint-portal .sprint-reels-section .reels-showcase__dots {
-    display: flex !important;
-    margin-top: 14px;
   }
 
   .sprint-dashboard-skeleton__hero {
@@ -465,9 +427,13 @@
     font-size: 14px;
   }
 
-  /* ---- Roadmap v2 ---- */
+  /* ---- Roadmap v2 (tablet + mobile shell; desktop timeline unchanged at 1280px+) ---- */
+  .sprint-portal .sprint-portal__content--roadmap {
+    padding: 0 !important;
+  }
+
   .roadmap-v2__inner {
-    padding-inline: 16px !important;
+    padding-inline: var(--sprint-content-gutter, 20px) !important;
   }
 
   .roadmap-v2__hero {
@@ -475,18 +441,19 @@
   }
 
   .roadmap-v2__title {
-    font-size: 1.625rem !important;
+    font-size: clamp(1.625rem, 4vw, 2rem) !important;
     letter-spacing: -0.5px !important;
   }
 
   .roadmap-v2__subtitle {
     font-size: 0.9375rem !important;
     line-height: 1.55 !important;
+    padding: 0 4px;
   }
 
   .roadmap-v2__points {
     display: grid !important;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px !important;
     margin-top: 20px !important;
   }
@@ -496,38 +463,40 @@
     width: 100%;
     max-width: none;
     justify-content: flex-start;
+    min-width: 0;
   }
 
   .roadmap-v2__points-total {
     grid-column: 1 / -1;
   }
 
+  .roadmap-v2__points-footnote {
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 0 4px;
+  }
+
   .roadmap-v2__timeline {
     position: relative;
+    width: 100%;
     padding: 0 0 48px !important;
   }
 
   .roadmap-v2__section-header {
-    margin: 32px 0 8px !important;
+    margin: 32px 0 12px !important;
   }
 
   .roadmap-v2__section-title {
-    font-size: 1.25rem !important;
+    font-size: 1.35rem !important;
   }
 
   .roadmap-v2__section-icon {
     font-size: 28px !important;
   }
 
-  .roadmap-v2__milestone-row--mobile {
-    position: relative;
-    flex-direction: column !important;
-    padding-left: 36px;
-    margin-bottom: 1.25rem;
-  }
-
   .roadmap-v2__phase {
     position: relative;
+    width: 100%;
   }
 
   .roadmap-v2__phase::before {
@@ -546,7 +515,8 @@
   .roadmap-v2__milestone-mobile-dot-wrap {
     position: absolute;
     left: 0;
-    top: 18px;
+    top: 20px;
+    z-index: 1;
   }
 
   .roadmap-v2__milestone-row--mobile .roadmap-v2__milestone-dot {
@@ -556,12 +526,33 @@
   }
 
   .roadmap-v2__milestone-row--mobile .roadmap-v2__card {
-    max-width: none;
+    padding: 16px 18px !important;
+    border-radius: 12px;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card-title {
+    font-size: 1.0625rem !important;
+    line-height: 1.35 !important;
+    padding-right: 72px;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card-desc {
+    font-size: 0.9375rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__badge {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    line-height: 1.4;
   }
 
   .roadmap-v2__cta {
     margin-top: 40px !important;
     padding: 28px 20px !important;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .roadmap-v2__cta-title {
@@ -952,6 +943,454 @@
 
   .sprint-track-modal__panel {
     padding: 20px;
+  }
+}
+
+/* Tablet only (768–1279) — iPad Pro, iPad Air; mobile ≤767 and desktop ≥1280 unchanged */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .sprint-dashboard-hero-card {
+    padding: 22px !important;
+  }
+
+  .sprint-dashboard-hero-card__body {
+    gap: 18px;
+  }
+
+  .sprint-dashboard-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+
+  .sprint-hero-stat {
+    min-height: 48px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .sprint-dashboard-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 14px;
+  }
+
+  .sprint-hero-btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 14px;
+    font-size: 13px;
+    white-space: normal;
+    text-align: center;
+    border-radius: 12px;
+  }
+
+  .sprint-dashboard-tracks {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  .sprint-track-card__title,
+  .sprint-track-card__desc {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-masonry-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    grid-template-columns: unset !important;
+    max-width: none !important;
+    width: calc(100% + 2 * var(--sprint-content-gutter, 20px)) !important;
+    margin-left: calc(-1 * var(--sprint-content-gutter, 20px)) !important;
+    margin-right: calc(-1 * var(--sprint-content-gutter, 20px)) !important;
+    padding: 4px var(--sprint-content-gutter, 20px) 8px !important;
+    gap: 14px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding-inline: var(--sprint-content-gutter, 20px) !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-masonry-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint {
+    flex: 0 0 calc(50% - 7px) !important;
+    width: calc(50% - 7px) !important;
+    max-width: calc(50% - 7px) !important;
+    scroll-snap-align: start !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__media {
+    aspect-ratio: 4 / 5 !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase__dots {
+    display: flex !important;
+    margin-top: 14px;
+  }
+
+  /* Roadmap — tablet: wider readable cards, 3-col points */
+  .roadmap-v2__inner {
+    max-width: 720px;
+  }
+
+  .roadmap-v2__hero {
+    padding-top: 32px !important;
+  }
+
+  .roadmap-v2__points {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .roadmap-v2__milestone-row--mobile {
+    padding-left: 40px;
+    margin-bottom: 1.5rem;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card {
+    padding: 20px 22px !important;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card-title {
+    font-size: 1.125rem !important;
+    padding-right: 80px;
+  }
+
+  .roadmap-v2__section-title {
+    font-size: 1.5rem !important;
+  }
+
+  .roadmap-v2__cta {
+    padding: 32px 28px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .sprint-dashboard-hero-card {
+    padding: 16px !important;
+  }
+
+  .sprint-dashboard-hero-card__body {
+    gap: 14px;
+  }
+
+  .sprint-portal .sprint-hero-greeting {
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .sprint-dashboard-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .sprint-hero-stat {
+    flex-direction: column;
+    justify-content: center;
+    min-height: 52px;
+    padding: 8px 6px;
+    border-radius: 12px;
+    font-size: 12px;
+    text-align: center;
+    gap: 2px;
+  }
+
+  .sprint-hero-stat--status {
+    font-size: 10px;
+    padding: 8px 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .sprint-hero-stat--points .sprint-hero-stat__value {
+    font-size: 14px;
+    line-height: 1.1;
+  }
+
+  .sprint-hero-stat--points .sprint-hero-stat__label {
+    margin-left: 0;
+    font-size: 9px;
+  }
+
+  .sprint-hero-stat--rank .sprint-hero-stat__value {
+    font-size: 15px;
+    line-height: 1.1;
+  }
+
+  .sprint-hero-stat--rank .sprint-hero-stat__label {
+    margin-right: 0;
+    font-size: 9px;
+  }
+
+  .sprint-dashboard-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #eceef0;
+  }
+
+  .sprint-hero-btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 12px;
+    white-space: normal;
+    text-align: center;
+    border-radius: 12px;
+  }
+
+  .sprint-hero-btn--full {
+    grid-column: 1 / -1;
+  }
+
+  .sprint-dashboard-tracks {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .sprint-track-card__head {
+    gap: 8px;
+  }
+
+  .sprint-track-card__status {
+    display: none;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase {
+    overflow-x: clip;
+    padding: 0 !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase__head {
+    margin-bottom: 16px !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase__title {
+    font-size: 20px !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+  }
+
+  /* One portrait card per screen — horizontal snap carousel */
+  .sprint-portal .sprint-reels-section .reels-masonry-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    grid-template-columns: unset !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding-inline: 0 !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-masonry-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    scroll-snap-align: center !important;
+    scroll-snap-stop: always !important;
+    perspective: none;
+    align-self: stretch;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: none !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    border: 1px solid #eceef0 !important;
+    box-shadow: 0 2px 8px rgba(25, 28, 30, 0.06), 0 6px 20px rgba(13, 148, 136, 0.08) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__media {
+    aspect-ratio: 4 / 5 !important;
+    border-radius: 0 !important;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__meta {
+    position: static !important;
+    flex: 0 0 auto;
+    padding: 14px 16px 16px !important;
+    margin: 0 !important;
+    text-align: left !important;
+    pointer-events: auto !important;
+    min-height: 68px;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__title {
+    font-family: "JetBrains Mono", monospace !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    color: #191c1e !important;
+    text-shadow: none !important;
+    margin: 0 0 4px !important;
+    line-height: 1.35 !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__caption {
+    font-size: 0.8125rem !important;
+    color: #3d4947 !important;
+    margin: 0 !important;
+    line-height: 1.4 !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__play {
+    display: flex !important;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase__dots {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding-bottom: 4px;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: #c5d0ce;
+    border: none;
+    padding: 0;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-showcase__dot.is-active {
+    background: #00685f !important;
+    transform: scale(1.15);
+  }
+
+  .sprint-portal .sprint-dashboard-aside .sprint-dashboard-video {
+    width: 100%;
+  }
+
+  .sprint-portal .sprint-portal__main {
+    padding-bottom: 100px;
+  }
+
+  /* Roadmap — phone: full-width cards, tighter timeline */
+  .roadmap-v2__hero {
+    padding-top: 20px !important;
+  }
+
+  .roadmap-v2__title {
+    font-size: 1.5rem !important;
+  }
+
+  .roadmap-v2__subtitle {
+    font-size: 0.875rem !important;
+    padding: 0;
+  }
+
+  .roadmap-v2__points {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .roadmap-v2__points-card,
+  .roadmap-v2__points-total {
+    padding: 12px 10px;
+  }
+
+  .roadmap-v2__points-value {
+    font-size: 1.125rem;
+  }
+
+  .roadmap-v2__section-header {
+    margin: 28px 0 10px !important;
+  }
+
+  .roadmap-v2__section-title {
+    font-size: 1.2rem !important;
+  }
+
+  .roadmap-v2__milestone-row--mobile {
+    padding-left: 32px;
+    margin-bottom: 1rem;
+  }
+
+  .roadmap-v2__milestone-mobile-dot-wrap {
+    top: 16px;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card {
+    padding: 14px 16px !important;
+    border-radius: 12px;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card-title {
+    font-size: 1rem !important;
+    padding-right: 64px;
+  }
+
+  .roadmap-v2__milestone-row--mobile .roadmap-v2__card-desc {
+    font-size: 0.875rem !important;
+  }
+
+  .roadmap-v2__status {
+    top: 12px;
+    right: 12px;
+  }
+
+  .roadmap-v2__status-label {
+    font-size: 10px;
+  }
+
+  .roadmap-v2__badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .roadmap-v2__cta {
+    margin-top: 32px !important;
+    padding: 24px 16px !important;
+  }
+
+  .roadmap-v2__cta-title {
+    font-size: 1.0625rem !important;
+  }
+
+  .roadmap-v2__cta-desc {
+    font-size: 0.875rem;
   }
 }
 

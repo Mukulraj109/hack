@@ -37,14 +37,7 @@ function CountdownTimer({ targetDate }) {
   const timeLeft = useCountdownTick(targetDate);
 
   return (
-    <div className="sprint-dashboard-countdown" style={{
-      fontFamily: "'Hanken Grotesk', sans-serif",
-      fontSize: "32px",
-      fontWeight: "600",
-      color: "#00685f",
-      letterSpacing: "-0.01em",
-      lineHeight: "40px"
-    }}>
+    <div className="sprint-dashboard-countdown">
       {String(timeLeft.days).padStart(2, "0")}d : {String(timeLeft.hours).padStart(2, "0")}h : {String(timeLeft.minutes).padStart(2, "0")}m : {String(timeLeft.seconds).padStart(2, "0")}s
     </div>
   );
@@ -235,77 +228,34 @@ function TrackCard({ status, title, description, trackId }) {
   const config = statusConfig[status];
 
   return (
-    <GlassCard style={{
-      padding: "24px",
-      display: "flex",
-      flexDirection: "column",
-      height: "100%",
-      opacity: status === "locked" ? 0.75 : 1,
-      filter: status === "locked" ? "grayscale(50%)" : "none"
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
-        <div style={{
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
-          background: `${config.bg}20`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: config.bg
-        }}>
+    <GlassCard className={`sprint-track-card${status === "locked" ? " sprint-track-card--locked" : ""}`}>
+      <div className="sprint-track-card__head">
+        <div
+          className="sprint-track-card__icon"
+          style={{ background: `${config.bg}20`, color: config.bg }}
+        >
           <Icon name={config.icon} filled={config.filled} size={20} />
         </div>
-        <span style={{
-          padding: "2px 8px",
-          borderRadius: "4px",
-          fontSize: "10px",
-          fontWeight: "700",
-          textTransform: "uppercase",
-          background: `${config.badge}20`,
-          color: config.badge
-        }}>
+        <span
+          className="sprint-track-card__status"
+          style={{ background: `${config.badge}20`, color: config.badge }}
+        >
           {status}
         </span>
       </div>
 
-      <h4 style={{
-        fontFamily: "'Hanken Grotesk', sans-serif",
-        fontSize: "18px",
-        lineHeight: "24px",
-        fontWeight: "600",
-        color: "#191c1e",
-        marginBottom: "8px"
-      }}>{title}</h4>
+      <h4 className="sprint-track-card__title">{title}</h4>
+      <p className="sprint-track-card__desc">{description}</p>
 
-      <p style={{
-        fontFamily: "'Inter', sans-serif",
-        fontSize: "14px",
-        lineHeight: "20px",
-        color: "#3d4947",
-        flex: 1
-      }}>{description}</p>
-
-      <div style={{ paddingTop: "16px", borderTop: "1px solid #eceef0", marginTop: "auto" }}>
+      <div className="sprint-track-card__footer">
         <a
           href={status === "locked" ? undefined : assetHref}
           onClick={(e) => {
             if (status === "locked" || assetHref === "#") e.preventDefault();
           }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: status === "locked" ? "not-allowed" : "pointer",
-            color: status === "locked" ? "rgba(61, 73, 71, 0.4)" : "#00685f",
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "12px",
-            fontWeight: "500",
-            textDecoration: "none",
-          }}
+          className={`sprint-track-card__asset ${
+            status === "locked" ? "sprint-track-card__asset--locked" : "sprint-track-card__asset--active"
+          }`}
         >
           <Icon name="download" size={16} />
           Asset Pack
@@ -360,32 +310,22 @@ function VideoPlayer({ title, videoUrl, posterUrl }) {
   };
 
   return (
-    <GlassCard style={{
-      overflow: "hidden",
-      padding: 0,
-      transform: isHovered && !playing ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)"
-    }}
-    onMouseEnter={() => setIsHovered(true)}
-    onMouseLeave={() => setIsHovered(false)}
+    <GlassCard
+      className="sprint-dashboard-video"
+      style={{
+        transform: isHovered && !playing ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        style={{
-          aspectRatio: "16/9",
-          position: "relative",
-          background: "#191c1e",
-          cursor: playing ? "default" : "pointer"
-        }}
+        className={`sprint-dashboard-video__stage ${playing ? "sprint-dashboard-video__stage--playing" : "sprint-dashboard-video__stage--idle"}`}
         onClick={!playing ? handlePlay : undefined}
       >
         <video
           ref={videoRef}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: playing ? 1 : isHovered ? 0.8 : 0.6,
-            transition: "opacity 0.3s ease"
-          }}
+          className="sprint-dashboard-video__media"
+          style={{ opacity: playing ? 1 : isHovered ? 0.8 : 0.6 }}
           poster={posterUrl || ""}
           muted
           loop
@@ -399,56 +339,21 @@ function VideoPlayer({ title, videoUrl, posterUrl }) {
         </video>
 
         {!playing && (
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            pointerEvents: "none"
-          }}>
+          <div className="sprint-dashboard-video__overlay">
             <button
               type="button"
               aria-label="Play video"
-              style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                background: isHovered ? "#00685f" : "rgba(0, 104, 95, 0.9)",
-                color: "#ffffff",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-                transform: isHovered ? "scale(1.1)" : "scale(1)",
-                transition: "all 0.3s ease",
-                pointerEvents: "auto"
-              }}
+              className={`sprint-dashboard-video__play ${
+                isHovered ? "sprint-dashboard-video__play--hover" : "sprint-dashboard-video__play--idle"
+              }`}
             >
               <Icon name="play_arrow" filled size={32} />
             </button>
           </div>
         )}
 
-        <div style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "16px",
-          background: playing
-            ? "linear-gradient(transparent, rgba(0, 0, 0, 0.65))"
-            : "transparent",
-          pointerEvents: "none"
-        }}>
-          <p style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "14px",
-            color: "#ffffff",
-            textShadow: "0 2px 4px rgba(0,0,0,0.5)"
-          }}>{title}</p>
+        <div className={`sprint-dashboard-video__caption${playing ? " sprint-dashboard-video__caption--playing" : ""}`}>
+          <p className="sprint-dashboard-video__title">{title}</p>
         </div>
       </div>
     </GlassCard>
@@ -563,129 +468,71 @@ export default function SprintDashboard({ onNavigate }) {
       {/* Hero Banner */}
       <section className="sprint-dashboard-hero">
         {/* Main Hero */}
-        <GlassCard style={{
-          padding: "32px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          position: "relative",
-          overflow: "hidden"
-        }}>
-          <div style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            width: "128px",
-            height: "128px",
-            background: "rgba(0, 104, 95, 0.05)",
-            borderRadius: "50%",
-            marginRight: "-64px",
-            marginTop: "-64px",
-            filter: "blur(32px)"
-          }}></div>
-          <div>
+        <GlassCard className="sprint-dashboard-hero-card">
+          <div className="sprint-dashboard-hero-card__glow" aria-hidden="true" />
+          <div className="sprint-dashboard-hero-card__body">
             <h2 className="sprint-hero-greeting">
               Hi, team{" "}
               <span className="sprint-hero-greeting__name">{teamLabel}</span>
             </h2>
+
+            <div className="sprint-dashboard-hero-stats">
+              {team && (
+                <span
+                  className={`sprint-hero-stat sprint-hero-stat--status${
+                    teamStatusLabel === "Active" ? " is-active" : ""
+                  }`}
+                >
+                  {teamStatusLabel}
+                </span>
+              )}
+              <span className="sprint-hero-stat sprint-hero-stat--points">
+                <span className="sprint-hero-stat__value">
+                  {pointsCurrent}
+                  <span className="sprint-hero-stat__sep">/</span>
+                  {pointsMax}
+                </span>
+                <span className="sprint-hero-stat__label">pts</span>
+              </span>
+              {rank != null && team && (
+                <span className="sprint-hero-stat sprint-hero-stat--rank">
+                  <span className="sprint-hero-stat__label">Rank</span>
+                  <span className="sprint-hero-stat__value">#{rank}</span>
+                </span>
+              )}
+            </div>
+
+            <div className="sprint-dashboard-hero-actions">
+              <button
+                type="button"
+                disabled={!canWrite}
+                onClick={() => onNavigate?.("/submission")}
+                className="sprint-hero-btn sprint-hero-btn--primary"
+              >
+                Upload submission
+              </button>
+              <button
+                type="button"
+                onClick={scrollToPoints}
+                className="sprint-hero-btn sprint-hero-btn--secondary"
+              >
+                Score more points
+              </button>
+              {!team && (
+                <button
+                  type="button"
+                  onClick={() => onNavigate?.("/team")}
+                  className="sprint-hero-btn sprint-hero-btn--secondary sprint-hero-btn--full"
+                >
+                  Create or join team
+                </button>
+              )}
+            </div>
           </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", alignItems: "center", marginTop: "24px" }}>
-                {team && (
-                  <span style={{
-                    padding: "6px 14px",
-                    background: teamStatusLabel === "Active" ? "#008378" : "#6d7a77",
-                    color: "#f4fffc",
-                    borderRadius: "9999px",
-                    fontSize: "11px",
-                    fontWeight: "700",
-                    textTransform: "uppercase",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    letterSpacing: "0.04em",
-                  }}>{teamStatusLabel}</span>
-                )}
-                <div style={{
-                  padding: "8px 16px",
-                  background: "rgba(0, 104, 95, 0.1)",
-                  color: "#00685f",
-                  fontWeight: "700",
-                  borderRadius: "8px",
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "14px"
-                }}>Points: {pointsCurrent} / {pointsMax}</div>
-                {rank != null && team && (
-                  <div style={{
-                    padding: "8px 16px",
-                    background: "#eceef0",
-                    borderRadius: "8px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "14px",
-                  }}>
-                    Rank #{rank}
-                  </div>
-                )}
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  <button
-                    type="button"
-                    disabled={!canWrite}
-                    onClick={() => onNavigate?.("/submission")}
-                    style={{
-                    padding: "10px 24px",
-                    background: "#00685f",
-                    color: "#ffffff",
-                    border: "none",
-                    borderRadius: "9999px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "14px",
-                    cursor: canWrite ? "pointer" : "not-allowed",
-                    opacity: canWrite ? 1 : 0.6,
-                    boxShadow: "0 4px 14px rgba(0, 104, 95, 0.2)",
-                    transition: "all 0.2s ease"
-                  }}>Upload submission</button>
-                  <button
-                    type="button"
-                    onClick={scrollToPoints}
-                    style={{
-                    padding: "10px 24px",
-                    background: "transparent",
-                    color: "#00685f",
-                    border: "1px solid #00685f",
-                    borderRadius: "9999px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "14px",
-                    cursor: "pointer"
-                  }}>Score more points</button>
-                  {!team && (
-                    <button
-                      type="button"
-                      onClick={() => onNavigate?.("/team")}
-                      style={{
-                        padding: "10px 24px",
-                        background: "transparent",
-                        color: "#00685f",
-                        border: "1px solid #00685f",
-                        borderRadius: "9999px",
-                        fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: "14px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Create or join team
-                    </button>
-                  )}
-                </div>
-              </div>
-            </GlassCard>
+        </GlassCard>
 
             {/* Countdown */}
-            <GlassCard style={{
-              padding: "32px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              background: "linear-gradient(to bottom right, rgba(255,255,255,0.8), rgba(0, 104, 95, 0.05))"
-            }}>
+            <GlassCard className="sprint-dashboard-countdown-card">
               <span style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: "12px",
@@ -709,21 +556,13 @@ export default function SprintDashboard({ onNavigate }) {
           </section>
 
           {/* Two-Column Layout */}
-          <div className="sprint-dashboard-body" style={{ display: "flex", gap: "32px" }}>
+          <div className="sprint-dashboard-body">
             {/* Left Column */}
-            <div style={{ flex: 1 }}>
+            <div className="sprint-dashboard-main">
               {/* Track Challenges */}
-              <div style={{ marginBottom: "32px" }}>
-                <h3 style={{
-                  fontFamily: "'Hanken Grotesk', sans-serif",
-                  fontSize: "24px",
-                  lineHeight: "32px",
-                  fontWeight: "600",
-                  color: "#191c1e",
-                  marginBottom: "24px",
-                  paddingLeft: "4px"
-                }}>Available Track Challenges</h3>
-                <div className="sprint-dashboard-tracks" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
+              <div className="sprint-dashboard-section">
+                <h3 className="sprint-dashboard-section__title">Available Track Challenges</h3>
+                <div className="sprint-dashboard-tracks">
                   {trackCards.map((track) => (
                     <TrackCard key={track.id} {...track} trackId={track.id} />
                   ))}
@@ -731,11 +570,11 @@ export default function SprintDashboard({ onNavigate }) {
               </div>
 
               <SprintReelsSection />
-              <SocialFollowLinks variant="inline-row" />
+              <SocialFollowLinks variant="inline-row" className="sprint-dashboard-social" />
             </div>
 
             {/* Right Sidebar */}
-            <aside className="sprint-dashboard-aside" style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+            <aside className="sprint-dashboard-aside">
               {/* Points Tracker */}
               <GlassCard id="points-tracker" className="points-tracker-card">
                 <h4 className="points-tracker-card__title">Points Tracker</h4>

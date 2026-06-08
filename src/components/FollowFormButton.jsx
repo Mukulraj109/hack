@@ -177,7 +177,7 @@ export default function FollowFormButton() {
           <polyline points="16 6 12 2 8 6"/>
           <line x1="12" y1="2" x2="12" y2="15"/>
         </svg>
-        <span className="btn-follow__label">Follow</span>
+        <span className="btn-follow__label">Follow Event</span>
       </button>
 
       {modalOpen && (

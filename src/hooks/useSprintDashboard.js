@@ -41,8 +41,16 @@ export function pointsTrackerRailProgress(items) {
 }
 
 export function useSprintDashboard() {
-  const { user, team, canWrite, isAuthenticated, auth0Loading, getAccessToken, refreshSession } =
-    useHackathonAuth();
+  const {
+    user,
+    team,
+    canWrite,
+    isAuthenticated,
+    auth0Loading,
+    getAccessToken,
+    refreshSession,
+    handleAuthError,
+  } = useHackathonAuth();
   const [countdown, setCountdown] = useState(null);
   const [tracks, setTracks] = useState([]);
   const [breakdown, setBreakdown] = useState(null);
@@ -75,10 +83,14 @@ export function useSprintDashboard() {
       await fetchPointsData();
       setLoading(false);
     } catch (err) {
+      if (handleAuthError(err)) {
+        setLoading(false);
+        return;
+      }
       setError(err?.message || "Failed to load dashboard");
       setLoading(false);
     }
-  }, [fetchPointsData]);
+  }, [fetchPointsData, handleAuthError]);
 
   /** Refresh points tracker without unmounting the dashboard (keeps modals open). */
   const refreshPointsBreakdown = useCallback(async () => {
