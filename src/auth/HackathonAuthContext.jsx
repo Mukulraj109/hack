@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { apiFetch } from "../lib/api";
+import { isIdTokenExpired, isSessionExpiredError } from "../lib/authSession";
 import { getDisplayProfile } from "../lib/displayUser";
 
 const HackathonAuthContext = createContext(null);
@@ -28,6 +29,39 @@ export function HackathonAuthProvider({ children }) {
   const [error, setError] = useState(null);
   const tokenCacheRef = useRef({ token: null, expiresAt: 0 });
   const tokenInflightRef = useRef(null);
+  const reauthTriggeredRef = useRef(false);
+
+  const forceReauth = useCallback(
+    (reason) => {
+      if (reauthTriggeredRef.current) return true;
+      reauthTriggeredRef.current = true;
+      tokenCacheRef.current = { token: null, expiresAt: 0 };
+      console.warn("[hackathon] session expired, redirecting to login:", reason);
+      loginWithRedirect({
+        appState: {
+          returnTo:
+            typeof window !== "undefined"
+              ? `${window.location.pathname}${window.location.search}`
+              : "/sprint",
+        },
+        authorizationParams: {
+          ...authParams(),
+          redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL || window.location.origin,
+          prompt: "login",
+        },
+      });
+      return true;
+    },
+    [loginWithRedirect]
+  );
+
+  const handleAuthError = useCallback(
+    (err) => {
+      if (!isSessionExpiredError(err)) return false;
+      return forceReauth(err.message || "session expired");
+    },
+    [forceReauth]
+  );
 
   const getIdToken = useCallback(async () => {
     const now = Date.now();
@@ -44,22 +78,36 @@ export function HackathonAuthProvider({ children }) {
       try {
         await getAccessTokenSilently({
           authorizationParams: authParams(),
+          cacheMode: cached.expiresAt <= now ? "off" : "on",
         });
         const claims = await getIdTokenClaims();
         const token = claims?.__raw ?? null;
-        if (token) {
-          const expMs =
-            typeof claims?.exp === "number" ? claims.exp * 1000 : now + 3_600_000;
-          tokenCacheRef.current = { token, expiresAt: expMs };
+        if (!token) {
+          return null;
         }
+
+        if (isIdTokenExpired(claims)) {
+          forceReauth("id token expired");
+          return null;
+        }
+
+        const expMs =
+          typeof claims?.exp === "number" ? claims.exp * 1000 : now + 3_600_000;
+        tokenCacheRef.current = { token, expiresAt: expMs };
         return token;
+      } catch (err) {
+        if (handleAuthError(err) || isSessionExpiredError(err)) {
+          forceReauth(err.message || "token refresh failed");
+          return null;
+        }
+        throw err;
       } finally {
         tokenInflightRef.current = null;
       }
     })();
 
     return tokenInflightRef.current;
-  }, [getAccessTokenSilently, getIdTokenClaims]);
+  }, [getAccessTokenSilently, getIdTokenClaims, forceReauth, handleAuthError]);
 
   const refreshSession = useCallback(async (options = {}) => {
     const silent = options.silent === true;
@@ -74,11 +122,16 @@ export function HackathonAuthProvider({ children }) {
       setError(null);
       const token = await getIdToken();
       if (!token) {
-        throw new Error("Could not obtain ID token after login");
+        return;
       }
       const res = await apiFetch("/api/hackathon/me", { token });
       setSession(res.data);
+      reauthTriggeredRef.current = false;
     } catch (err) {
+      if (handleAuthError(err)) {
+        setSession(null);
+        return;
+      }
       const detail = err.data?.error || err.data?.message || err.message || "Failed to load session";
       console.error("[hackathon] session error:", err.status, detail, err.data);
       setError(detail);
@@ -86,7 +139,7 @@ export function HackathonAuthProvider({ children }) {
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [isAuthenticated, getIdToken]);
+  }, [isAuthenticated, getIdToken, handleAuthError]);
 
   useEffect(() => {
     if (auth0Loading) return;
@@ -96,6 +149,7 @@ export function HackathonAuthProvider({ children }) {
   useEffect(() => {
     if (!isAuthenticated) {
       tokenCacheRef.current = { token: null, expiresAt: 0 };
+      reauthTriggeredRef.current = false;
     }
   }, [isAuthenticated]);
 
@@ -142,6 +196,7 @@ export function HackathonAuthProvider({ children }) {
       login,
       signOut,
       refreshSession,
+      handleAuthError,
       getAccessToken: getIdToken,
     }),
     [
@@ -156,6 +211,7 @@ export function HackathonAuthProvider({ children }) {
       login,
       signOut,
       refreshSession,
+      handleAuthError,
       getIdToken,
     ]
   );

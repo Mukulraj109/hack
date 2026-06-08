@@ -96,11 +96,24 @@
 /* Sprint portal â€” shell layout, sidebar, full-width footer */
 
 .sprint-portal {
+  --sprint-content-gutter: 32px;
   min-height: 100vh;
   font-family: "Inter", system-ui, sans-serif;
   color: #191c1e;
   background: radial-gradient(at 0% 0%, rgba(13, 148, 136, 0.05) 0px, transparent 50%),
     radial-gradient(at 100% 100%, rgba(0, 101, 145, 0.05) 0px, transparent 50%), #f7f9fb;
+}
+
+@media (max-width: 1279px) {
+  .sprint-portal {
+    --sprint-content-gutter: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .sprint-portal {
+    --sprint-content-gutter: 16px;
+  }
 }
 
 .sprint-portal .sprint-top-bar {
@@ -317,7 +330,7 @@
 .sprint-portal .sprint-portal__content {
   flex: 1;
   width: 100%;
-  padding: 32px;
+  padding: var(--sprint-content-gutter);
   max-width: 1280px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -349,7 +362,7 @@
   width: 100% !important;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1279px) {
   .sprint-portal .sprint-sidebar {
     transform: translateX(-100%);
     width: min(288px, 88vw) !important;
@@ -926,7 +939,7 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   .roadmap-contact-dock {
     left: 0;
     padding: 0 16px;
@@ -2817,6 +2830,37 @@
   transform: translateY(0);
 }
 
+/* Compact timeline (mobile / tablet) — overrides desktop 3-column grid */
+.roadmap-v2__milestone-row--mobile {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: unset !important;
+  column-gap: 0 !important;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  position: relative;
+  padding-left: 36px;
+  margin-bottom: 1.25rem;
+}
+
+.roadmap-v2__milestone-row--mobile .roadmap-v2__card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.roadmap-v2__milestone-row--mobile .roadmap-v2__card-title,
+.roadmap-v2__milestone-row--mobile .roadmap-v2__card-desc,
+.roadmap-v2__milestone-row--mobile .roadmap-v2__badge {
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+  max-width: 100%;
+}
+
 .roadmap-v2__milestone-side {
   display: flex;
   min-height: 60px;
@@ -3350,7 +3394,7 @@
   text-align: left;
   max-width: none;
   margin: 0 0 24px;
-  padding: 0 4px;
+  padding: 0;
 }
 
 .sprint-portal .sprint-reels-section .reels-showcase__title {
@@ -3448,11 +3492,12 @@
   background: #00685f;
 }
 
-@media (max-width: 767px) {
+@media (min-width: 1280px) {
   .sprint-portal .sprint-reels-section .reels-masonry-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
+    max-width: 100%;
     margin: 0;
     padding: 0;
     overflow: visible;
@@ -3461,9 +3506,13 @@
 
   .sprint-portal .sprint-reels-section .reel-glass-card--sprint {
     flex: unset;
+    width: auto;
+    max-width: none;
     scroll-snap-align: unset;
   }
+}
 
+@media (max-width: 767px) {
   .sprint-portal .sprint-reels-section .reel-glass-card--sprint .reel-glass-card__meta {
     position: static;
     padding: 12px 14px 14px;
@@ -3497,21 +3546,537 @@
   min-width: 0;
 }
 
+.sprint-dashboard-hero-card {
+  padding: clamp(20px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.sprint-dashboard-hero-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.sprint-dashboard-hero-card__glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 128px;
+  height: 128px;
+  background: rgba(0, 104, 95, 0.05);
+  border-radius: 50%;
+  margin-right: -64px;
+  margin-top: -64px;
+  filter: blur(32px);
+  pointer-events: none;
+}
+
+.sprint-dashboard-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.sprint-hero-stat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  box-sizing: border-box;
+}
+
+.sprint-hero-stat--status {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  background: #6d7a77;
+  color: #f4fffc;
+}
+
+.sprint-hero-stat--status.is-active {
+  background: #008378;
+}
+
+.sprint-hero-stat--points {
+  background: rgba(0, 104, 95, 0.1);
+  color: #00685f;
+}
+
+.sprint-hero-stat--rank {
+  background: #eceef0;
+  color: #191c1e;
+}
+
+.sprint-hero-stat__value {
+  font-weight: 700;
+}
+
+.sprint-hero-stat__sep {
+  margin: 0 1px;
+  opacity: 0.55;
+  font-weight: 500;
+}
+
+.sprint-hero-stat__label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.sprint-hero-stat--points .sprint-hero-stat__label {
+  margin-left: 2px;
+  opacity: 0.85;
+}
+
+.sprint-hero-stat--rank .sprint-hero-stat__label {
+  margin-right: 2px;
+}
+
+.sprint-dashboard-hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px solid rgba(236, 238, 240, 0.95);
+}
+
+.sprint-hero-btn {
+  padding: 11px 20px;
+  border-radius: 9999px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.sprint-hero-btn--primary {
+  background: #00685f;
+  color: #ffffff;
+  border-color: #00685f;
+  box-shadow: 0 4px 14px rgba(0, 104, 95, 0.2);
+}
+
+.sprint-hero-btn--primary:hover:not(:disabled) {
+  background: #005a52;
+  border-color: #005a52;
+}
+
+.sprint-hero-btn--primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sprint-hero-btn--secondary {
+  background: transparent;
+  color: #00685f;
+  border-color: #00685f;
+}
+
+.sprint-hero-btn--secondary:hover {
+  background: rgba(0, 104, 95, 0.06);
+}
+
+.sprint-hero-btn--full {
+  width: 100%;
+}
+
+.sprint-dashboard-countdown-card {
+  padding: clamp(20px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.8), rgba(0, 104, 95, 0.05));
+  min-width: 0;
+}
+
+.sprint-dashboard-countdown {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 600;
+  color: #00685f;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
 .sprint-dashboard-body {
+  display: flex;
+  gap: 32px;
   align-items: flex-start;
 }
 
+.sprint-dashboard-main,
 .sprint-dashboard-body > *:first-child {
   flex: 1 1 auto;
   min-width: 0;
 }
 
 /* â€”â€” Points Tracker â€”â€” */
+.sprint-dashboard-section {
+  margin-bottom: 32px;
+  min-width: 0;
+}
+
+.sprint-dashboard-section__title {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: clamp(20px, 2.5vw, 24px);
+  line-height: 1.33;
+  font-weight: 600;
+  color: #191c1e;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.sprint-dashboard-tracks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+.sprint-dashboard-tracks > * {
+  min-width: 0;
+}
+
 .sprint-dashboard-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
   flex: 0 0 clamp(380px, 38%, 520px);
-  width: clamp(380px, 38%, 520px) !important;
+  width: clamp(380px, 38%, 520px);
   min-width: 380px;
   max-width: 520px;
+}
+
+.sprint-track-card {
+  padding: clamp(18px, 2.5vw, 24px);
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.sprint-track-card--locked {
+  opacity: 0.75;
+  filter: grayscale(50%);
+}
+
+.sprint-track-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sprint-track-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sprint-track-card__status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.sprint-track-card__title {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: clamp(16px, 2vw, 18px);
+  line-height: 1.33;
+  font-weight: 600;
+  color: #191c1e;
+  margin: 0 0 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.sprint-track-card__desc {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.43;
+  color: #3d4947;
+  margin: 0;
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.sprint-track-card__footer {
+  padding-top: 16px;
+  border-top: 1px solid #eceef0;
+  margin-top: auto;
+}
+
+.sprint-track-card__asset {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.sprint-track-card__asset--locked {
+  cursor: not-allowed;
+  color: rgba(61, 73, 71, 0.4);
+}
+
+.sprint-track-card__asset--active {
+  cursor: pointer;
+  color: #00685f;
+}
+
+.sprint-dashboard-video {
+  overflow: hidden;
+  padding: 0;
+}
+
+.sprint-dashboard-video__stage {
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background: #191c1e;
+}
+
+.sprint-dashboard-video__stage--playing {
+  cursor: default;
+}
+
+.sprint-dashboard-video__stage--idle {
+  cursor: pointer;
+}
+
+.sprint-dashboard-video__media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.sprint-dashboard-video__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.sprint-dashboard-video__play {
+  width: clamp(52px, 12vw, 64px);
+  height: clamp(52px, 12vw, 64px);
+  border-radius: 50%;
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.sprint-dashboard-video__play--idle {
+  background: rgba(0, 104, 95, 0.9);
+}
+
+.sprint-dashboard-video__play--hover {
+  background: #00685f;
+  transform: scale(1.1);
+}
+
+.sprint-dashboard-video__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  pointer-events: none;
+}
+
+.sprint-dashboard-video__caption--playing {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+}
+
+.sprint-dashboard-video__title {
+  font-family: "JetBrains Mono", monospace;
+  font-size: clamp(12px, 2vw, 14px);
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+/* Dashboard reels + social — align with track section */
+.sprint-portal .sprint-reels-section {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 32px;
+}
+
+.sprint-portal .sprint-dashboard-main > .social-follow--inline-row {
+  width: 100%;
+  margin: 0 0 32px;
+  padding: clamp(18px, 2.5vw, 24px);
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.sprint-portal .sprint-dashboard-main > .social-follow--inline-row__content {
+  max-width: none;
+  gap: 20px;
+}
+
+.sprint-portal .sprint-dashboard-main > .social-follow--inline-row__title {
+  font-size: clamp(20px, 2.5vw, 24px);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.sprint-portal .sprint-dashboard-main > .social-follow--inline-row__copy {
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: none;
+}
+
+@media (max-width: 1279px) {
+  .sprint-dashboard-hero {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .sprint-dashboard-hero > * {
+    grid-column: auto !important;
+  }
+
+  .sprint-dashboard-body {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .sprint-dashboard-aside {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: 1 1 auto !important;
+    gap: 24px !important;
+  }
+
+  .sprint-dashboard-tracks {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  .sprint-portal .sprint-hero-greeting {
+    font-size: clamp(22px, 4vw, 28px);
+    line-height: 1.25;
+  }
+
+  .sprint-portal .sprint-reels-section .reels-masonry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .sprint-dashboard-tracks {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sprint-dashboard-section,
+  .sprint-portal .sprint-reels-section,
+  .sprint-portal .sprint-dashboard-main > .social-follow--inline-row {
+    margin-bottom: 24px;
+  }
+
+  .sprint-dashboard-section__title,
+  .sprint-portal .sprint-reels-section .reels-showcase__title {
+    font-size: 20px;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  .sprint-portal .sprint-dashboard-main > .social-follow--inline-row__content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .sprint-portal .sprint-dashboard-main > .social-follow--inline-row .social-follow-pill {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 0 20px;
+    font-size: 15px;
+  }
+
+  .sprint-portal .sprint-dashboard-main > .social-follow-pills--prominent {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .sprint-dashboard-section__title,
+  .sprint-portal .sprint-reels-section .reels-showcase__title {
+    font-size: 26px;
+  }
+
+  .sprint-dashboard-tracks {
+    gap: 28px;
+  }
 }
 
 .points-tracker-card {

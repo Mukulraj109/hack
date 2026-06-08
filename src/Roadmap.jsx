@@ -4,21 +4,23 @@ import { useConfigCountdown } from "./hooks/useConfigCountdown";
 import { RoadmapSkeleton } from "./components/sprint/SprintPageSkeleton";
 import { navigateTo } from "./lib/appNavigation";
 import "./styles/sprint-portal.css";
+import "./styles/sprint-portal-mobile.css";
 
-function useSprintMobileLayout() {
-  const [mobile, setMobile] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+/** Compact single-column timeline — mobile + tablet (desktop alternating layout at 1280px+) */
+function useCompactRoadmapLayout() {
+  const [compact, setCompact] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 1279px)").matches
   );
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const sync = () => setMobile(mq.matches);
+    const mq = window.matchMedia("(max-width: 1279px)");
+    const sync = () => setCompact(mq.matches);
     sync();
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  return mobile;
+  return compact;
 }
 
 function getStatus(startStr, endStr) {
@@ -426,7 +428,7 @@ function FinalCTA() {
 }
 
 export default function RoadmapContent() {
-  const isMobile = useSprintMobileLayout();
+  const isMobile = useCompactRoadmapLayout();
   const { loading: configLoading } = useConfigCountdown();
   const [modalOpen, setModalOpen] = useState(false);
 

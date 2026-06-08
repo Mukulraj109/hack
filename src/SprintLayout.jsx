@@ -212,7 +212,7 @@ export default function SprintLayout({ children, title, currentPath, onNavigate 
     if (!el || typeof window === "undefined") return undefined;
 
     const sync = () => {
-      if (window.innerWidth <= 767) {
+      if (window.innerWidth <= 1279) {
         setMobileTopBarHeight(el.offsetHeight);
       } else {
         setMobileTopBarHeight(null);
@@ -235,7 +235,7 @@ export default function SprintLayout({ children, title, currentPath, onNavigate 
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
-    if (typeof window !== "undefined" && window.innerWidth <= 767) {
+    if (typeof window !== "undefined" && window.innerWidth <= 1279) {
       setSidebarCollapsed(true);
     }
   }, [currentPath]);
@@ -245,7 +245,7 @@ export default function SprintLayout({ children, title, currentPath, onNavigate 
   }, []);
 
   const closeSidebarOnMobile = useCallback(() => {
-    if (window.innerWidth <= 767) {
+    if (window.innerWidth <= 1279) {
       setSidebarCollapsed(true);
     }
   }, []);

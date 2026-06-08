@@ -8,7 +8,11 @@
   --bp-tablet: 1023px;
   --nav-height: 66px;
   --nav-height-mobile: 64px;
+  --nav-height-tablet: 60px;
   --trackstack-nav-offset: 88px;
+  --page-gutter: clamp(16px, 4vw, 56px);
+  --cta-height: clamp(44px, 6vh, 60px);
+  --cta-font: clamp(14px, 2.4vw, 17px);
 }
 
 html {
@@ -1473,11 +1477,182 @@ html {
   }
 
   .hiw-media__card {
-    max-width: min(880px, 100%);
+    max-width: min(560px, 100%);
   }
 
   .hiw-rail__connector {
     display: none !important;
+  }
+}
+
+/* How it works — laptop (1024–1439) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .hiw-sticky__viewport {
+    padding: clamp(24px, 3.5vh, 40px) clamp(20px, 2.5vw, 40px) clamp(20px, 3vh, 36px) !important;
+  }
+
+  .hiw-sticky__pin-head {
+    gap: clamp(10px, 1.5vh, 16px) !important;
+  }
+
+  .hiw-sticky__head {
+    margin-bottom: clamp(6px, 1vh, 12px);
+    gap: 8px;
+  }
+
+  .hiw-sticky__title {
+    font-size: clamp(28px, 2.8vw, 38px);
+  }
+
+  .hiw-sticky__intro {
+    font-size: clamp(14px, 1vw, 16px);
+  }
+
+  .hiw-sticky__stage {
+    grid-template-columns: minmax(88px, auto) minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: clamp(16px, 2vw, 28px) !important;
+    padding: clamp(8px, 1.5vh, 18px) 0 !important;
+    max-width: min(1140px, 96vw);
+    margin-inline: auto;
+  }
+
+  .hiw-sticky__rail {
+    min-width: 88px;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  .hiw-rail__dot {
+    font-size: 15px;
+    padding: 6px 2px;
+    gap: 10px;
+  }
+
+  .hiw-rail__dot.is-active {
+    font-size: 17px;
+  }
+
+  .hiw-rail__dot.is-active .hiw-rail__bar {
+    width: 44px;
+  }
+
+  .hiw-copy__head {
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .hiw-copy__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .hiw-copy__icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .hiw-copy__title {
+    font-size: clamp(24px, 2.1vw, 34px);
+    margin-bottom: 12px;
+  }
+
+  .hiw-copy__body {
+    font-size: clamp(14px, 0.95vw, 16px);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .hiw-copy__bullets {
+    gap: 10px;
+  }
+
+  .hiw-copy__bullets li {
+    font-size: clamp(13px, 0.85vw, 15px);
+  }
+
+  .hiw-media__card {
+    max-width: min(420px, 100%) !important;
+    border-radius: 22px;
+  }
+
+  .hiw-media__caption {
+    padding: 14px 18px 16px;
+    gap: 12px;
+  }
+
+  .hiw-media__caption-num {
+    font-size: 26px;
+  }
+
+  .hiw-media__caption-title {
+    font-size: 13px;
+  }
+}
+
+/* How it works — large desktop */
+@media (min-width: 1440px) {
+  .hiw-sticky__stage {
+    max-width: min(1320px, 92vw);
+    margin-inline: auto;
+    gap: clamp(24px, 2.8vw, 56px) !important;
+    grid-template-columns: minmax(110px, auto) minmax(0, 1fr) minmax(0, 1.12fr) !important;
+    padding: clamp(16px, 2.5vh, 32px) clamp(8px, 1vw, 24px) !important;
+  }
+
+  .hiw-sticky__title {
+    font-size: clamp(36px, 2.6vw, 52px);
+  }
+
+  .hiw-sticky__intro {
+    font-size: clamp(16px, 0.9vw + 10px, 20px);
+  }
+
+  .hiw-copy__title {
+    font-size: clamp(32px, 2.4vw, 52px);
+  }
+
+  .hiw-copy__body {
+    font-size: clamp(16px, 0.85vw + 10px, 21px);
+  }
+
+  .hiw-copy__bullets li {
+    font-size: clamp(15px, 0.7vw + 10px, 18px);
+  }
+
+  .hiw-media__card {
+    max-width: min(580px, 100%) !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .hiw-sticky__viewport {
+    padding: clamp(36px, 4.5vh, 60px) clamp(28px, 2vw, 56px) clamp(32px, 4vh, 52px) !important;
+  }
+
+  .hiw-sticky__stage {
+    max-width: min(1520px, 86vw);
+    gap: clamp(32px, 3vw, 68px) !important;
+  }
+
+  .hiw-sticky__title {
+    font-size: clamp(42px, 2.2vw, 56px);
+  }
+
+  .hiw-copy__title {
+    font-size: clamp(40px, 2.2vw, 62px);
+  }
+
+  .hiw-copy__body {
+    font-size: clamp(18px, 0.75vw + 10px, 23px);
+  }
+
+  .hiw-media__card {
+    max-width: min(680px, 100%) !important;
+  }
+
+  .hiw-rail__dot.is-active .hiw-rail__bar {
+    width: 80px;
   }
 }
 
@@ -1491,19 +1666,22 @@ html {
     top: auto;
     height: auto;
     min-height: auto;
-    padding: 56px 20px;
+    padding: clamp(40px, 5vh, 56px) var(--page-gutter, 20px);
     grid-template-rows: auto auto auto;
   }
 
   .hiw-sticky__pin-head {
     display: flex;
     flex-direction: column;
-    gap: clamp(14px, 2vh, 22px);
+    gap: clamp(12px, 2vh, 18px);
   }
 
   .hiw-sticky__stage {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: clamp(20px, 3vh, 28px);
+    max-width: min(720px, 100%);
+    margin-inline: auto;
+    padding: 0;
   }
 
   .hiw-sticky__rail {
@@ -1511,6 +1689,7 @@ html {
     overflow-x: auto;
     padding: 4px 0;
     justify-content: flex-start;
+    min-width: 0;
   }
 
   .hiw-rail__dot {
@@ -1524,6 +1703,17 @@ html {
   .hiw-sticky__media {
     height: auto;
     aspect-ratio: 4 / 3;
+    max-width: min(560px, 100%);
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .hiw-media__card {
+    max-width: 100%;
+  }
+
+  .hiw-copy__title {
+    font-size: clamp(26px, 4vw, 34px);
   }
 
   .hiw-sticky__scroll-hint {
@@ -2997,9 +3187,10 @@ html {
     left: auto;
     transform: none;
     max-width: 100%;
-    padding: 0 20px;
+    padding: 0 var(--page-gutter, 20px);
     margin-top: 0;
     order: 1;
+    text-align: center;
   }
 
   .floating-labels-scrim {
@@ -3022,9 +3213,10 @@ html {
     left: auto;
     transform: none;
     max-width: 100%;
-    padding: 0 20px;
+    padding: 0 var(--page-gutter, clamp(12px, 3vw, 20px));
     margin-top: 0;
     order: 3;
+    text-align: center;
   }
 
   .floating-labels-container .index-bar {
@@ -3535,18 +3727,18 @@ html {
 
   .hero-timer-inline .countdown-minimal__meta {
     flex-direction: row;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 9px;
-    font-size: 9px;
+    font-size: clamp(9px, 2.4vw, 10px);
     letter-spacing: 0.1em;
     padding: 9px 11px 7px;
     text-align: center;
   }
 
   .hero-timer-inline .countdown-minimal__date {
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .hero-timer-inline .countdown-minimal__panel {
@@ -3573,6 +3765,28 @@ html {
   .countdown-minimal__segment:not(:last-child)::after {
     top: 18%;
     bottom: 18%;
+  }
+}
+
+@media (max-width: 400px) {
+  .countdown-minimal__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .countdown-minimal__segment:nth-child(2)::after {
+    display: none;
+  }
+
+  .countdown-minimal__value {
+    font-size: clamp(22px, 6.5vw, 26px);
+  }
+
+  .countdown-minimal__label {
+    font-size: clamp(10px, 2.8vw, 11px);
+  }
+
+  .countdown-minimal__segment {
+    padding: 12px 8px;
   }
 }
 
