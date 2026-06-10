@@ -23,13 +23,13 @@
 /** @type {JudgeLineupEntry[]} */
 export const JUDGE_LINEUP = [
   {
-    id: "khalil-khoury",
+    id: "khalil-khouy",
     num: "01",
-    name: "Khalil Khoury, Ph.D.",
+    name: "Khalil Khouy, Ph.D.",
     role: "Data & AI Innovation Leader",
     summary:
       "PhD in Trustworthy AI, Adjunct Professor at UNC Charlotte, and a Data & AI leader whose work has driven over $300M in enterprise savings across financial services and consulting. 13+ years turning complex data challenges into real business outcomes.",
-    bio: "Khalil Khoury, Ph.D. is a Data and AI Innovation Leader and Adjunct Professor at the University of North Carolina at Charlotte's School of Data Science, where he specializes in Trustworthy AI and model fairness. With over 13 years of experience across financial services and consulting, Khalil has built a reputation for solving complex, high-stakes data challenges — from risk analytics at Wells Fargo to leading Agentic AI workstreams for the largest BPO company in North America, where his work identified over $300 million in savings across three years of invoice data. He has spearheaded data modernization projects for Tier 1 banks, served as Product Owner for a Climate Data Repository enabling ESG analytics at a large US bank, and brings deep expertise spanning AI, sustainable finance, and enterprise data strategy. He brings to this panel the perspective of someone who has built and deployed AI that operates at real scale — with real consequences.",
+    bio: "Khalil Khouy, Ph.D. is a Data and AI Innovation Leader and Adjunct Professor at the University of North Carolina at Charlotte's School of Data Science, where he specializes in Trustworthy AI and model fairness. With over 13 years of experience across financial services and consulting, Khalil has built a reputation for solving complex, high-stakes data challenges — from risk analytics at Wells Fargo to leading Agentic AI workstreams for the largest BPO company in North America, where his work identified over $300 million in savings across three years of invoice data. He has spearheaded data modernization projects for Tier 1 banks, served as Product Owner for a Climate Data Repository enabling ESG analytics at a large US bank, and brings deep expertise spanning AI, sustainable finance, and enterprise data strategy. He brings to this panel the perspective of someone who has built and deployed AI that operates at real scale — with real consequences.",
     tags: ["Data Science", "AI", "Machine Learning", "FinTech", "Analytics"],
     initials: "KK",
     imageUrl: null,
