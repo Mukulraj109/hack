@@ -2573,6 +2573,84 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.judgestack .trackstack__card-media--judge {
+  flex: 0 0 auto;
+  min-height: 0;
+  max-height: 440px;
+  width: min(100%, 380px);
+  margin-inline: auto;
+  align-self: center;
+}
+
+.trackstack__card-photo {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border-radius: 20px;
+}
+
+.judgestack .trackstack__card-photo,
+.judgestack .trackstack__card-initials,
+.judgestack .trackstack__card-icon-hero {
+  min-height: 0;
+  max-height: 440px;
+}
+
+.judgestack .trackstack__card-initials,
+.judgestack .trackstack__card-icon-hero {
+  height: 440px;
+}
+
+.trackstack__card-initials {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  font-size: clamp(48px, 6vw, 72px);
+  font-weight: 800;
+  border-radius: 20px;
+}
+
+.trackstack__card-readmore {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 18px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.trackstack__card-readmore:hover {
+  opacity: 0.75;
+}
+
+.trackstack__card-readmore:focus-visible {
+  outline: 2px solid var(--track-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.trackstack__card--announcing .trackstack__card-title--muted {
+  color: #94a3b8;
 }
 
 .trackstack__card-icon-hero {
@@ -2594,6 +2672,103 @@ html {
 
 .judgestack .trackstack__card-desc {
   margin-bottom: 16px;
+}
+
+@media (max-width: 1024px) {
+  .judgestack .trackstack__card-inner {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: clamp(24px, 4vw, 36px);
+    gap: 20px;
+  }
+
+  .judgestack .trackstack__card-right {
+    order: -1;
+    width: 100%;
+    height: auto;
+  }
+
+  .judgestack .trackstack__card-media--judge {
+    width: 100%;
+    max-width: none;
+    max-height: clamp(220px, 42vw, 340px);
+    min-height: 0;
+    margin-inline: 0;
+    align-self: stretch;
+    border-radius: 18px;
+    aspect-ratio: 4 / 3;
+  }
+
+  .judgestack .trackstack__card-photo,
+  .judgestack .trackstack__card-initials,
+  .judgestack .trackstack__card-icon-hero {
+    max-height: none;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .judgestack .trackstack__card-initials,
+  .judgestack .trackstack__card-icon-hero {
+    height: 100%;
+    min-height: clamp(200px, 38vw, 300px);
+  }
+
+  .judgestack .trackstack__card-title {
+    font-size: clamp(22px, 5vw, 28px);
+  }
+
+  .judgestack .trackstack__card-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: none;
+  }
+
+  .judgestack .trackstack__card-readmore {
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-width: 767px) {
+  .judgestack .trackstack__card-inner {
+    padding: 20px;
+    gap: 18px;
+  }
+
+  .judgestack .trackstack__card-media--judge {
+    max-height: clamp(200px, 56vw, 280px);
+    border-radius: 16px;
+  }
+
+  .judgestack .trackstack__card-num {
+    font-size: 44px;
+  }
+
+  .judgestack .trackstack__card-title {
+    font-size: clamp(20px, 5.5vw, 24px);
+    margin-bottom: 8px;
+  }
+
+  .judgestack .trackstack__card-role {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .judgestack .trackstack__card-desc {
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+
+  .judgestack .trackstack__card-tags {
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  .judgestack .trackstack__card-tag {
+    font-size: 10px;
+    padding: 6px 11px;
+  }
 }
 
 @media (min-width: 900px) {
@@ -2826,10 +3001,10 @@ html {
     object-fit: contain;
   }
 
-  /* Judges — same compact deck pattern as tracks (phone only) */
+  /* Judges — sticky stack on mobile (same deck as tracks) */
   #judges-section.trackstack {
-    --trackstack-head-in-card: clamp(108px, 15vh, 132px);
-    --trackstack-step: 34px;
+    --trackstack-head-in-card: clamp(120px, 18vh, 160px);
+    --trackstack-step: 40px;
     padding: 32px 0 28px;
   }
 
@@ -2958,16 +3133,37 @@ html {
     height: 16px;
   }
 
+  #judges-section .trackstack__card-right {
+    order: -1;
+    width: 100%;
+  }
+
   #judges-section .trackstack__card-media--judge {
     order: 0;
+    width: 100%;
+    max-width: none;
     min-height: 0;
-    max-height: 84px;
+    max-height: clamp(200px, 56vw, 280px);
+    aspect-ratio: 4 / 3;
+    margin-inline: 0;
     border-radius: 16px;
   }
 
+  #judges-section .trackstack__card-photo {
+    min-height: 0;
+    max-height: none;
+    height: 100%;
+    width: 100%;
+  }
+
+  #judges-section .trackstack__card-initials,
   #judges-section .trackstack__card-icon-hero {
     min-height: 0;
-    max-height: 72px;
+    max-height: none;
+    height: 100%;
+  }
+
+  #judges-section .trackstack__card-icon-hero {
     opacity: 0.28;
   }
 
@@ -3189,7 +3385,7 @@ html {
     max-width: 100%;
     padding: 0 var(--page-gutter, 20px);
     margin-top: 0;
-    order: 1;
+    order: 2;
     text-align: center;
   }
 
@@ -3217,6 +3413,20 @@ html {
     margin-top: 0;
     order: 3;
     text-align: center;
+    overflow: visible;
+  }
+
+  .typewriter-section {
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+  }
+
+  .tw-line-container {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .floating-labels-container .index-bar {
@@ -3228,7 +3438,8 @@ html {
   }
 
   .tw-line {
-    font-size: 26px;
+    font-size: clamp(18px, 5.2vw, 26px);
+    white-space: normal;
   }
 
   .tw-progress-bar {
@@ -3242,7 +3453,7 @@ html {
 
 @media (max-width: 480px) {
   .tw-line {
-    font-size: 22px;
+    font-size: clamp(16px, 4.8vw, 22px);
   }
 
   .tw-index {
@@ -3579,6 +3790,69 @@ html {
 }
 
 /* =========================================================
+   Live sprint banner (post-start — simple text)
+   ========================================================= */
+.countdown-live {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.2em 0.45em;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: clamp(6px, 1.5vw, 12px) clamp(4px, 2vw, 12px);
+  text-align: center;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: clamp(12px, 2.8vw, 30px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 217, 168, 0.92) !important;
+  text-shadow:
+    0 1px 3px rgba(2, 40, 52, 0.55),
+    0 0 24px rgba(2, 51, 69, 0.75);
+}
+
+.countdown-live__message,
+.countdown-live__accent,
+.countdown-live__time {
+  white-space: nowrap;
+}
+
+.countdown-live__message {
+  color: #ffd9a8 !important;
+}
+
+.countdown-live__accent,
+.countdown-live__time {
+  color: #a8f5d0 !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.hero-timer-inline:has(.countdown-live) {
+  max-width: 100%;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .countdown-live {
+    font-size: clamp(11px, 3.4vw, 18px);
+    letter-spacing: 0.04em;
+    gap: 0.15em 0.35em;
+  }
+}
+
+@media (max-width: 400px) {
+  .countdown-live {
+    font-size: clamp(10px, 3.1vw, 14px);
+    letter-spacing: 0.03em;
+  }
+}
+
+/* =========================================================
    Minimal countdown (hero) — liquid glass panel, flat segments
    ========================================================= */
 .countdown-minimal {
@@ -3635,7 +3909,7 @@ html {
 
 .countdown-minimal__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   background: rgba(0, 0, 0, 0.22);
 }
 
@@ -3678,6 +3952,7 @@ html {
   color: rgba(255, 255, 255, 0.42) !important;
   letter-spacing: 0.02em;
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .hero-timer-inline .countdown-minimal__meta {
@@ -3770,23 +4045,25 @@ html {
 
 @media (max-width: 400px) {
   .countdown-minimal__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .countdown-minimal__segment:nth-child(2)::after {
-    display: none;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .countdown-minimal__value {
-    font-size: clamp(22px, 6.5vw, 26px);
+    font-size: clamp(18px, 5.5vw, 22px);
   }
 
   .countdown-minimal__label {
-    font-size: clamp(10px, 2.8vw, 11px);
+    font-size: clamp(9px, 2.4vw, 10px);
   }
 
   .countdown-minimal__segment {
-    padding: 12px 8px;
+    padding: 10px 4px;
+    gap: 2px;
+  }
+
+  .countdown-minimal__segment:not(:last-child)::after {
+    top: 16%;
+    bottom: 16%;
   }
 }
 

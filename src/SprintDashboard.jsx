@@ -9,28 +9,9 @@ import { DashboardSkeleton } from "./components/sprint/SprintPageSkeleton";
 import SprintLoadError from "./components/sprint/SprintLoadError";
 import SocialFollowLinks from "./components/SocialFollowLinks";
 import SocialShareClaimModal from "./components/SocialShareClaimModal";
+import { JUDGE_LINEUP, toSprintJudge } from "./config/judgeLineup";
 
-/** Placeholder panel until judge CMS; photos via env or defaults */
-const SPRINT_JUDGES = [
-  {
-    name: "Dr. Aris Thorne",
-    role: "CTO @ NexCore",
-    expertise: "AI Ethics",
-    initials: "AT",
-    imageUrl:
-      import.meta.env.VITE_JUDGE_PHOTO_ARIS ||
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=480&h=360&fit=crop&crop=faces",
-  },
-  {
-    name: "Elena Rodriguez",
-    role: "VP Prod @ Flow",
-    expertise: "UX/UI",
-    initials: "ER",
-    imageUrl:
-      import.meta.env.VITE_JUDGE_PHOTO_ELENA ||
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=480&h=360&fit=crop&crop=faces",
-  },
-];
+const SPRINT_JUDGES = JUDGE_LINEUP.map(toSprintJudge);
 
 // Countdown Timer Component
 function CountdownTimer({ targetDate }) {
@@ -266,16 +247,19 @@ function TrackCard({ status, title, description, trackId }) {
 }
 
 // Judge profile card — photo + details (matches portal glass cards)
-function JudgeProfileCard({ name, role, expertise, initials, imageUrl }) {
+function JudgeProfileCard({ name, role, expertise, initials, imageUrl, announcingSoon }) {
   const [imgFailed, setImgFailed] = useState(false);
 
   return (
-    <GlassCard className="sprint-judge-card" style={{ padding: 0, overflow: "hidden" }}>
+    <GlassCard
+      className={`sprint-judge-card${announcingSoon ? " sprint-judge-card--announcing" : ""}`}
+      style={{ padding: 0, overflow: "hidden" }}
+    >
       <div className="sprint-judge-card__media">
         {!imgFailed && imageUrl ? (
           <img
             src={imageUrl}
-            alt=""
+            alt={name}
             className="sprint-judge-card__photo"
             loading="lazy"
             onError={() => setImgFailed(true)}

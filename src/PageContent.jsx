@@ -28,7 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Users, Timer, Wrench, ArrowRight, Bell, Share2, Briefcase, Bot, Network, Sparkles, Lock, ChevronRight, Star, MessageSquare, Cpu, HelpCircle, Mail, Building2, UserCircle2, Medal, GraduationCap, DollarSign, Key } from "lucide-react";
 
-import { HACKATHON_START } from "./lib/hackathonDates";
+import { useConfigCountdown } from "./hooks/useConfigCountdown";
 
 const NAV_LINKS = [
   { href: "https://firststepjob.com/", label: "Home", isActive: true, external: true },
@@ -39,6 +39,8 @@ const NAV_LINKS = [
 ];
 
 export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: ClaimBtn }) {
+  const { countdown, startDate, sprintEndDate } = useConfigCountdown();
+
   const ClaimSpot =
     ClaimBtn ||
     function DefaultClaim({ className, children }) {
@@ -184,7 +186,15 @@ export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: Cl
 
           <div className="hero-center-area">
             <div className="hero-timer-inline hero-timer-inline--lead">
-              <CountdownTimer targetDate={HACKATHON_START} variant="minimal" />
+              <CountdownTimer
+                targetDate={startDate}
+                sprintEndDate={sprintEndDate}
+                started={countdown?.started}
+                ended={countdown?.ended}
+                remainingMs={countdown?.remaining}
+                remainingUntilStartMs={countdown?.remainingUntilStart}
+                variant="minimal"
+              />
             </div>
 
             <div className="hero-hackathon-expanded hero-promo-mint">

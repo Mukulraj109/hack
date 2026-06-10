@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { SPRINT_HOURS } from "../lib/hackathonDates";
 
 type TimeLeft = {
   days: number;
@@ -7,8 +8,13 @@ type TimeLeft = {
   seconds: number;
 };
 
-function getTimeLeft(target: Date): TimeLeft {
-  const total = target.getTime() - Date.now();
+type SprintRemaining = {
+  totalHours: number;
+  minutes: number;
+  ended: boolean;
+};
+
+function msToTimeLeft(total: number): TimeLeft {
   if (total <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   return {
     days: Math.floor(total / (1000 * 60 * 60 * 24)),
@@ -18,13 +24,84 @@ function getTimeLeft(target: Date): TimeLeft {
   };
 }
 
+function getTimeLeft(target: Date): TimeLeft {
+  return msToTimeLeft(target.getTime() - Date.now());
+}
+
+function msToSprintRemaining(total: number): SprintRemaining {
+  if (total <= 0) return { totalHours: 0, minutes: 0, ended: true };
+  return {
+    totalHours: Math.floor(total / (1000 * 60 * 60)),
+    minutes: Math.floor((total / (1000 * 60)) % 60),
+    ended: false,
+  };
+}
+
+function useTickingMs(initialMs: number | null | undefined, fallbackMs: () => number) {
+  const [ms, setMs] = useState(() =>
+    initialMs != null ? initialMs : fallbackMs()
+  );
+
+  useEffect(() => {
+    if (initialMs != null) setMs(initialMs);
+  }, [initialMs]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setMs((prev) => Math.max(0, prev - 1000));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return ms;
+}
+
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
 type CountdownTimerProps = {
   targetDate: Date;
+  sprintEndDate?: Date;
+  started?: boolean;
+  ended?: boolean;
+  remainingMs?: number | null;
+  remainingUntilStartMs?: number | null;
   variant?: "default" | "glass" | "minimal";
   dateLabel?: string;
 };
+
+function LiveSprintText({
+  sprintEndDate,
+  remainingMs,
+  ended,
+}: {
+  sprintEndDate: Date;
+  remainingMs?: number | null;
+  ended?: boolean;
+}) {
+  const tickingMs = useTickingMs(
+    remainingMs,
+    () => sprintEndDate.getTime() - Date.now()
+  );
+  const remaining = ended ? { totalHours: 0, minutes: 0, ended: true } : msToSprintRemaining(tickingMs);
+
+  if (remaining.ended) {
+    return (
+      <p className="countdown-live" role="status">
+        Submissions closed
+      </p>
+    );
+  }
+
+  return (
+    <p className="countdown-live" role="timer" aria-live="polite">
+      <span className="countdown-live__accent">We are live,</span>{" "}
+      <span className="countdown-live__message">submission closes in</span>{" "}
+      <span className="countdown-live__time">
+        {remaining.totalHours}hr {pad2(remaining.minutes)}m
+      </span>
+    </p>
+  );
+}
 
 function MinimalSegment({ label, value }: { label: string; value: number }) {
   return (
@@ -133,15 +210,48 @@ function FlipCountdown({
 
 export function CountdownTimer({
   targetDate,
+  sprintEndDate,
+  started,
+  ended,
+  remainingMs,
+  remainingUntilStartMs,
   variant = "glass",
   dateLabel = "July 8 · 8:00 PM ET",
 }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
+  const effectiveSprintEnd =
+    sprintEndDate ??
+    new Date(targetDate.getTime() + SPRINT_HOURS * 60 * 60 * 1000);
+
+  const usesServerState = started !== undefined;
+  const isLive = usesServerState
+    ? Boolean(started)
+    : Date.now() >= targetDate.getTime();
+
+  const [localTimeLeft, setLocalTimeLeft] = useState(() => getTimeLeft(targetDate));
+  const preStartMs = useTickingMs(
+    usesServerState && !isLive ? remainingUntilStartMs : null,
+    () => targetDate.getTime() - Date.now()
+  );
 
   useEffect(() => {
-    const id = setInterval(() => setTimeLeft(getTimeLeft(targetDate)), 1000);
+    if (usesServerState) return undefined;
+
+    const id = setInterval(() => setLocalTimeLeft(getTimeLeft(targetDate)), 1000);
     return () => clearInterval(id);
-  }, [targetDate]);
+  }, [targetDate, usesServerState]);
+
+  const timeLeft =
+    usesServerState && !isLive ? msToTimeLeft(preStartMs) : localTimeLeft;
+
+  if (isLive) {
+    return (
+      <LiveSprintText
+        sprintEndDate={effectiveSprintEnd}
+        remainingMs={remainingMs}
+        ended={ended}
+      />
+    );
+  }
 
   if (variant === "minimal") {
     return (

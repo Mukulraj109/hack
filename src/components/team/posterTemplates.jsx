@@ -123,6 +123,16 @@ function FooterLinks({ tone = "light" }) {
   );
 }
 
+function TealFooterLinks() {
+  return (
+    <div className="tpl-teal__footer-brand">
+      <span className="tpl-teal__footer-label">Follow us</span>
+      <span className="tpl-teal__footer-handle">@firststepjob</span>
+      <span className="tpl-teal__footer-url">firststepjob.com</span>
+    </div>
+  );
+}
+
 /* ---------- Member building blocks ---------- */
 
 function SoftCard({ member, index, variant }) {
@@ -261,58 +271,166 @@ function BoldDark({ teamTitle, members, layout = "story" }) {
   );
 }
 
+function TealMemberCard({ member, index, variant = "a" }) {
+  return (
+    <div className={cx("tpl-teal-card", `tpl-teal-card--${variant}`)}>
+      <span className="tpl-teal-card__glow" aria-hidden />
+      <span className="tpl-teal-card__corner tpl-teal-card__corner--tl" aria-hidden />
+      <span className="tpl-teal-card__corner tpl-teal-card__corner--tr" aria-hidden />
+      <span className="tpl-teal-card__corner tpl-teal-card__corner--bl" aria-hidden />
+      <span className="tpl-teal-card__corner tpl-teal-card__corner--br" aria-hidden />
+      <div className="tpl-teal-card__avatar-wrap">
+        <span className="tpl-teal-card__ring" aria-hidden />
+        <PosterAvatar member={member} index={index} shape="circle" className="tpl-teal-card__avatar" />
+      </div>
+      <div className="tpl-teal-card__meta">
+        <p className="tpl-teal-card__name">{member.displayName}</p>
+        <span className="tpl-teal-card__role">{member.role}</span>
+      </div>
+    </div>
+  );
+}
+
 function TealBrand({ teamTitle, members, layout = "story" }) {
   const list = prepareMembers(members);
   const solo = list.length === 1;
   const shortName = formatShortName(teamTitle);
   return (
     <div className={cx("tpl tpl-teal poster-tpl", layout === "square" && "tpl--square", solo && "is-solo")}>
+      <span className="tpl-teal__vignette" aria-hidden />
+      <span className="tpl-teal__mesh" aria-hidden />
+      <span className="tpl-teal__stripes" aria-hidden />
+      <span className="tpl-teal__glow tpl-teal__glow--tl" aria-hidden />
+      <span className="tpl-teal__glow tpl-teal__glow--br" aria-hidden />
+      <span className="tpl-teal__glow tpl-teal__glow--center" aria-hidden />
       <span className="tpl-teal__dots" aria-hidden />
+      <span className="tpl-teal__shine" aria-hidden />
+      <span className="tpl-teal__frame" aria-hidden />
+
+      <div className="tpl-teal__ribbon">
+        <span className="tpl-teal__ribbon-dot" aria-hidden />
+        FIRSTSTEP HACKATHON 2026
+        <span className="tpl-teal__ribbon-dot" aria-hidden />
+      </div>
 
       <header className="tpl-teal__head">
         <PosterLogo tone="dark" className="tpl-teal__logo" />
-        <p className="tpl-teal__eyebrow">WE ARE TEAM</p>
-        <h3 className="tpl-teal__title">{shortName}</h3>
-        <p className="tpl-teal__sub">Annual Hackathon 2026 · 100-Hour Sprint</p>
+        <span className="tpl-teal__badge">WE ARE TEAM</span>
+        <div className="tpl-teal__title-row">
+          <span className="tpl-teal__glyph" aria-hidden>///</span>
+          <h3 className="tpl-teal__title">{shortName}</h3>
+          <span className="tpl-teal__glyph" aria-hidden>///</span>
+        </div>
+        <p className="tpl-teal__sub">100-Hour Remote Sprint · Ship in 100 Hrs</p>
       </header>
 
       <div className={cx("tpl-teal__members", solo && "is-solo")}>
-        {list.map((member, i) => (
-          <MemberTile key={member.id} member={member} index={i} tone="glass" />
-        ))}
+        {solo ? (
+          <TealMemberCard member={list[0]} index={0} variant="hero" />
+        ) : (
+          <>
+            <TealMemberCard member={list[0]} index={0} variant="a" />
+            <TealMemberCard member={list[1]} index={1} variant="b" />
+          </>
+        )}
       </div>
 
       <footer className="tpl-teal__footer">
-        <FooterLinks tone="dark" />
-        <PosterHashtags variant="stack" />
+        <div className="tpl-teal__footer-bar">
+          <TealFooterLinks />
+          <div className="tpl-teal__footer-tags">
+            <PosterHashtags variant="bubble" />
+          </div>
+        </div>
       </footer>
     </div>
+  );
+}
+
+function GradProfile({ member, index, variant = "a" }) {
+  return (
+    <article className={cx("tpl-grad-profile", `tpl-grad-profile--${variant}`)}>
+      <span className="tpl-grad-profile__accent" aria-hidden />
+      <div className="tpl-grad-profile__media">
+        <PosterAvatar member={member} index={index} shape="frame" className="tpl-grad-profile__photo" />
+      </div>
+      <div className="tpl-grad-profile__copy">
+        <span className="tpl-grad-profile__num">0{index + 1}</span>
+        <p className="tpl-grad-profile__name">{member.displayName}</p>
+        <p className="tpl-grad-profile__role">{member.role}</p>
+      </div>
+    </article>
   );
 }
 
 function DarkGradient({ teamTitle, members, layout = "story" }) {
   const list = prepareMembers(members);
   const solo = list.length === 1;
+  const shortName = formatShortName(teamTitle);
   return (
     <div className={cx("tpl tpl-grad poster-tpl", layout === "square" && "tpl--square", solo && "is-solo")}>
-      <span className="tpl-grad__glow" aria-hidden />
+      <span className="tpl-grad__scanlines" aria-hidden />
+      <span className="tpl-grad__orb tpl-grad__orb--mag" aria-hidden />
+      <span className="tpl-grad__orb tpl-grad__orb--gold" aria-hidden />
+      <span className="tpl-grad__slash" aria-hidden />
+      <span className="tpl-grad__watermark" aria-hidden>26</span>
+      <span className="tpl-grad__side-rail" aria-hidden>100HR SPRINT</span>
 
-      <header className="tpl-grad__head">
-        <span className="tpl-grad__badge">FIRSTSTEP HACKATHON 2026</span>
-        <p className="tpl-grad__eyebrow">SHIPPING AS</p>
-        <h3 className="tpl-grad__title">{teamTitle}</h3>
-      </header>
+      <div className="tpl-grad__shell">
+        <header className="tpl-grad__head">
+          <div className="tpl-grad__head-top">
+            <PosterLogo tone="dark" className="tpl-grad__logo" />
+            <span className="tpl-grad__chip">Hackathon 2026</span>
+          </div>
+          <p className="tpl-grad__eyebrow">Shipping as</p>
+          <h3 className="tpl-grad__title">{shortName}</h3>
+          <p className="tpl-grad__tagline">Build fast · Ship loud · Share proof</p>
+        </header>
 
-      <div className={cx("tpl-grad__members", solo && "is-solo")}>
-        {list.map((member, i) => (
-          <MemberTile key={member.id} member={member} index={i} tone="dark" />
-        ))}
+        <div className={cx("tpl-grad__stage", solo && "is-solo")}>
+          {solo ? (
+            <GradProfile member={list[0]} index={0} variant="hero" />
+          ) : (
+            <>
+              <GradProfile member={list[0]} index={0} variant="a" />
+              <GradProfile member={list[1]} index={1} variant="b" />
+            </>
+          )}
+        </div>
+
+        <footer className="tpl-grad__foot">
+          <PosterHashtags variant="inline" />
+          <div className="tpl-grad__foot-meta">
+            <span className="tpl-grad__foot-handle">@firststepjob</span>
+            <span className="tpl-grad__foot-dot" aria-hidden>◆</span>
+            <span className="tpl-grad__foot-url">firststepjob.com</span>
+          </div>
+        </footer>
       </div>
+    </div>
+  );
+}
 
-      <footer className="tpl-grad__footer">
-        <PosterLogo tone="dark" className="tpl-grad__logo" />
-        <PosterHashtags variant="stack" />
-      </footer>
+function EdMember({ member, index, variant = "a" }) {
+  return (
+    <article className={cx("tpl-ed-member", `tpl-ed-member--${variant}`)}>
+      <span className="tpl-ed-member__index">0{index + 1}</span>
+      <PosterAvatar member={member} index={index} shape="rounded" className="tpl-ed-member__photo" />
+      <div className="tpl-ed-member__copy">
+        <p className="tpl-ed-member__name">{member.displayName}</p>
+        <p className="tpl-ed-member__role">{member.role}</p>
+        <span className="tpl-ed-member__tag">Hackathon 2026</span>
+      </div>
+    </article>
+  );
+}
+
+function EdFooterLinks() {
+  return (
+    <div className="tpl-ed__footer-brand">
+      <span className="tpl-ed__footer-handle">@firststepjob</span>
+      <span className="tpl-ed__footer-dot" aria-hidden>·</span>
+      <span className="tpl-ed__footer-url">firststepjob.com</span>
     </div>
   );
 }
@@ -320,28 +438,65 @@ function DarkGradient({ teamTitle, members, layout = "story" }) {
 function CleanEditorial({ teamTitle, members, layout = "story" }) {
   const list = prepareMembers(members);
   const solo = list.length === 1;
+  const shortName = formatShortName(teamTitle);
   return (
     <div className={cx("tpl tpl-ed poster-tpl", layout === "square" && "tpl--square", solo && "is-solo")}>
-      <header className="tpl-ed__banner">
+      <span className="tpl-ed__paper" aria-hidden />
+      <span className="tpl-ed__column" aria-hidden />
+
+      <header className="tpl-ed__masthead">
         <PosterLogo tone="dark" className="tpl-ed__logo" />
-        <span className="tpl-ed__banner-text">ANNUAL HACKATHON 2026</span>
+        <div className="tpl-ed__masthead-meta">
+          <span className="tpl-ed__issue">2026</span>
+          <span className="tpl-ed__event">FirstStep Hackathon</span>
+        </div>
       </header>
 
-      <div className="tpl-ed__intro">
-        <p className="tpl-ed__eyebrow">MEET THE TEAM</p>
-        <h3 className="tpl-ed__title">{teamTitle}</h3>
-        <span className="tpl-ed__accent" aria-hidden />
+      <div className="tpl-ed__hero">
+        <p className="tpl-ed__kicker">Meet the team</p>
+        <h3 className="tpl-ed__title">{shortName}</h3>
+        <p className="tpl-ed__deck">100-Hour Sprint · Build · Ship · Share</p>
       </div>
 
-      <div className={cx("tpl-ed__members", solo && "is-solo")}>
-        <EditorialRow member={list[0]} index={0} tone="light" />
-        {!solo && <EditorialRow member={list[1]} index={1} tone="dark" />}
+      <div className={cx("tpl-ed__grid", solo && "is-solo")}>
+        {solo ? (
+          <EdMember member={list[0]} index={0} variant="hero" />
+        ) : (
+          <>
+            <EdMember member={list[0]} index={0} variant="a" />
+            <EdMember member={list[1]} index={1} variant="b" />
+          </>
+        )}
       </div>
 
-      <footer className="tpl-ed__footer">
-        <FooterLinks tone="light" />
-        <PosterHashtags variant="stack" />
+      <footer className="tpl-ed__foot">
+        <EdFooterLinks />
+        <PosterHashtags variant="inline" />
       </footer>
+    </div>
+  );
+}
+
+function SlateMember({ member, index, variant = "a" }) {
+  return (
+    <article className={cx("tpl-slate-card", `tpl-slate-card--${variant}`)}>
+      <span className="tpl-slate-card__bar" aria-hidden />
+      <PosterAvatar member={member} index={index} shape="rounded" className="tpl-slate-card__photo" />
+      <div className="tpl-slate-card__copy">
+        <span className="tpl-slate-card__label">0{index + 1}</span>
+        <p className="tpl-slate-card__name">{member.displayName}</p>
+        <p className="tpl-slate-card__role">{member.role}</p>
+      </div>
+    </article>
+  );
+}
+
+function SlateFooterLinks() {
+  return (
+    <div className="tpl-slate__footer-brand">
+      <span className="tpl-slate__footer-handle">@firststepjob</span>
+      <span className="tpl-slate__footer-dot" aria-hidden>·</span>
+      <span className="tpl-slate__footer-url">firststepjob.com</span>
     </div>
   );
 }
@@ -349,29 +504,37 @@ function CleanEditorial({ teamTitle, members, layout = "story" }) {
 function BoldSlate({ teamTitle, members, layout = "story" }) {
   const list = prepareMembers(members);
   const solo = list.length === 1;
+  const shortName = formatShortName(teamTitle);
   return (
     <div className={cx("tpl tpl-slate poster-tpl", layout === "square" && "tpl--square", solo && "is-solo")}>
-      <span className="tpl-slate__stripe" aria-hidden />
+      <span className="tpl-slate__grid" aria-hidden />
+      <span className="tpl-slate__glow" aria-hidden />
+      <span className="tpl-slate__tape" aria-hidden />
 
       <header className="tpl-slate__head">
-        <div className="tpl-slate__brand-row">
+        <div className="tpl-slate__top">
           <PosterLogo tone="dark" className="tpl-slate__logo" />
-          <span className="tpl-slate__pill">HACKATHON 2026</span>
+          <span className="tpl-slate__tag">100HR SPRINT</span>
         </div>
-        <p className="tpl-slate__eyebrow">WE ARE</p>
-        <h3 className="tpl-slate__title">{teamTitle}</h3>
-        <p className="tpl-slate__sub">100-Hour Remote Sprint</p>
+        <p className="tpl-slate__eyebrow">We are</p>
+        <h3 className="tpl-slate__title">{shortName}</h3>
+        <p className="tpl-slate__sub">FirstStep Hackathon 2026 · Ship in 100 Hrs</p>
       </header>
 
-      <div className={cx("tpl-slate__members", solo && "is-solo")}>
-        {list.map((member, i) => (
-          <MemberTile key={member.id} member={member} index={i} tone="dark" />
-        ))}
+      <div className={cx("tpl-slate__stage", solo && "is-solo")}>
+        {solo ? (
+          <SlateMember member={list[0]} index={0} variant="hero" />
+        ) : (
+          <>
+            <SlateMember member={list[0]} index={0} variant="a" />
+            <SlateMember member={list[1]} index={1} variant="b" />
+          </>
+        )}
       </div>
 
-      <footer className="tpl-slate__footer">
-        <FooterLinks tone="dark" />
-        <PosterHashtags variant="stack" />
+      <footer className="tpl-slate__foot">
+        <SlateFooterLinks />
+        <PosterHashtags variant="inline" />
       </footer>
     </div>
   );

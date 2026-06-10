@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import CountdownTimer from "./CountdownTimer";
-import { HACKATHON_START } from "../lib/hackathonDates";
+import { useConfigCountdown } from "../hooks/useConfigCountdown";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -33,6 +33,8 @@ function GlassCard({ children, className = "" }) {
 }
 
 export function HeroCenterCards() {
+  const { countdown, startDate, sprintEndDate } = useConfigCountdown();
+
   return (
     <motion.div
       className="hero-center-cards"
@@ -59,7 +61,15 @@ export function HeroCenterCards() {
         variants={cardVariants}
         style={{ width: "100%" }}
       >
-        <CountdownTimer targetDate={HACKATHON_START} variant="glass" />
+        <CountdownTimer
+          targetDate={startDate}
+          sprintEndDate={sprintEndDate}
+          started={countdown?.started}
+          ended={countdown?.ended}
+          remainingMs={countdown?.remaining}
+          remainingUntilStartMs={countdown?.remainingUntilStart}
+          variant="glass"
+        />
       </motion.div>
 
       {/* Bottom Card - Hackathon Info (wider, shorter) */}

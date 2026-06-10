@@ -46,6 +46,10 @@
   margin: 0 auto clamp(8px, 1.2vh, 16px);
 }
 
+.hero-timer-inline:has(.countdown-live) {
+  max-width: 100%;
+}
+
 /* FirstStep hackathon card: wider — independent from the timer's width */
 .hero-hackathon-expanded {
   width: 100%;
@@ -365,10 +369,6 @@
     min-height: 0;
   }
 
-  .floating-labels-container {
-    order: 1;
-  }
-
   .hero-center-area {
     position: relative;
     left: auto;
@@ -376,6 +376,10 @@
     transform: none;
     width: 100%;
     max-width: 100%;
+    order: 1;
+  }
+
+  .floating-labels-container {
     order: 2;
   }
 
@@ -522,7 +526,7 @@
   .hero-timer-inline {
     order: 1;
     width: 100%;
-    max-width: min(100%, 380px);
+    max-width: 100%;
     margin: 0 auto 2px;
   }
 
@@ -645,5 +649,376 @@
 @media (max-width: 400px) {
   .btn-follow__label {
     font-size: 13px;
+  }
+}
+
+/* Post-kickoff hero: sprint live / judging strips */
+.hero-sprint-live {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.hero-sprint-live__panel {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(8, 18, 28, 0.58);
+  border: 1px solid rgba(168, 245, 208, 0.22);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 32px rgba(0, 255, 157, 0.06);
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+}
+
+.hero-sprint-live__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 14px 7px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.22);
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-sprint-live__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #a8f5d0 !important;
+  font-weight: 700;
+}
+
+.hero-sprint-live__live--muted {
+  color: #ffd9a8 !important;
+}
+
+.hero-sprint-live__pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ff9d;
+  box-shadow: 0 0 12px rgba(0, 255, 157, 0.75);
+  animation: hero-sprint-live-pulse 1.8s ease-in-out infinite;
+}
+
+.hero-sprint-live__pulse--muted {
+  background: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.55);
+  animation: none;
+}
+
+@keyframes hero-sprint-live-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.65;
+  }
+}
+
+.hero-sprint-live__arena {
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-weight: 600;
+}
+
+.hero-sprint-live__tag {
+  color: rgba(255, 217, 168, 0.9) !important;
+  font-weight: 500;
+}
+
+.hero-sprint-live__body {
+  padding: clamp(12px, 1.6vh, 18px) clamp(14px, 2.5vw, 22px) clamp(10px, 1.4vh, 14px);
+  text-align: center;
+}
+
+.hero-sprint-live__headline {
+  margin: 0 0 6px;
+  font-family: "Hanken Grotesk", "Inter", sans-serif;
+  font-size: clamp(17px, 2.2vw, 24px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #a8f5d0 !important;
+  text-shadow:
+    0 0 32px rgba(2, 51, 69, 0.85),
+    0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.hero-sprint-live__headline--judging {
+  color: #ffe8c4 !important;
+}
+
+.hero-sprint-live__caption {
+  margin: 0;
+  font-size: clamp(12px, 1.35vw, 15px);
+  font-weight: 600;
+  color: #ffe8c4 !important;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.65),
+    0 0 24px rgba(2, 51, 69, 0.75);
+  animation: hero-sprint-caption-in 0.45s ease-out;
+}
+
+.hero-sprint-live__caption--static {
+  animation: none;
+}
+
+@keyframes hero-sprint-caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-sprint-live__metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 clamp(12px, 2.5vw, 18px) clamp(10px, 1.4vh, 14px);
+}
+
+.hero-sprint-live__countdown {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.hero-sprint-live__countdown--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hero-sprint-live__time-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 2px;
+  position: relative;
+}
+
+.hero-sprint-live__time-stat:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: 18%;
+  bottom: 18%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.hero-sprint-live__time-value {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(20px, 2.8vw, 26px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #ffffff !important;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.hero-sprint-live__time-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a8f5d0 !important;
+}
+
+.hero-sprint-live__progress-card {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(168, 245, 208, 0.2);
+}
+
+.hero-sprint-live__progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.hero-sprint-live__progress-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+}
+
+.hero-sprint-live__progress-pct {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(14px, 1.6vw, 17px);
+  font-weight: 800;
+  color: #00ff9d !important;
+  text-shadow: 0 0 16px rgba(0, 255, 157, 0.45);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-sprint-live__progress-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.hero-sprint-live__progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #00685f 0%, #00c5a3 55%, #00ff9d 100%);
+  box-shadow: 0 0 14px rgba(0, 255, 157, 0.55);
+}
+
+.hero-sprint-live__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - clamp(24px, 5vw, 36px));
+  margin: 2px auto clamp(12px, 1.6vh, 16px);
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(103, 232, 249, 0.55);
+  background: linear-gradient(135deg, #2a8e9e 0%, #0891b2 50%, #06b6d4 100%);
+  color: #ffffff !important;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(12px, 1.3vw, 14px);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    0 4px 20px rgba(8, 145, 178, 0.45),
+    0 0 28px rgba(6, 182, 212, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.hero-sprint-live__cta:hover {
+  background: linear-gradient(135deg, #35a3b5 0%, #0fa3c5 50%, #10c5da 100%);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 28px rgba(8, 145, 178, 0.55),
+    0 0 36px rgba(6, 182, 212, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.hero-sprint-live__cta:active {
+  transform: translateY(0);
+}
+
+.hero-sprint-live__cta-label {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-sprint-live__cta-arrow {
+  width: 1.2em;
+  height: 1.2em;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-sprint-live__cta:hover .hero-sprint-live__cta-arrow {
+  transform: translateX(4px);
+}
+
+.hero-sprint-live--judging .hero-sprint-live__panel {
+  border-color: rgba(255, 217, 168, 0.25);
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.hackathon-preview-badge {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  background: rgba(14, 16, 20, 0.92);
+  border: 1px solid rgba(255, 217, 168, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.hackathon-preview-badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+}
+
+.hackathon-preview-badge__label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffd9a8 !important;
+}
+
+@media (max-width: 640px) {
+  .hero-sprint-live__header {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-sprint-live__tag {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-sprint-live__time-value {
+    font-size: clamp(18px, 5.5vw, 22px);
+  }
+
+  .hero-sprint-live__cta {
+    width: calc(100% - 24px);
+    padding: 9px 14px;
+  }
+
+  .hackathon-preview-badge {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    justify-content: center;
   }
 }
