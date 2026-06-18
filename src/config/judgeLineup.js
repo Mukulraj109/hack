@@ -58,24 +58,6 @@ export const JUDGE_LINEUP = [
     accentRing: "rgba(42, 142, 158, 0.35)",
     gradient: "linear-gradient(135deg, #2a8e9e 0%, #0891b2 100%)",
   },
-  {
-    id: "judge-03-tba",
-    num: "03",
-    name: "Judge 03 — Announcing soon",
-    role: "Panel member",
-    summary:
-      "Our third panel judge is being finalized — full bio and expertise tags will publish here once confirmed.",
-    bio: "",
-    tags: [],
-    initials: "J3",
-    imageUrl: null,
-    announcingSoon: true,
-    iconName: "MessageSquare",
-    accent: "#6366f1",
-    accentSoft: "rgba(99, 102, 241, 0.14)",
-    accentRing: "rgba(99, 102, 241, 0.35)",
-    gradient: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
-  },
 ];
 
 /** Join tags for sprint portal expertise chip. */
