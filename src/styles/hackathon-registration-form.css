@@ -34,6 +34,30 @@
   padding: 0;
 }
 
+.hackathon-reg-modal__body--gate {
+  padding: 1.5rem 1.25rem 2rem;
+  overflow: auto;
+}
+
+.hackathon-reg-modal--gate,
+.hackathon-reg-modal--pending {
+  width: min(520px, calc(100vw - 2rem));
+  height: auto;
+  max-height: calc(100vh - 2rem);
+}
+
+.hackathon-reg-modal--gate .hackathon-reg-modal__body,
+.hackathon-reg-modal--pending .hackathon-reg-modal__body {
+  flex: 0 1 auto;
+}
+
+.sprint-portal-gate--blocked {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .hackathon-reg-modal__header {
   display: flex;
   align-items: flex-start;

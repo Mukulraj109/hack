@@ -2,7 +2,7 @@ import SprintSignInPrompt from "../components/sprint/SprintSignInPrompt";
 import { useHackathonAuth } from "./HackathonAuthContext";
 
 export function RequireHackathonAuth({ children, fallback = null, returnTo = "/sprint", onNavigate }) {
-  const { isAuthenticated, loading } = useHackathonAuth();
+  const { hasPortalAccess, loading } = useHackathonAuth();
 
   if (loading) {
     return (
@@ -15,7 +15,7 @@ export function RequireHackathonAuth({ children, fallback = null, returnTo = "/s
     );
   }
 
-  if (!isAuthenticated) {
+  if (!hasPortalAccess) {
     if (fallback) return fallback;
     return <SprintSignInPrompt returnTo={returnTo} onNavigate={onNavigate} />;
   }

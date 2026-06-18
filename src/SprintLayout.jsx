@@ -190,8 +190,8 @@ function SprintMobileHeader({ collapsed, onToggleCollapsed, onNavigate, headerRe
 
 // Main Layout Component
 export default function SprintLayout({ children, title, currentPath, onNavigate }) {
-  const { isAuthenticated, loading: authLoading, isAdmin } = useHackathonAuth();
-  const isGuest = !authLoading && !isAuthenticated;
+  const { isAuthenticated, hasPortalAccess, loading: authLoading, isAdmin } = useHackathonAuth();
+  const isGuest = !authLoading && !hasPortalAccess;
   const isSubmission = currentPath === "/submission";
   const isRoadmap = currentPath === "/roadmap";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(readSidebarCollapsed);

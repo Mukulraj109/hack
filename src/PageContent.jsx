@@ -41,6 +41,15 @@ const NAV_LINKS = [
 export default function PageContent({ onNavigate = () => {}, ClaimSpotButton: ClaimBtn }) {
   const { countdown, startDate, sprintEndDate } = useConfigCountdown();
 
+  // Track that the user arrived from the hackathon landing page
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("entrySource", "hackathon");
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const ClaimSpot =
     ClaimBtn ||
     function DefaultClaim({ className, children }) {

@@ -26,7 +26,7 @@ export function MobileNav({
   onNavigate,
 }: MobileNavProps) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const { isAuthenticated, login } = useHackathonAuth();
+  const { isAuthenticated, loginForFirstStep } = useHackathonAuth();
 
   const handleClaimSpot = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -34,7 +34,7 @@ export function MobileNav({
     if (isAuthenticated) {
       onNavigate("/sprint");
     } else {
-      login("/sprint");
+      loginForFirstStep();
     }
   };
 

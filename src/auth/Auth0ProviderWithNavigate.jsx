@@ -24,8 +24,13 @@ export function Auth0ProviderWithNavigate({ children }) {
       useRefreshTokens={true}
       cacheLocation="localstorage"
       onRedirectCallback={(appState) => {
-        const returnTo = appState?.returnTo || "/sprint";
-        replaceAppPath(returnTo);
+        try {
+          sessionStorage.removeItem("hackathon_sso_prompt_none_attempted");
+          sessionStorage.removeItem("hackathon_sso_redirect_inflight");
+        } catch {
+          // ignore
+        }
+        replaceAppPath(appState?.returnTo || "/sprint");
       }}
     >
       {children}

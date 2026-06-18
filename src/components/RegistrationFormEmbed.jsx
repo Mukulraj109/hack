@@ -1,10 +1,31 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { useHackathonAuth } from "../auth/HackathonAuthContext";
 import { apiFetch, getApiBaseUrl } from "../lib/api";
 import "../styles/hackathon-registration-banner.css";
 import "../styles/hackathon-registration-form.css";
+
+const DIRECT_ZOHO_FORM_URL = import.meta.env.VITE_ZOHO_FORM_URL?.trim() || "";
+
+function buildDirectZohoEmbedUrl(email) {
+  if (!DIRECT_ZOHO_FORM_URL) return null;
+  const url = new URL(DIRECT_ZOHO_FORM_URL);
+  url.searchParams.set("zf_rszfm", "1");
+  if (email) {
+    url.searchParams.set("Email", email);
+  }
+  return url.toString();
+}
+
+async function waitForToken(getAccessToken, maxAttempts = 8) {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const token = await getAccessToken();
+    if (token) return token;
+    await new Promise((resolve) => window.setTimeout(resolve, 250 * (attempt + 1)));
+  }
+  return null;
+}
 
 function LoadingState() {
   return (
@@ -24,11 +45,19 @@ function RegistrationFormModal({
   error,
   onRetry,
   onIframeLoad,
+  dismissible = true,
 }) {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     document.body.classList.add("hackathon-form-modal-open");
+
+    if (!dismissible) {
+      return () => {
+        document.body.style.overflow = previousOverflow;
+        document.body.classList.remove("hackathon-form-modal-open");
+      };
+    }
 
     const onKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -42,7 +71,7 @@ function RegistrationFormModal({
       document.body.classList.remove("hackathon-form-modal-open");
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [onClose]);
+  }, [onClose, dismissible]);
 
   return createPortal(
     <div
@@ -50,7 +79,7 @@ function RegistrationFormModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="hackathon-reg-modal-title"
-      onClick={onClose}
+      onClick={dismissible ? onClose : undefined}
     >
       <div
         className="hackathon-reg-modal hackathon-reg-modal--registration"
@@ -58,9 +87,9 @@ function RegistrationFormModal({
       >
         <header className="hackathon-reg-modal__header">
           <div className="hackathon-reg-modal__header-copy">
-            <p className="hackathon-reg-modal__eyebrow">Hackathon registration</p>
+            <p className="hackathon-reg-modal__eyebrow">Registration</p>
             <h2 id="hackathon-reg-modal-title" className="hackathon-reg-modal__title">
-              Complete your registration
+              Claim your spot
             </h2>
             {user?.email && (
               <p className="hackathon-reg-modal__email">
@@ -68,14 +97,16 @@ function RegistrationFormModal({
               </p>
             )}
           </div>
-          <button
-            type="button"
-            className="hackathon-reg-modal__close"
-            onClick={onClose}
-            aria-label="Close registration form"
-          >
-            <X aria-hidden="true" />
-          </button>
+          {dismissible && (
+            <button
+              type="button"
+              className="hackathon-reg-modal__close"
+              onClick={onClose}
+              aria-label="Close registration form"
+            >
+              <X aria-hidden="true" />
+            </button>
+          )}
         </header>
 
         <div className="hackathon-reg-modal__body">
@@ -102,18 +133,20 @@ function RegistrationFormModal({
 
         <footer className="hackathon-reg-modal__footer">
           <p className="hackathon-reg-modal__hint">
-            After submitting, close this window and refresh your status.
+            After submitting, your registration will be reviewed within 24 hours.
           </p>
           <div className="hackathon-reg-modal__footer-actions">
-            <button type="button" className="hackathon-reg-form__btn hackathon-reg-form__btn--secondary" onClick={onClose}>
-              Close
-            </button>
+            {dismissible && (
+              <button type="button" className="hackathon-reg-form__btn hackathon-reg-form__btn--secondary" onClick={onClose}>
+                Close
+              </button>
+            )}
             {onRefresh && (
               <button
                 type="button"
                 className="hackathon-reg-form__btn hackathon-reg-form__btn--primary"
                 onClick={() => {
-                  onClose();
+                  if (dismissible) onClose();
                   onRefresh();
                 }}
               >
@@ -128,16 +161,34 @@ function RegistrationFormModal({
   );
 }
 
-export default function RegistrationFormEmbed({ user, onRefresh }) {
-  const { getAccessToken } = useHackathonAuth();
-  const [modalOpen, setModalOpen] = useState(false);
+export default function RegistrationFormEmbed({
+  user,
+  onRefresh,
+  gateMode = false,
+  dismissible = true,
+  autoOpen = false,
+}) {
+  const { getAccessToken, hasPortalAccess, loading: authLoading } = useHackathonAuth();
+  const [modalOpen, setModalOpen] = useState(autoOpen);
   const [embedUrl, setEmbedUrl] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const loadRequestedRef = useRef(false);
 
   const closeModal = useCallback(() => {
     setModalOpen(false);
   }, []);
+
+  const useDirectZohoEmbed = useCallback(() => {
+    const directUrl = buildDirectZohoEmbedUrl(user?.email);
+    if (!directUrl) {
+      setError("Registration form URL is not configured.");
+      return false;
+    }
+    setEmbedUrl(directUrl);
+    setError(null);
+    return true;
+  }, [user?.email]);
 
   const loadEmbed = useCallback(async () => {
     setLoading(true);
@@ -145,14 +196,25 @@ export default function RegistrationFormEmbed({ user, onRefresh }) {
     setEmbedUrl(null);
 
     try {
-      const token = await getAccessToken();
-      const res = await apiFetch("/api/hackathon/me/registration-form/access", { token });
-      const path = res.data?.embedPath;
-      if (!path) {
-        throw new Error("Could not start registration session");
+      const token = await waitForToken(getAccessToken);
+      if (!token) {
+        if (useDirectZohoEmbed()) return;
+        throw new Error("Sign in is still loading. Please try again in a moment.");
       }
-      setEmbedUrl(`${getApiBaseUrl()}${path}`);
+
+      try {
+        const res = await apiFetch("/api/hackathon/me/registration-form/access", { token });
+        const path = res.data?.embedPath;
+        if (!path) {
+          throw new Error("Could not start registration session");
+        }
+        setEmbedUrl(`${getApiBaseUrl()}${path}`);
+      } catch (apiErr) {
+        if (useDirectZohoEmbed()) return;
+        throw apiErr;
+      }
     } catch (err) {
+      if (useDirectZohoEmbed()) return;
       setError(
         err.message ||
           "Unable to load registration form. Ensure the backend has ZOHO_REGISTRATION_FORM_URL set."
@@ -160,16 +222,40 @@ export default function RegistrationFormEmbed({ user, onRefresh }) {
     } finally {
       setLoading(false);
     }
-  }, [getAccessToken]);
+  }, [getAccessToken, useDirectZohoEmbed]);
 
   const openModal = useCallback(async () => {
     setModalOpen(true);
     await loadEmbed();
   }, [loadEmbed]);
 
+  useEffect(() => {
+    if (!autoOpen || authLoading || !hasPortalAccess) return undefined;
+    if (loadRequestedRef.current) return undefined;
+    loadRequestedRef.current = true;
+    loadEmbed();
+    return undefined;
+  }, [autoOpen, authLoading, hasPortalAccess, loadEmbed]);
+
   const handleIframeLoad = useCallback(() => {
     setLoading(false);
   }, []);
+
+  if (gateMode) {
+    return modalOpen ? (
+      <RegistrationFormModal
+        user={user}
+        onRefresh={onRefresh}
+        onClose={closeModal}
+        embedUrl={embedUrl}
+        loading={loading}
+        error={error}
+        onRetry={loadEmbed}
+        onIframeLoad={handleIframeLoad}
+        dismissible={dismissible}
+      />
+    ) : null;
+  }
 
   return (
     <>
@@ -227,6 +313,7 @@ export default function RegistrationFormEmbed({ user, onRefresh }) {
           error={error}
           onRetry={loadEmbed}
           onIframeLoad={handleIframeLoad}
+          dismissible={dismissible}
         />
       )}
     </>

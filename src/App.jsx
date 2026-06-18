@@ -11,21 +11,39 @@ import { useHackathonAuth } from "./auth/HackathonAuthContext";
 import { RequireHackathonAuth } from "./auth/RequireHackathonAuth";
 import { RequireHackathonAdmin } from "./auth/RequireHackathonAdmin";
 import AdminVerification from "./AdminVerification";
+import { getFirstStepDashboardWithHackathonContext } from "./lib/firstStepEnv";
 
 function ClaimSpotButton({ className, children, onNavigate }) {
-  const { isAuthenticated, login } = useHackathonAuth();
+  const { isAuthenticated, auth0Loading, loginForFirstStep } = useHackathonAuth();
 
   const handleClick = (e) => {
     e.preventDefault();
+    if (auth0Loading) return;
+
+    try {
+      sessionStorage.setItem("entrySource", "hackathon");
+    } catch {
+      // ignore if sessionStorage unavailable
+    }
+
     if (isAuthenticated) {
-      onNavigate("/sprint");
+      // Already logged in — go to the hackathon sprint dashboard on this site.
+      if (onNavigate) {
+        onNavigate("/sprint");
+      } else {
+        window.location.href = "/sprint";
+      }
     } else {
-      login("/sprint");
+      // Option A: authenticate via FirstStep, land on FirstStep dashboard,
+      // then user returns here and clicks Claim again to reach /sprint.
+      loginForFirstStep();
     }
   };
 
+  const href = isAuthenticated ? "/sprint" : getFirstStepDashboardWithHackathonContext();
+
   return (
-    <a href="/sprint" className={className} onClick={handleClick}>
+    <a href={href} className={className} onClick={handleClick}>
       {children}
     </a>
   );
@@ -55,13 +73,31 @@ export default function App() {
 
   }, []);
 
+  // Normalise spec-compliant aliases to internal paths
   useEffect(() => {
-    if (path === "/register" || path === "/tasks") {
+    if (
+      path === "/register" ||
+      path === "/tasks" ||
+      path === "/hackathon/dashboard" ||
+      path === "/hackathon/register"
+    ) {
       handleNavigate("/sprint");
+    }
+    if (path === "/hackathon") {
+      handleNavigate("/");
     }
   }, [path, handleNavigate]);
 
-  if (path === "/register" || path === "/tasks") {
+  if (
+    path === "/register" ||
+    path === "/tasks" ||
+    path === "/hackathon/dashboard" ||
+    path === "/hackathon/register"
+  ) {
+    return null;
+  }
+
+  if (path === "/hackathon") {
     return null;
   }
 

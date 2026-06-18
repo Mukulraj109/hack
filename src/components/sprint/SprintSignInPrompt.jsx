@@ -1,4 +1,10 @@
 import { useHackathonAuth } from "../../auth/HackathonAuthContext";
+import { getFirstStepDashboardWithHackathonContext } from "../../lib/firstStepEnv";
+
+function readFromFirstStep() {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("from") === "firststep";
+}
 
 const PAGE_LABELS = {
   "/sprint": "Sprint dashboard",
@@ -14,7 +20,8 @@ const PORTAL_FEATURES = [
 ];
 
 export default function SprintSignInPrompt({ returnTo = "/sprint", onNavigate }) {
-  const { login } = useHackathonAuth();
+  const { login, loginForFirstStep } = useHackathonAuth();
+  const fromFirstStep = readFromFirstStep();
   const pageLabel = PAGE_LABELS[returnTo] || "Hackathon portal";
 
   return (
@@ -56,7 +63,19 @@ export default function SprintSignInPrompt({ returnTo = "/sprint", onNavigate })
           <button
             type="button"
             className="btn-claim sprint-sign-in__cta"
-            onClick={() => login(returnTo)}
+            onClick={() => {
+              try {
+                sessionStorage.removeItem("hackathon_sso_prompt_none_attempted");
+                sessionStorage.removeItem("hackathon_sso_redirect_inflight");
+              } catch {
+                // ignore
+              }
+              if (fromFirstStep) {
+                window.location.href = getFirstStepDashboardWithHackathonContext();
+                return;
+              }
+              login(returnTo);
+            }}
           >
             <span className="btn-claim__label">Sign in with FirstStep</span>
             <svg

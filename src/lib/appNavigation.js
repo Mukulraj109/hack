@@ -19,12 +19,14 @@ export function navigateTo(path) {
   notifyAppPathChange();
 }
 
-/** Used after Auth0 redirect (returnTo from appState). */
+/** Used after Auth0 redirect (returnTo from appState). Accepts path with query string. */
 export function replaceAppPath(path) {
-  if (window.location.pathname === path) {
+  const target = path.startsWith("/") ? path : `/${path}`;
+  const current = `${window.location.pathname}${window.location.search}`;
+  if (current === target) {
     notifyAppPathChange();
     return;
   }
-  window.history.replaceState({}, "", path);
+  window.history.replaceState({}, "", target);
   notifyAppPathChange();
 }
